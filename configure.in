@@ -1,0 +1,191 @@
+# Copyright 2010 members of the LinBox group
+# 
+# This file is part of XALLOC, licensed under the GNU General Public
+# License version 3. See COPYING for more information.
+
+AC_PREREQ(2.50)
+AC_INIT(xalloc,0.1.0,xalloc@googlegroups.com) 
+AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
+AM_CONFIG_HEADER([xalloc/xalloc-config.h])
+AX_PREFIX_CONFIG_H(xalloc/xalloc-config.h, __XALLOC)
+AC_PATH_PROG(RM, rm, $FALSE)
+RM="$RM -f"
+
+AC_CONFIG_MACRO_DIR([macros])
+
+AM_MAINTAINER_MODE
+AM_DEP_TRACK
+AM_OUTPUT_DEPENDENCY_COMMANDS 
+
+# Give a sane default for CFLAGS and CXXFLAGS
+# The sane thing is to define the flags differenly in tests, examples, interfaces, etc.  -bds
+#DEFAULT_CFLAGS="-O2 -Wall"
+
+CFLAGS=${CFLAGS:-$DEFAULT_CFLAGS}
+CXXFLAGS=${CXXFLAGS:-$DEFAULT_CFLAGS}
+
+# work around to fix the backward compatibility issue of automake 1.10 with 1.9 (pb with MKDIR_P)
+AC_SUBST([MKDIR_P])
+AC_PROG_CC
+AC_PROG_CXX
+AC_STDC_HEADERS
+LT_INIT([disable-shared])
+
+# Machine characteristics
+
+AC_CHECK_SIZEOF(char, 8)
+AC_CHECK_SIZEOF(short, 16)
+AC_CHECK_SIZEOF(int, 32)
+AC_CHECK_SIZEOF(long, 32)
+AC_CHECK_SIZEOF(long long, 64)
+AC_CHECK_SIZEOF(__int64, 64)
+AC_CHECK_SIZEOF(__uint128_t, 128)
+AC_CHECK_SIZEOF(__uint256_t, 256)
+
+# check endianness of the architecture
+AC_C_BIGENDIAN(
+  [AC_DEFINE(HAVE_BIG_ENDIAN, 1, [Define that architecture uses big endian storage])],
+  [AC_DEFINE(HAVE_LITTLE_ENDIAN, 1, [Define that architecture uses little endian storage])],[])
+
+# Create some useful data types of fixed, known lengths
+
+# We hereby assume that a character is always one byte
+XALLOC_INT8="char";
+
+case $ac_cv_sizeof_char in
+  1)
+     TWO_BYTES=2;
+     FOUR_BYTES=4;
+     EIGHT_BYTES=8;
+     SIXTEEN_BYTES=16;
+     THIRTY_TWO_BYTES=32;
+     ;;
+  8)
+     TWO_BYTES=16;
+     FOUR_BYTES=32;
+     EIGHT_BYTES=64;
+     SIXTEEN_BYTES=128;
+     THIRTY_TWO_BYTES=256;
+esac
+
+case $TWO_BYTES in
+  $ac_cv_sizeof_short)
+     XALLOC_INT16="short";
+     ;;
+  $ac_cv_sizeof_int)
+     XALLOC_INT16="int";
+     ;;
+esac
+
+case $FOUR_BYTES in
+  $ac_cv_sizeof_short)
+     XALLOC_INT32="short";
+     ;;
+  $ac_cv_sizeof_int)
+     XALLOC_INT32="int";
+     ;;
+  $ac_cv_sizeof_long)
+     XALLOC_INT32="long";
+     ;;
+esac
+
+case $EIGHT_BYTES in
+  $ac_cv_sizeof_short)
+     XALLOC_INT64="short";
+     ;;
+  $ac_cv_sizeof_int)
+     XALLOC_INT64="int";
+     ;;
+  $ac_cv_sizeof_long)
+     XALLOC_INT64="long";
+     ;;
+  $ac_cv_sizeof_long_long)
+     XALLOC_INT64="long long";
+     ;;
+  $ac_cv_sizeof___int64)
+     XALLOC_INT64="__int64";
+     ;;
+esac
+
+case $SIXTEEN_BYTES in
+  $ac_cv_sizeof___uint128_t)
+     XALLOC_UINT128="__uint128_t";
+     ;;
+esac
+
+case $THIRTY_TWO_BYTES in
+  $ac_cv_sizeof___uint256_t)
+     XALLOC_UINT256="__uint256_t";
+     ;;
+esac
+
+AC_DEFINE_UNQUOTED(INT8, $XALLOC_INT8, Canonical 8-bit data type)
+AC_DEFINE_UNQUOTED(INT16, $XALLOC_INT16, Canonical 16-bit data type)
+AC_DEFINE_UNQUOTED(INT32, $XALLOC_INT32, Canonical 32-bit data type)
+AC_DEFINE_UNQUOTED(INT64, $XALLOC_INT64, Canonical 64-bit data type)
+if test "x$XALLOC_UINT128" != "x"; then
+  AC_DEFINE_UNQUOTED(UINT128, $XALLOC_UINT128, Canonical 128-bit data type)
+fi
+if test "x$XALLOC_UINT256" != "x"; then
+  AC_DEFINE_UNQUOTED(UINT256, $XALLOC_UINT256, Canonical 256-bit data type)
+fi
+
+# Feature checks
+# LB_MISC
+# LB_DRIVER
+
+AC_LANG_CPLUSPLUS
+LB_CHECK_GMP(,,[
+echo '*******************************************************************************'
+echo ' ERROR: GMP not found!'
+echo
+echo ' GMP version 3.1.1 or greater with --enable-cxx is required for this library to compile. Please'
+echo ' make sure GMP is installed and specify its location with the option'
+echo ' --with-gmp=<prefix> when running configure.'
+echo '*******************************************************************************'
+exit 1
+])
+
+LB_CHECK_BLAS
+LB_CHECK_M4RI
+LB_CHECK_PNG
+
+AC_PATH_PROG(XMLTO,xmlto,"no")
+
+if test "x$XMLTO" = "xno" ; then
+  echo "Note: xmlto not found. Cannot rebuild documentation."
+  XMLTO=
+fi
+
+AC_PATH_PROG(DOXYGEN,doxygen,"no")
+
+if test "x$DOXYGEN" = "xno" ; then
+  echo "Note: doxygen not found. Cannot rebuild reference-documentation."
+  DOXYGEN=
+fi
+
+AM_CONDITIONAL(BUILD_DOCS,[test x$XMLTO != x -a x$DOXYGEN != x])
+
+# this is bogus so far as I can tell.  -bds
+#CXXFLAGS="${GMP_CFLAGS} ${NTL_CFLAGS} ${GIVARO_CFLAGS} ${SACLIB_CFLAGS} ${CXXFLAGS}"
+#AC_SUBST(CXXFLAGS)
+
+AC_OUTPUT([
+Makefile
+xalloc-config
+xalloc/Makefile
+#xalloc/algorithms/Makefile
+#xalloc/solutions/Makefile
+#xalloc/blas/Makefile
+#xalloc/element/Makefile
+#xalloc/ring/Makefile
+#xalloc/matrix/Makefile
+#xalloc/randiter/Makefile
+#xalloc/util/Makefile
+#xalloc/vector/Makefile
+util/Makefile
+tests/Makefile
+tests/data/Makefile
+macros/Makefile
+doc/Makefile
+])

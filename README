@@ -1,0 +1,9 @@
+Special purpose allocator for (eXtra-)small, same-sized memory (XALLOC)
+=======================================================================
+
+XALLOC is a memory allocator for fast allocation and deallocation of lots of
+small, same-sized memory chunks.
+
+Note that XALLOC is not meant to replace your system malloc, but it is
+especially designed for applications with the above mentioned
+allocation-behaviour.
