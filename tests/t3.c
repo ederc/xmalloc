@@ -1,3 +1,9 @@
+/* Copyright 2012 Hans Schoenemann
+ * 
+ * This file is part of XALLOC, licensed under the GNU General Public
+ * License version 3. See COPYING for more information.
+ */
+
 #include <stdio.h>
 #include "xalloc.h"
 

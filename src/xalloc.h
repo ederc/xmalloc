@@ -1,12 +1,12 @@
+/* Copyright 2012 Christian Eder
+ * 
+ * This file is part of XALLOC, licensed under the GNU General Public
+ * License version 3. See COPYING for more information.
+ */
+
 #ifndef XMEMORY_H
 #define XMEMORY_H
-/****************************************
-*  Cxputer Algebra System SINGULAR     *
-****************************************/
-/* $Id: mmemory.h,v 1.9 1998/06/02 15:29:58 Singular Exp $ */
-/*
-* ABSTRACT
-*/
+
 #include <stdlib.h>
 #include <string.h>
 

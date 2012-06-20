@@ -8,13 +8,14 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir)
 SUBDIRS=
 
 BASIC_HDRS =		\
-	xalloc.h
+	xalloc.h			\
+	xalloc.c
 
 pkginclude_HEADERS =			\
 	$(BASIC_HDRS)
 
 lib_LTLIBRARIES=libxalloc.la
 
-liblela_la_SOURCES = dummy.C
+libxalloc_la_SOURCES = dummy.C
 
-liblela_la_LIBADD = \
+libxalloc_la_LIBADD = 

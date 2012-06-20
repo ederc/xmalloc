@@ -1,3 +1,9 @@
+/* Copyright 2012 Christian Eder
+ * 
+ * This file is part of XALLOC, licensed under the GNU General Public
+ * License version 3. See COPYING for more information.
+ */
+
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
