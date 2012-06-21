@@ -1,17 +1,16 @@
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XALLOC, licensed under the GNU General Public
+# This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir)
-AM_CXXFLAGS = -g -Wall -DDEBUG -O0
+INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
+AM_CXXFLAGS = -g -Wall -DDEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2
 
 SUBDIRS = data
 
-AM_CPPFLAGS= $(GMP_CFLAGS) $(PNG_CFLAGS) $(M4RI_CFLAGS)
-LDADD = $(GMP_LIBS)  $(PNG_LIBS) $(M4RI_LIBS) $(BLAS_LIBS) $(top_builddir)/lela/liblela.la
+LDADD = $(top_builddir)/src/libxmalloc.la
 
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  
 # Don't forget to add a test_mycomponent_SOURCES entry below.

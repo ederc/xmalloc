@@ -1,7 +1,7 @@
 #! /bin/sh
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XALLOC, licensed under the GNU General Public
+# This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 
@@ -13,7 +13,7 @@ libdir=@libdir@
 usage()
 {
     cat <<EOF
-Usage: xalloc-config [OPTION]
+Usage: xmalloc-config [OPTION]
 
 Known values for OPTION are:
 
@@ -64,7 +64,7 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-	echo -n " -L${libdir} ${libdir}/libxalloc.a @GMP_LIBS@ @PNG_LIBS@ @M4RI_LIBS@ @BLAS_LIBS@"
+	echo -n " -L${libdir} ${libdir}/libxmalloc.a @GMP_LIBS@ @PNG_LIBS@ @M4RI_LIBS@ @BLAS_LIBS@"
 	;;
 
     *)

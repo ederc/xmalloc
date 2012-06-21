@@ -1,6 +1,6 @@
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XALLOC, licensed under the GNU General Public
+# This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
@@ -10,10 +10,10 @@ endif
 
 all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
 
-docdir = $(datadir)/doc/xalloc-$(VERSION)
+docdir = $(datadir)/doc/xmalloc-$(VERSION)
 doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
 
-refdocdir = $(datadir)/doc/xalloc-$(VERSION)/reference
+refdocdir = $(datadir)/doc/xmalloc-$(VERSION)/reference
 refdoc_DATA = $(REFDOC_TARGETS)
 
 tutorial.html: $(srcdir)/config.xsl $(srcdir)/tutorial.xml

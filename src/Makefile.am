@@ -1,21 +1,23 @@
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XALLOC, licensed under the GNU General Public
+# This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir)
+INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
+
+AM_CXXFLAGS = -g -Wall -DDEBUG -O0 -fomit-frame-pointer 
 
 SUBDIRS=
 
 BASIC_HDRS =		\
-	xalloc.h			\
-	xalloc.c
+	xmalloc.c
 
 pkginclude_HEADERS =			\
 	$(BASIC_HDRS)
 
-lib_LTLIBRARIES=libxalloc.la
+lib_LTLIBRARIES=libxmalloc.la
 
-libxalloc_la_SOURCES = dummy.C
 
-libxalloc_la_LIBADD = 
+libxmalloc_la_SOURCES=xmalloc.c
+
+libxmalloc_la_LIBADD= 

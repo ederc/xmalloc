@@ -1,11 +1,11 @@
 /* Copyright 2012 Hans Schoenemann
  * 
- * This file is part of XALLOC, licensed under the GNU General Public
+ * This file is part of XMALLOC, licensed under the GNU General Public
  * License version 3. See COPYING for more information.
  */
 
 #include <stdio.h>
-#include "xalloc.h"
+#include <xmalloc.h>
 
 #define X_MAX_SMALL_BLOCK 1012
 

@@ -5,7 +5,7 @@
 
 <article>
   <articleinfo>
-    <title>Getting started with XALLOC</title>
+    <title>Getting started with XMALLOC</title>
     <copyright>
       <year>2012</year>
       <holder>Christian Eder</holder>
@@ -15,13 +15,13 @@
     <title>Downloading and installing</title>
 
     <para>
-      Developement of XALLOC occurs at
-      its <ulink url="https://github.com/ederc/xalloc">GIT
+      Developement of XMALLOC occurs at
+      its <ulink url="https://github.com/ederc/xmalloc">GIT
       repository</ulink> to which anyone may obtain read-only access.
     </para>
 
     <para>
-      See the file INSTALL in the XALLOC-distribution for detailed
+      See the file INSTALL in the XMALLOC-distribution for detailed
       installation-instructions. The basic procedure is
       <programlisting>
 ./autogen.sh

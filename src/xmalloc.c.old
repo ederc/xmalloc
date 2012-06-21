@@ -8,7 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "xalloc.h"
+#include "xmalloc.h"
+#include "libc_override.h"
 
 #define SIZEOF_LONG 4
 

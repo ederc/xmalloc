@@ -1,13 +1,13 @@
 # Copyright 2010 members of the LinBox group
 # 
-# This file is part of XALLOC, licensed under the GNU General Public
+# This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 AC_PREREQ(2.50)
-AC_INIT(xalloc,0.1.0,xalloc@googlegroups.com) 
+AC_INIT(xmalloc,0.0.1,xmalloc@googlegroups.com) 
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
-AM_CONFIG_HEADER([src/xalloc-config.h])
-AX_PREFIX_CONFIG_H(src/xalloc-config.h, __XALLOC)
+AM_CONFIG_HEADER([include/xmalloc-config.h])
+AX_PREFIX_CONFIG_H(include/xmalloc-config.h, __XALLOC)
 AC_PATH_PROG(RM, rm, $FALSE)
 RM="$RM -f"
 
@@ -159,7 +159,7 @@ AM_CONDITIONAL(BUILD_DOCS,[test x$XMLTO != x -a x$DOXYGEN != x])
 
 AC_OUTPUT([
 Makefile
-xalloc-config
+xmalloc-config
 src/Makefile
 tests/Makefile
 tests/data/Makefile
