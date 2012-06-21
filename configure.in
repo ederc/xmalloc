@@ -7,7 +7,7 @@ AC_PREREQ(2.50)
 AC_INIT(xmalloc,0.0.1,xmalloc@googlegroups.com) 
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
 AM_CONFIG_HEADER([include/xmalloc-config.h])
-AX_PREFIX_CONFIG_H(include/xmalloc-config.h, __XALLOC)
+AX_PREFIX_CONFIG_H(include/xmalloc-config.h, __XMALLOC)
 AC_PATH_PROG(RM, rm, $FALSE)
 RM="$RM -f"
 
@@ -50,7 +50,7 @@ AC_C_BIGENDIAN(
 # Create some useful data types of fixed, known lengths
 
 # We hereby assume that a character is always one byte
-XALLOC_INT8="char";
+XMALLOC_INT8="char";
 
 case $ac_cv_sizeof_char in
   1)
@@ -70,64 +70,64 @@ esac
 
 case $TWO_BYTES in
   $ac_cv_sizeof_short)
-     XALLOC_INT16="short";
+     XMALLOC_INT16="short";
      ;;
   $ac_cv_sizeof_int)
-     XALLOC_INT16="int";
+     XMALLOC_INT16="int";
      ;;
 esac
 
 case $FOUR_BYTES in
   $ac_cv_sizeof_short)
-     XALLOC_INT32="short";
+     XMALLOC_INT32="short";
      ;;
   $ac_cv_sizeof_int)
-     XALLOC_INT32="int";
+     XMALLOC_INT32="int";
      ;;
   $ac_cv_sizeof_long)
-     XALLOC_INT32="long";
+     XMALLOC_INT32="long";
      ;;
 esac
 
 case $EIGHT_BYTES in
   $ac_cv_sizeof_short)
-     XALLOC_INT64="short";
+     XMALLOC_INT64="short";
      ;;
   $ac_cv_sizeof_int)
-     XALLOC_INT64="int";
+     XMALLOC_INT64="int";
      ;;
   $ac_cv_sizeof_long)
-     XALLOC_INT64="long";
+     XMALLOC_INT64="long";
      ;;
   $ac_cv_sizeof_long_long)
-     XALLOC_INT64="long long";
+     XMALLOC_INT64="long long";
      ;;
   $ac_cv_sizeof___int64)
-     XALLOC_INT64="__int64";
+     XMALLOC_INT64="__int64";
      ;;
 esac
 
 case $SIXTEEN_BYTES in
   $ac_cv_sizeof___uint128_t)
-     XALLOC_UINT128="__uint128_t";
+     XMALLOC_UINT128="__uint128_t";
      ;;
 esac
 
 case $THIRTY_TWO_BYTES in
   $ac_cv_sizeof___uint256_t)
-     XALLOC_UINT256="__uint256_t";
+     XMALLOC_UINT256="__uint256_t";
      ;;
 esac
 
-AC_DEFINE_UNQUOTED(INT8, $XALLOC_INT8, Canonical 8-bit data type)
-AC_DEFINE_UNQUOTED(INT16, $XALLOC_INT16, Canonical 16-bit data type)
-AC_DEFINE_UNQUOTED(INT32, $XALLOC_INT32, Canonical 32-bit data type)
-AC_DEFINE_UNQUOTED(INT64, $XALLOC_INT64, Canonical 64-bit data type)
-if test "x$XALLOC_UINT128" != "x"; then
-  AC_DEFINE_UNQUOTED(UINT128, $XALLOC_UINT128, Canonical 128-bit data type)
+AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
+AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)
+AC_DEFINE_UNQUOTED(INT32, $XMALLOC_INT32, Canonical 32-bit data type)
+AC_DEFINE_UNQUOTED(INT64, $XMALLOC_INT64, Canonical 64-bit data type)
+if test "x$XMALLOC_UINT128" != "x"; then
+  AC_DEFINE_UNQUOTED(UINT128, $XMALLOC_UINT128, Canonical 128-bit data type)
 fi
-if test "x$XALLOC_UINT256" != "x"; then
-  AC_DEFINE_UNQUOTED(UINT256, $XALLOC_UINT256, Canonical 256-bit data type)
+if test "x$XMALLOC_UINT256" != "x"; then
+  AC_DEFINE_UNQUOTED(UINT256, $XMALLOC_UINT256, Canonical 256-bit data type)
 fi
 
 # Feature checks

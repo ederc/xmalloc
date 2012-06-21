@@ -9,7 +9,7 @@
 
 int main()
 {
-  printf("check SIZEOF_LONG: %d == %d sizeof(long)\n",SIZEOF_LONG,(int)sizeof(long));
+  printf("check __XMALLOC_SIZEOF_LONG: %d == %d sizeof(long)\n",__XMALLOC_SIZEOF_LONG,(int)sizeof(long));
   {
     printf("check X_MAX_SMALL_BLOCK:\n");
     xBin b=&x_StaticBin[sizeof(x_StaticBin)/sizeof(struct xBin_s)-1];
