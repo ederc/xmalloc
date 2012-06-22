@@ -17,7 +17,7 @@ int main()
   int j;
   for( i=0;i<X_TEST_BLOCKS;i++)
   {
-    B[i]=(char*)xAlloc0(i+1);
+    B[i]=(char*)xMalloc0(i+1);
     for(j=0;j<i+1;j++) B[i][j]=(char)(i %256);
     /*if (xSizeOfAddr(B[i])!=(i/100+1))*/ printf("xSizeOfAddr:%d, xAlloc:%d\n",xSizeOfAddr(B[i]),(i+1));
   }
@@ -29,7 +29,7 @@ int main()
   {
     if (B[i]==NULL)
     {
-      B[i]=(char*)xAlloc0(i/100+1);
+      B[i]=(char*)xMalloc0(i/100+1);
       for(j=0;j<i/100+1;j++) B[i][j]=(char)(i %256);
     }
   }

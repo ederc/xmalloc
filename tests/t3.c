@@ -17,7 +17,7 @@ int main()
   int j;
   for( i=0;i<X_TEST_BLOCKS;i++)
   {
-    B[i]=(char*)xAlloc0(i*4+1);
+    B[i]=(char*)xMalloc0(i*4+1);
     for(j=0;j<=i*4;j++) B[i][j]=(char)(i %256);
   }
   for( i=0;i<X_TEST_BLOCKS;i++)

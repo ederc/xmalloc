@@ -17,8 +17,7 @@
 extern "C" {
 #endif
 
-enum xError_e
-{
+enum xError_e {
   xError_NoError = 0,
   xError_Unknown,
   xError_InternalBug,
@@ -47,21 +46,19 @@ enum xError_e
 };
 
 struct xPage_s;
-typedef struct xPage_s * xPage;
+typedef struct xPage_s *xPage;
 
-struct xBin_s
-{
+struct xBin_s {
   xPage current;
   xPage last;
   long sizeW; /* size in words */
 };
-typedef struct xBin_s * xBin;
+typedef struct xBin_s *xBin;
 
 
 struct xInfo_s;
 typedef struct xInfo_s xInfo_t;
-struct xInfo_s
-{
+struct xInfo_s {
   long MaxBytesSystem;      /* set in xUpdateInfo(), is more accurate with malloc support   */
   long CurrentBytesSystem;  /* set in xUpdateInfo(), is more accurate with malloc support */
   long MaxBytesSbrk;        /* always up-to-date, not very accurate, needs xInintInfo() */
@@ -88,8 +85,7 @@ struct xInfo_s
 extern struct xInfo_s x_Info;
 
 struct xOpts_s;
-extern struct xOpts_s
-{
+extern struct xOpts_s {
   int MinTrack;
   int MinCheck;
   int MaxTrack;
@@ -106,66 +102,73 @@ extern struct xOpts_s
 typedef struct xOpts_s xOpts_t;
 
 struct xBlock_s;
-typedef struct xBlock_s * xBlock;
-struct xBlock_s
-{
+typedef struct xBlock_s *xBlock;
+struct xBlock_s {
   xBlock next;
 };
 
 struct xRegion_s;
-typedef struct xRegion_s * xRegion;
+typedef struct xRegion_s *xRegion;
 
 extern int x_sing_opt_show_mem;
 
-void * xAlloc(size_t s);
-void * xalloc(size_t s);
-void xFree(void *r);
-void xfree(void *r);
+void* xMalloc(size_t size);
+void* xmalloc(size_t size);
+void xFree(void* r);
+void xfree(void* r);
 
-void xFreeSizeFunc(void *p, size_t s);
+void xFreeSizeFunc(void* ptr, size_t size);
 
-long xSizeOfAddr(void *d);
+long xSizeOfAddr(void* d);
 xRegion xIsBinBlock(unsigned long r);
 
-static inline void * xAlloc0(size_t s)
-{ void *d=xAlloc(s);memset(d,0,s); return d; }
+static inline void* xMalloc0(size_t size) {
+  void* d = xMalloc(size);
+  memset(d,0,size); 
+  return d; 
+}
 
 
-static inline void *xRealloc0(void *d, size_t ns)
-{
-  void *n=xAlloc0(ns);
-  if (d!=NULL)
-  {
+static inline void* xRealloc0(void* d, size_t ns) {
+  void* n = xMalloc0(ns);
+  if (d!=NULL) {
     size_t c;
-    size_t os=xSizeOfAddr(d);
-    if (ns>os) c=os; else c=ns;
+    size_t os = xSizeOfAddr(d);
+    if (ns>os)
+      c = os; 
+    else 
+      c = ns;
     memcpy(n,d,c);
     xFree(d);
   }
   return n;
 }
 
-static inline void *xRealloc(void *d, size_t ns)
-{
-  void *n=xAlloc(ns);
-  if (d!=NULL)
-  {
+static inline void* xRealloc(void* d, size_t ns) {
+  void* n = xMalloc(ns);
+  if (d!=NULL) {
     size_t c;
-    size_t os=xSizeOfAddr(d);
-    if (ns>os) c=os; else c=ns;
+    size_t os = xSizeOfAddr(d);
+    if (ns>os) 
+      c = os; 
+    else 
+      c = ns;
     memcpy(n,d,c);
     xFree(d);
   }
   return n;
 }
 
-static inline void *xReallocSize(void *d, size_t os, size_t ns)
+static inline void* xReallocSize(void* d, size_t os, size_t ns)
 {
-  void *n=xAlloc(ns);
+  void* n = xMalloc(ns);
   if (d!=NULL)
   {
     size_t c;
-    if (ns>os) c=os; else c=ns;
+    if (ns>os) 
+      c = os; 
+    else 
+      c = ns;
     memcpy(n,d,c);
     xFree(d);
   }
@@ -173,43 +176,42 @@ static inline void *xReallocSize(void *d, size_t os, size_t ns)
 }
 
 
-static inline char * xStrDup(const char *s)
-{ 
-  size_t l=strlen(s);
-  char *ns=(char *)xAlloc(l+1);
-  return strcpy(ns,s);
+static inline char* xStrDup(const char* str) { 
+  size_t l    = strlen(str);
+  char *nstr  = (char *) xMalloc(l+1);
+  return strcpy(nstr,str);
 }
-static inline void * xMemDup(void * s)
-{ 
-  size_t os=xSizeOfAddr(s);
-  void *n=xAlloc(os);
+
+static inline void* xMemDup(void* s) { 
+  size_t os = xSizeOfAddr(s);
+  void* n   = xMalloc(os);
   memcpy(n,s,os);
   return n;
 }
 
-void *xAllocBin(xBin b);
-void xFreeBin(void *r, xBin b);
-static inline void *xAlloc0Bin(xBin b)
-{
-  void *r=xAllocBin(b);
-  memset(r,0,b->sizeW*sizeof(long));
+void* xAllocBin(xBin b);
+void xFreeBin(void* r, xBin b);
+
+static inline void* xAlloc0Bin(xBin b) {
+  void* r = xAllocBin(b);
+  memset(r,0,b->sizeW*__XMALLOC_SIZEOF_LONG);
   return r;
 }
 
 xBin xGetSpecBin(size_t s);
-void xUnGetSpecBin(xBin *b);
+void xUnGetSpecBin(xBin* b);
 
 void xInfo();
 
-#define xSizeWOfAddr(P)         (xSizeOfAddr(P)/sizeof(long))
+#define xSizeWOfAddr(P)         (xSizeOfAddr(P)/__XMALLOC_SIZEOF_LONG)
 #define xTypeAllocBin(T,P,B)    P=(T)xAllocBin(B)
-#define xTypeAlloc(T,P,S)       P=(T)xAlloc(S)
-#define xTypeAlloc0(T,P,S)      P=(T)xAlloc0(S)
+#define xTypeAlloc(T,P,S)       P=(T)xMalloc(S)
+#define xTypeAlloc0(T,P,S)      P=(T)xMalloc0(S)
 #define xTypeAlloc0Bin(T,P,B)   P=(T)xAlloc0Bin(B)
-#define xAlloc0Aligned(S)       xAlloc0(S)
-#define xAllocAligned(S)        xAlloc(S)
-//#define xAllocBin(B)            xAlloc(B)
-//#define xAlloc0Bin(B)           xAlloc0(B)
+#define xAlloc0Aligned(S)       xMalloc0(S)
+#define xAllocAligned(S)        xMalloc(S)
+//#define xAllocBin(B)            xMalloc(B)
+//#define xAlloc0Bin(B)           xMalloc0(B)
 #define xInitInfo()             
 #define xInitGetBackTrace()
 #define xUpdateInfo()             
@@ -225,9 +227,9 @@ void xInfo();
 #define xRealloc0Size(A,OS,NS)  xRealloc0(A,NS)
 #define xrealloc0Size(A,OS,NS)  xRealloc(A,NS)
 #define xMarkAsStaticAddr(A)
-#define xMemCpyW(A,B,S)         memcpy(A,B,(S)*sizeof(long))
-#define xMemcpyW(A,B,S)         memcpy(A,B,(S)*sizeof(long))
-#define memcpyW(A,B,C)           memcpy(A,B,(C)*sizeof(long))
+#define xMemCpyW(A,B,S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
+#define xMemcpyW(A,B,S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
+#define memcpyW(A,B,C)           memcpy(A,B,(C)*__XMALLOC_SIZEOF_LONG)
 #define xGetStickyBinOfBin(B) (B)
 
 #define xFreeFunc               xFree
@@ -266,16 +268,13 @@ void xInfo();
 #define xPrintCurrentBackTrace(A)               ((void) 0)
 
 
-
-char * xFindExec (const char *name, char* executable);
-
 #ifdef __cplusplus
 }
 #endif
 
 #undef XMALLOC_USES_MALLOC
 #define X_XMALLOC
-#define xMallocFunc xAlloc
+#define xMallocFunc xMalloc
 #define xReallocSizeFunc xReallocSize
 /* #define X_NDEBUG */
 #undef X_SING_KEEP
