@@ -10,9 +10,9 @@ int main()
   {
     xBin b=xGetSpecBin(i);
     void *p=xMalloc(i);
-    if ((i>b->sizeW*4)
-    || (b->sizeW*4!=xSizeOfAddr(p)))
-      printf(" %d (%d vs %d)\n",i,b->sizeW*4,xSizeOfAddr(p));
+    if ((i>b->sizeInWords*4)
+    || (b->sizeInWords*4!=xSizeOfAddr(p)))
+      printf(" %d (%d vs %d)\n",i,b->sizeInWords*4,xSizeOfAddr(p));
     xFree(p);
   }
   return 0;

@@ -13,12 +13,12 @@
 #define SIZEOF_LONG 4
 
 struct xPage_s {
-   xBin bin;
-   xPage prev;
-   xPage next;
-   long cnt; /* number of used blocks in ths page */
-   xBlock free; /* free blocks in this page */
-   void* data; /* start of data, must be last*/
+   xBin   bin;
+   xPage  prev;
+   xPage  next;
+   long   numberUsedBlocks; /* number of used blocks in ths page */
+   xBlock free;             /* free blocks in this page */
+   void*  data;             /* start of data, must be last*/
 };
 
 #if __XMALLOC_SIZEOF_LONG == 8
@@ -33,9 +33,9 @@ struct xPage_s {
 struct xRegion_s {
   unsigned long start;
   unsigned long end;
-  void* next;
-  int cnt; /* number of free pages in this region */
-  char bits[X_PAGES_PER_REGION];
+  void*         next;
+  int           numberUsedBlocks; /* number of free pages in this region */
+  char          bits[X_PAGES_PER_REGION];
 };
 
 xRegion baseRegion  = NULL;
@@ -479,41 +479,41 @@ xBin x_Size2Bin[/*254*/] = {
 &x_StaticBin[23] /* 1016 */};
 #endif
 
-xPage xGetPageFromBlock(void* r) {
-  unsigned long rr  = (unsigned long) r;
-  rr  &= ~4095;
-  return (xPage)rr;
+xPage xGetPageFromBlock(void* ptr) {
+  unsigned long page  = (unsigned long) ptr;
+  page  &= ~4095;
+  return (xPage)page;
 }
 
-long xSizeOfAddr(void* d) {
-  xRegion R = xIsBinBlock((unsigned long) d);
-  if (R!=NULL)  {
-    xPage p =xGetPageFromBlock(d);
-    return p->bin->sizeW*sizeof(long);
+long xSizeOfAddr(void* ptr) {
+  xRegion region = xIsBinBlock((unsigned long)ptr);
+  if (region!=NULL)  {
+    xPage page =  xGetPageFromBlock(ptr);
+    return page->bin->sizeInWords*__XMALLOC_SIZEOF_LONG;
   } else {
-    long* dd  = (long*) d; 
-    dd--; 
-    return *dd;
+    long* newPtr  = (long*) ptr; 
+    newPtr--; 
+    return *newPtr;
   }
 }
 
-void xMakePage(void* page, size_t s) {
-  xPage p   = (xPage)page;
-  xBlock t  = (xBlock)&(p->data);
+void xMakePage(void* ptr, size_t size) {
+  xPage page   = (xPage)ptr;
+  xBlock pageData  = (xBlock)&(page->data);
   /*unsigned long header=(unsigned long)t-(unsigned long)p;*/
   #if 1
-  memset((void*)p, 0, 4096);
+  memset((void*)page, 0, 4096);
   #else
-  p->free=0;
-  p->cnt=0;
+  page->free=0;
+  page->numberUsedBlocks=0;
   #endif
-  while (((unsigned long)t)+s<=(((unsigned long)p)+4096)) {
-    t->next = p->free;
-    p->free = t;
-    t       = (xBlock)(((unsigned long)t)+s);
+  while (((unsigned long)pageData)+size<=(((unsigned long)page)+4096)) {
+    pageData->next  = page->free;
+    page->free      = pageData;
+    pageData        = (xBlock)(((unsigned long)pageData)+size);
   }
-  if (p->free==NULL) {
-    printf("xMakePage(%ld)\n",(long)s);
+  if (page->free==NULL) {
+    printf("xMakePage(%ld)\n",(long)size);
   }
 }
 
@@ -525,7 +525,7 @@ xRegion xAllocRegion()
   posix_memalign(&p,4096,4096*X_PAGES_PER_REGION);
   R->start=(unsigned long)p;
   R->end=R->start+4096*X_PAGES_PER_REGION;
-  R->cnt=X_PAGES_PER_REGION;
+  R->numberUsedBlocks=X_PAGES_PER_REGION;
   R->next=baseRegion;
   baseRegion=R;
   return R;
@@ -541,13 +541,13 @@ void* xGetNewPage()
     {
       R=xAllocRegion();
     }
-    if (R->cnt>0)
+    if (R->numberUsedBlocks>0)
     {
       for(i=0;i<X_PAGES_PER_REGION;i++)
       {
         if (R->bits[i]=='\0')
         {
-	  R->cnt--;
+	  R->numberUsedBlocks--;
           R->bits[i]='\1';
           return (void*)(R->start+i*4096UL);
         }
@@ -560,7 +560,7 @@ void* xGetNewPage()
 xBin xGetBin(size_t s)
 {
   if (s<=X_MAX_SMALL_BLOCK)
-  return x_Size2Bin[(s-1)/(sizeof(long))];
+  return x_Size2Bin[(s-1)/(__XMALLOC_SIZEOF_LONG)];
   #if 0
   #if SIZEOF_LONG == 4
   else if (s<=2036) return &x_StaticBin[24];
@@ -580,7 +580,7 @@ xBin xGetSpecBin(size_t s)
   {
     b=(xBin)malloc(sizeof(*b));
     memset(b,0,sizeof(*b));
-    b->sizeW=(s+sizeof(long)-1)/sizeof(long);
+    b->sizeInWords=(s+__XMALLOC_SIZEOF_LONG-1)/__XMALLOC_SIZEOF_LONG;
     b->current=xPageForMalloc;
   }
   return b;
@@ -616,7 +616,7 @@ xPage xGetPageFromBin(xBin b)
   {
     //extern void *xGetNewPage();
      xPage n=(xPage)xGetNewPage();
-     xMakePage(n,b->sizeW*sizeof(long));
+     xMakePage(n,b->sizeInWords*__XMALLOC_SIZEOF_LONG);
      n->prev=b->last;
      n->next=NULL;
      if (b->last!=NULL) b->last->next=n;
@@ -638,8 +638,8 @@ void* xAllocFromPage(xPage p)
 {
   xBlock r=p->free;
   p->free=r->next;
-  p->cnt++;
-  memset(r,0,p->bin->sizeW*sizeof(long)); /*debug!*/
+  p->numberUsedBlocks++;
+  memset(r,0,p->bin->sizeInWords*__XMALLOC_SIZEOF_LONG); /*debug!*/
   return (void *)r;
 }
 
@@ -675,7 +675,7 @@ void xFreeToPage(xPage p, void *r)
   xBlock rr=(xBlock)r;
   rr->next=p->free;
   p->free=rr;
-  p->cnt--;
+  p->numberUsedBlocks--;
 }
 
 xRegion xIsSmallBlock(void *r)
@@ -693,7 +693,7 @@ xRegion xIsSmallBlock(void *r)
 void* xAllocBin(xBin b)
 {
   xPage p=b->current;
-  if (p==xPageForMalloc) return xMalloc(b->sizeW*sizeof(long));
+  if (p==xPageForMalloc) return xMalloc(b->sizeInWords*__XMALLOC_SIZEOF_LONG);
   p=xGetPageFromBin(b);
   return xAllocFromPage(p);
 }
@@ -717,11 +717,11 @@ xRegion xIsBinBlock(unsigned long r)
 void xFreeBinRegion(xRegion R,void *r)
 {
   xPage p=xGetPageFromBlock(r);
-  if (p->cnt >1)
+  if (p->numberUsedBlocks >1)
   {
     *((void**) (r)) = p->free;
     p->free=r;
-    p->cnt--;
+    p->numberUsedBlocks--;
   }
   else
   {
@@ -731,7 +731,7 @@ void xFreeBinRegion(xRegion R,void *r)
     if (p->prev!=NULL) p->prev->next=p->next; 
     if (b->last==p) b->last=p->prev;
     if (b->current==p) b->current=p->prev;
-    R->cnt++;
+    R->numberUsedBlocks++;
     R->bits[(ur-R->start)/4096]='\0';
   }
 }
@@ -741,11 +741,11 @@ void xFreeBin(void *r, xBin b)
   
   if (b->current==xPageForMalloc) { xFree(r);return;}
   xPage p=xGetPageFromBlock(r);
-  if (p->cnt >1)
+  if (p->numberUsedBlocks >1)
   {
     *((void**) (r)) = p->free;
     p->free=r;
-    p->cnt--;
+    p->numberUsedBlocks--;
   }
   else
   {
@@ -755,7 +755,7 @@ void xFreeBin(void *r, xBin b)
     if (p->prev!=NULL) p->prev->next=p->next; 
     if (b->last==p) b->last=p->prev;
     if (b->current==p) b->current=p->prev;
-    R->cnt++;
+    R->numberUsedBlocks++;
     R->bits[(((unsigned long)r)-R->start)/4096]='\0';
   }
 }
@@ -794,8 +794,8 @@ void xInfo()
   while (R!=NULL)
   {
     int j;
-    printf("region %d (%lx - %lx), free pages %d\n",i,R->start,R->end,R->cnt);
-    kb2+=(X_PAGES_PER_REGION-R->cnt)*4;
+    printf("region %d (%lx - %lx), free pages %d\n",i,R->start,R->end,R->numberUsedBlocks);
+    kb2+=(X_PAGES_PER_REGION-R->numberUsedBlocks)*4;
     i++;
     R=R->next;
     kb+=(4*X_PAGES_PER_REGION)+4;
@@ -809,6 +809,6 @@ void xInfo()
     p=x_StaticBin[i].current;
     kb2=(p!=NULL) -1;
     while (p!=NULL) { kb2++; p=p->next; }
-    printf("bin %d, sizeW=%ld, curr=%lx, pages: %d + %d\n",i,x_StaticBin[i].sizeW,(unsigned long)x_StaticBin[i].current, kb, kb2);
+    printf("bin %d, sizeInWords=%ld, curr=%lx, pages: %d + %d\n",i,x_StaticBin[i].sizeInWords,(unsigned long)x_StaticBin[i].current, kb, kb2);
   }
 }

@@ -51,10 +51,10 @@ typedef struct xPage_s *xPage;
 struct xBin_s {
   xPage current;
   xPage last;
-  long sizeW; /* size in words */
+  long sizeInWords; /* size in words */
 };
-typedef struct xBin_s *xBin;
 
+typedef struct xBin_s *xBin;
 
 struct xInfo_s;
 typedef struct xInfo_s xInfo_t;
@@ -114,96 +114,79 @@ extern int x_sing_opt_show_mem;
 
 void* xMalloc(size_t size);
 void* xmalloc(size_t size);
-void xFree(void* r);
-void xfree(void* r);
+void xFree(void* ptr);
+void xfree(void* ptr);
 
 void xFreeSizeFunc(void* ptr, size_t size);
 
-long xSizeOfAddr(void* d);
-xRegion xIsBinBlock(unsigned long r);
+long xSizeOfAddr(void* ptr);
+xRegion xIsBinBlock(unsigned long region);
 
 static inline void* xMalloc0(size_t size) {
-  void* d = xMalloc(size);
-  memset(d,0,size); 
-  return d; 
+  void* ptr = xMalloc(size);
+  memset(ptr, 0, size); 
+  return ptr; 
 }
 
 
-static inline void* xRealloc0(void* d, size_t ns) {
-  void* n = xMalloc0(ns);
-  if (d!=NULL) {
-    size_t c;
-    size_t os = xSizeOfAddr(d);
-    if (ns>os)
-      c = os; 
-    else 
-      c = ns;
-    memcpy(n,d,c);
-    xFree(d);
+static inline void* xRealloc0(void* oldPtr, size_t newSize) {
+  void* newPtr = xMalloc0(newSize);
+  if (oldPtr!=NULL) {
+    size_t oldSize = xSizeOfAddr(oldPtr);
+    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
+    xFree(oldPtr);
   }
-  return n;
+  return newPtr;
 }
 
-static inline void* xRealloc(void* d, size_t ns) {
-  void* n = xMalloc(ns);
-  if (d!=NULL) {
-    size_t c;
-    size_t os = xSizeOfAddr(d);
-    if (ns>os) 
-      c = os; 
-    else 
-      c = ns;
-    memcpy(n,d,c);
-    xFree(d);
+static inline void* xRealloc(void* oldPtr, size_t newSize) {
+  void* newPtr = xMalloc(newSize);
+  if (oldPtr!=NULL) {
+    size_t oldSize = xSizeOfAddr(oldPtr);
+    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
+    xFree(oldPtr);
   }
-  return n;
+  return newPtr;
 }
 
-static inline void* xReallocSize(void* d, size_t os, size_t ns)
-{
-  void* n = xMalloc(ns);
-  if (d!=NULL)
-  {
-    size_t c;
-    if (ns>os) 
-      c = os; 
-    else 
-      c = ns;
-    memcpy(n,d,c);
-    xFree(d);
+static inline void* xReallocSize(void* oldPtr, size_t oldSize, size_t newSize) {
+  void* newPtr = xMalloc(newSize);
+  if (oldPtr!=NULL) {
+    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
+    xFree(oldPtr);
   }
-  return n;
+  return newPtr;
 }
 
 
 static inline char* xStrDup(const char* str) { 
-  size_t l    = strlen(str);
-  char *nstr  = (char *) xMalloc(l+1);
-  return strcpy(nstr,str);
+  size_t length = strlen(str);
+  char *newStr  = (char *)xMalloc(length+1);
+  return strcpy(newStr,str);
 }
 
-static inline void* xMemDup(void* s) { 
-  size_t os = xSizeOfAddr(s);
-  void* n   = xMalloc(os);
-  memcpy(n,s,os);
-  return n;
+static inline void* xMemDup(void* str) { 
+  size_t oldSize = xSizeOfAddr(str);
+  void* newPtr   = xMalloc(oldSize);
+  memcpy(newPtr,str,oldSize);
+  return newPtr;
 }
 
-void* xAllocBin(xBin b);
-void xFreeBin(void* r, xBin b);
+void* xAllocBin(xBin bin);
+void xFreeBin(void* ptr, xBin bin);
 
-static inline void* xAlloc0Bin(xBin b) {
-  void* r = xAllocBin(b);
-  memset(r,0,b->sizeW*__XMALLOC_SIZEOF_LONG);
-  return r;
+static inline void* xAlloc0Bin(xBin bin) {
+  void* ptr = xAllocBin(bin);
+  memset(ptr,0,bin->sizeInWords*__XMALLOC_SIZEOF_LONG);
+  return ptr;
 }
 
-xBin xGetSpecBin(size_t s);
-void xUnGetSpecBin(xBin* b);
+xBin xGetSpecBin(size_t size);
+void xUnGetSpecBin(xBin* bin);
 
 void xInfo();
 
-#define xSizeWOfAddr(P)         (xSizeOfAddr(P)/__XMALLOC_SIZEOF_LONG)
+#define xSizeInWordsOfAddr(P)         (xSizeOfAddr(P)/__XMALLOC_SIZEOF_LONG)
 #define xTypeAllocBin(T,P,B)    P=(T)xAllocBin(B)
 #define xTypeAlloc(T,P,S)       P=(T)xMalloc(S)
 #define xTypeAlloc0(T,P,S)      P=(T)xMalloc0(S)
