@@ -40,3 +40,4 @@ src/libxmalloc.la
 include/xmalloc-config.h
 include/xmalloc-config.h.in
 include/stamp-h1
+doc/tutorial.html

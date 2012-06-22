@@ -13,7 +13,7 @@ DISTCLEANFILES=_configs.sed
 
 EXTRA_DIST=PROJECTS
 
-clean-local:
-	rm -f xmalloc-config xmalloc-config~
-	rm -f include/xmalloc-config.h*
-	rm -f include/stamp-h1
+DISTCLEANFILES= \
+	xmalloc-config xmalloc-config~	\
+	include/xmalloc-config.h*	\
+	include/stamp-h1

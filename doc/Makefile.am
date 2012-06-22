@@ -4,8 +4,12 @@
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
-DOC_TARGETS = tutorial.html
+DOC_TARGETS = doc
 REFDOC_TARGETS = html/index.html
+endif
+
+if BUILD_REFS
+
 endif
 
 all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
@@ -16,7 +20,7 @@ doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
 refdocdir = $(datadir)/doc/xmalloc-$(VERSION)/reference
 refdoc_DATA = $(REFDOC_TARGETS)
 
-tutorial.html: $(srcdir)/config.xsl $(srcdir)/tutorial.xml
+doc: $(srcdir)/config.xsl $(srcdir)/tutorial.xml
 	$(XMLTO) xhtml -m $(srcdir)/config.xsl $(srcdir)/tutorial.xml
 	sed -e s/index.html/tutorial.html/g index.html >tutorial.html
 	rm -f index.html
