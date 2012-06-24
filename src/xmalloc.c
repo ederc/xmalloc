@@ -21,14 +21,13 @@ struct xPage_s {
    void*  data;             /* start of data, must be last*/
 };
 
-#if __XMALLOC_SIZEOF_LONG == 8
+#if __XMALLOC_SIZEOF_LONG == 8 /* 64bit */
 #define __XMALLOC_PAGES_PER_REGION 4068
-#define _XMALLOC_MAX_SMALL_BLOCK  1008    
-   /* 64bit */
-#else
+#define __XMALLOC_MAX_SMALL_BLOCK  1008    
+  #else /* 32bit */
 #define __XMALLOC_PAGES_PER_REGION 4080
 #define __XMALLOC_MAX_SMALL_BLOCK  1016    
-   /* 32bit */
+  
 #endif
 struct xRegion_s {
   unsigned long start;
@@ -522,7 +521,7 @@ xRegion xAllocRegion() {
   memset(reg, 0, sizeof(*reg));
   posix_memalign(&ptr, 4096, 4096 * __XMALLOC_PAGES_PER_REGION);
   reg->start            = (unsigned long)ptr;
-  reg->end              = reg->start + 4096 * _XMALLOC_PAGES_PER_REGION;
+  reg->end              = reg->start + 4096 * __XMALLOC_PAGES_PER_REGION;
   reg->numberUsedBlocks = __XMALLOC_PAGES_PER_REGION;
   reg->next             = baseRegion;
   baseRegion            = reg;
@@ -631,7 +630,7 @@ void* xAllocFromPage(xPage page) {
 
 void* xMalloc(size_t size) {
   /*assume (s>0);*/
-  if (size <= X_MAX_SMALL_BLOCK) {
+  if (size <= __XMALLOC_MAX_SMALL_BLOCK) {
     xPage page  = xGetPageFromSize(size);
     return xAllocFromPage(page);
   } else {
@@ -772,7 +771,7 @@ void xInfo() {
   while (reg != NULL) {
     int j;
     printf("region %d (%lx - %lx), free pages %d\n", i, reg->start, reg->end, reg->numberUsedBlocks);
-    kb2 +=  (_XMALLOC_PAGES_PER_REGION - reg->numberUsedBlocks) * 4;
+    kb2 +=  (__XMALLOC_PAGES_PER_REGION - reg->numberUsedBlocks) * 4;
     i++;
     reg =   reg->next;
     kb  +=  (4 * __XMALLOC_PAGES_PER_REGION) + 4;
