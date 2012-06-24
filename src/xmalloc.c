@@ -22,12 +22,12 @@ struct xPage_s {
 };
 
 #if __XMALLOC_SIZEOF_LONG == 8
-#define X_PAGES_PER_REGION 4068
-#define X_MAX_SMALL_BLOCK  1008    
+#define __XMALLOC_PAGES_PER_REGION 4068
+#define _XMALLOC_MAX_SMALL_BLOCK  1008    
    /* 64bit */
 #else
-#define X_PAGES_PER_REGION 4080
-#define X_MAX_SMALL_BLOCK  1016    
+#define __XMALLOC_PAGES_PER_REGION 4080
+#define __XMALLOC_MAX_SMALL_BLOCK  1016    
    /* 32bit */
 #endif
 struct xRegion_s {
@@ -35,7 +35,7 @@ struct xRegion_s {
   unsigned long end;
   void*         next;
   int           numberUsedBlocks; /* number of free pages in this region */
-  char          bits[X_PAGES_PER_REGION];
+  char          bits[__XMALLOC_PAGES_PER_REGION];
 };
 
 xRegion baseRegion  = NULL;
@@ -520,10 +520,10 @@ xRegion xAllocRegion() {
   xRegion reg  = (xRegion)malloc(sizeof(*reg));
   void *ptr;
   memset(reg, 0, sizeof(*reg));
-  posix_memalign(&ptr, 4096, 4096 * X_PAGES_PER_REGION);
+  posix_memalign(&ptr, 4096, 4096 * __XMALLOC_PAGES_PER_REGION);
   reg->start            = (unsigned long)ptr;
-  reg->end              = reg->start + 4096 * X_PAGES_PER_REGION;
-  reg->numberUsedBlocks = X_PAGES_PER_REGION;
+  reg->end              = reg->start + 4096 * _XMALLOC_PAGES_PER_REGION;
+  reg->numberUsedBlocks = __XMALLOC_PAGES_PER_REGION;
   reg->next             = baseRegion;
   baseRegion            = reg;
   return reg;
@@ -536,7 +536,7 @@ void* xGetNewPage() {
     if (reg == NULL)
       reg = xAllocRegion();
     if (reg->numberUsedBlocks > 0) {
-      for (i = 0; i < X_PAGES_PER_REGION; i++) {
+      for (i = 0; i < __XMALLOC_PAGES_PER_REGION; i++) {
         if (reg->bits[i] == '\0') {
 	        reg->numberUsedBlocks--;
           reg->bits[i] = '\1';
@@ -549,7 +549,7 @@ void* xGetNewPage() {
 }
 
 xBin xGetBin(size_t size) {
-  if (size <= X_MAX_SMALL_BLOCK)
+  if (size <= __XMALLOC_MAX_SMALL_BLOCK)
     return x_Size2Bin[(size - 1) / (__XMALLOC_SIZEOF_LONG)];
   #if 0
   #if SIZEOF_LONG == 4
@@ -772,10 +772,10 @@ void xInfo() {
   while (reg != NULL) {
     int j;
     printf("region %d (%lx - %lx), free pages %d\n", i, reg->start, reg->end, reg->numberUsedBlocks);
-    kb2 +=  (X_PAGES_PER_REGION - reg->numberUsedBlocks) * 4;
+    kb2 +=  (_XMALLOC_PAGES_PER_REGION - reg->numberUsedBlocks) * 4;
     i++;
     reg =   reg->next;
-    kb  +=  (4 * X_PAGES_PER_REGION) + 4;
+    kb  +=  (4 * __XMALLOC_PAGES_PER_REGION) + 4;
   }
   printf("allocated kB: %d, used kb: %d\n", kb, kb2);
   for (i = 0; i < 23; i++) {
