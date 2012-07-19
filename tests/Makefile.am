@@ -6,12 +6,13 @@
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 AM_CXXFLAGS = -g -Wall -DDEBUG -O0 -fomit-frame-pointer
 
-BENCHMARK_CXXFLAGS = -O2
+BENCHMARK_CXXFLAGS = -O2 -pthread
 
 SUBDIRS = data
 
 LDADD = $(top_builddir)/src/libxmalloc.la
 
+malloc_test_LDFLAGS = -pthread
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  
 # Don't forget to add a test_mycomponent_SOURCES entry below.
 #
@@ -23,7 +24,7 @@ BASIC_TESTS =  \
 				t2			\
 				t3			\
 				t4			\
-				t5
+				malloc_test
 
 # a benchmarker, not to be included in check.
 BENCHMARKS =            
@@ -49,7 +50,7 @@ t3_SOURCES =                \
 t4_SOURCES =                \
         t4.c           
 
-t5_SOURCES =                \
-        t5.c           
+malloc_test_SOURCES =                \
+        malloc_test.c           
 
 noinst_HEADERS =	
