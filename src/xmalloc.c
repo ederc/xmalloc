@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <xmalloc.h>
 
-#define SIZEOF_LONG 4
-
 struct xPage_s {
    xBin   bin;
    xPage  prev;
@@ -550,13 +548,6 @@ void* xGetNewPage() {
 xBin xGetBin(size_t size) {
   if (size <= __XMALLOC_MAX_SMALL_BLOCK)
     return x_Size2Bin[(size - 1) / (__XMALLOC_SIZEOF_LONG)];
-  #if 0
-  #if SIZEOF_LONG == 4
-  else if (s<=2036) return &x_StaticBin[24];
-  #else
-  else if (s<=2028) return &x_StaticBin[23];
-  #endif
-  #endif
   return NULL;
 }
 
