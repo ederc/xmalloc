@@ -49,8 +49,8 @@ struct xPage_s;
 typedef struct xPage_s *xPage;
 
 struct xBin_s {
-  xPage current;
-  xPage last;
+  xPage currentPage;
+  xPage lastPage;
   long sizeInWords; /* size in words */
 };
 

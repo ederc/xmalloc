@@ -559,7 +559,7 @@ xBin xGetSpecBin(size_t size) {
     bin = (xBin)malloc(sizeof(*bin));
     memset(bin, 0, sizeof(*bin));
     bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
-    bin->current      = xPageForMalloc;
+    bin->currentPage  = xPageForMalloc;
   }
   return bin;
 }
@@ -568,7 +568,7 @@ void xUnGetSpecBin(xBin* bin) {
   if (*bin  ==  NULL) {
     printf("xUnGetSpecBin(NULL\n");
   } else {
-    if ((*bin)->current == xPageForMalloc) {
+    if ((*bin)->currentPage == xPageForMalloc) {
       /* TODO */
       free(*bin);
     }
@@ -578,15 +578,15 @@ void xUnGetSpecBin(xBin* bin) {
 
 
 xPage xGetPageFromBin(xBin bin) {
-  if (bin->current != NULL) {
-    if (bin->current->free != NULL)
-      return bin->current;
+  if (bin->currentPage != NULL) {
+    if (bin->currentPage->free != NULL)
+      return bin->currentPage;
     else {
-      xPage page  = bin->last;
+      xPage page  = bin->lastPage;
       while ((page != NULL) && (page->free == NULL)) 
         page  = page->prev;
       if ((page != NULL) && (page->free != NULL)) { 
-        bin->current  = page; 
+        bin->currentPage  = page; 
         return page; 
       }
     }
@@ -595,15 +595,15 @@ xPage xGetPageFromBin(xBin bin) {
   //extern void *xGetNewPage();
   xPage page  = (xPage)xGetNewPage();
   xMakePage(page, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
-  page->prev  = bin->last;
+  page->prev  = bin->lastPage;
   page->next  = NULL;
-  if (bin->last !=  NULL) 
-    bin->last->next = page;
-  bin->last     = page;
-  bin->current  = page;
-  page->bin     = bin;
+  if (bin->lastPage !=  NULL) 
+    bin->lastPage->next = page;
+  bin->lastPage         = page;
+  bin->currentPage      = page;
+  page->bin             = bin;
   return page;
-  //return b->current;
+  //return b->currentPage;
 }
 
 xPage xGetPageFromSize(size_t size) {
@@ -659,7 +659,7 @@ xRegion xIsSmallBlock(void *ptr) {
 }
 
 void* xAllocBin(xBin bin) {
-  xPage page  = bin->current;
+  xPage page  = bin->currentPage;
   if (page == xPageForMalloc) 
     return xMalloc(bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
   page  = xGetPageFromBin(bin);
@@ -694,17 +694,17 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
       page->next->prev  = page->prev; 
     if (page->prev != NULL) 
       page->prev->next  = page->next; 
-    if (bin->last ==  page) 
-      bin->last = page->prev;
-    if (bin->current == page) 
-      bin->current  = page->prev;
+    if (bin->lastPage == page) 
+      bin->lastPage = page->prev;
+    if (bin->currentPage == page) 
+      bin->currentPage  = page->prev;
     reg->numberUsedBlocks++;
     reg->bits[(unsignedLongPtr - reg->start) / 4096]  = '\0';
   }
 }
 
 void xFreeBin(void *ptr, xBin bin) {
-  if (bin->current  ==  xPageForMalloc) { 
+  if (bin->currentPage == xPageForMalloc) { 
     xFree(ptr);
     return;
   }
@@ -720,10 +720,10 @@ void xFreeBin(void *ptr, xBin bin) {
       page->next->prev  = page->prev; 
     if (page->prev != NULL) 
       page->prev->next  = page->next; 
-    if (bin->last == page) 
-      bin->last = page->prev;
-    if (bin->current == page) 
-      bin->current  = page->prev;
+    if (bin->lastPage == page) 
+      bin->lastPage = page->prev;
+    if (bin->currentPage == page) 
+      bin->currentPage  = page->prev;
     reg->numberUsedBlocks++;
     reg->bits[(((unsigned long)ptr) - reg->start) / 4096] = '\0';
   }
@@ -769,18 +769,20 @@ void xInfo() {
   }
   printf("allocated kB: %d, used kb: %d\n", kb, kb2);
   for (i = 0; i < 23; i++) {
-    xPage page  = x_StaticBin[i].current;
+    xPage page  = x_StaticBin[i].currentPage;
     kb          = 0;
     while (page != NULL) { 
       kb++; 
       page  = page->prev; 
     }
-    page  = x_StaticBin[i].current;
+    page  = x_StaticBin[i].currentPage;
     kb2   = (page != NULL) - 1;
     while (page!=NULL) { 
       kb2++; 
       page=page->next; 
     }
-    printf("bin %d, sizeInWords=%ld, curr=%lx, pages: %d + %d\n", i, x_StaticBin[i].sizeInWords, (unsigned long)x_StaticBin[i].current, kb, kb2);
+    printf("bin %d, sizeInWords=%ld, curr=%lx, pages: %d + %d\n", 
+            i, x_StaticBin[i].sizeInWords, 
+            (unsigned long)x_StaticBin[i].currentPage, kb, kb2);
   }
 }
