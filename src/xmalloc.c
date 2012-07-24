@@ -10,15 +10,6 @@
 #include <stdlib.h>
 #include <xmalloc.h>
 
-struct xPage_s {
-   xBin   bin;
-   xPage  prev;
-   xPage  next;
-   long   numberUsedBlocks; /* number of used blocks in ths page */
-   xBlock free;             /* free blocks in this page */
-   void*  data;             /* start of data, must be last*/
-};
-
 #if __XMALLOC_SIZEOF_LONG == 8 /* 64bit */
 #define __XMALLOC_PAGES_PER_REGION 4068
 #define __XMALLOC_MAX_SMALL_BLOCK  1008    

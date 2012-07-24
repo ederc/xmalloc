@@ -110,6 +110,15 @@ struct xBlock_s {
 struct xRegion_s;
 typedef struct xRegion_s *xRegion;
 
+struct xPage_s {
+   xBin   bin;
+   xPage  prev;
+   xPage  next;
+   long   numberUsedBlocks; /* number of used blocks in ths page */
+   xBlock free;             /* free blocks in this page */
+   void*  data;             /* start of data, must be last*/
+};
+
 extern int x_sing_opt_show_mem;
 
 void* xMalloc(size_t size);
