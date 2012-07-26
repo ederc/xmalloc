@@ -18,453 +18,448 @@
 #define __XMALLOC_MAX_SMALL_BLOCK  1016    
   
 #endif
-struct xRegion_s {
-  unsigned long start;
-  unsigned long end;
-  void*         next;
-  int           numberUsedBlocks; /* number of free pages in this region */
-  char          bits[__XMALLOC_PAGES_PER_REGION];
-};
-
 xRegion baseRegion  = NULL;
 
+/* zero page for initializing static bins */
+xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
+
 #if __XMALLOC_SIZEOF_LONG == 8
-struct xBin_s x_StaticBin[] = {
-{NULL, NULL, 1}, /*0 */
-{NULL, NULL, 2}, /*1 */
-{NULL, NULL, 3}, /*2 */
-{NULL, NULL, 4}, /*3 */
-{NULL, NULL, 5}, /*4 */
-{NULL, NULL, 6}, /*5 */
-{NULL, NULL, 7}, /*6 */
-{NULL, NULL, 8}, /*7 */
-{NULL, NULL, 9}, /*8 */
-{NULL, NULL, 10}, /*9 */
-{NULL, NULL, 12}, /*10*/
-{NULL, NULL, 14}, /*11*/
-{NULL, NULL, 16}, /*12*/
-{NULL, NULL, 18}, /*13*/
-{NULL, NULL, 20}, /*14*/
-{NULL, NULL, 24}, /*15*/
-{NULL, NULL, 28}, /*16*/
-{NULL, NULL, 38}, /*17*/
-{NULL, NULL, 50}, /*18*/
-{NULL, NULL, 63}, /*19*/
-{NULL, NULL, 84}, /*20*/
-{NULL, NULL, 101}, /*21*/
-{NULL, NULL, 126}  /*22*/
+struct xBinStruct xStaticBin[] = {
+{xZeroPage, NULL, NULL, 1}, /*0 */
+{xZeroPage, NULL, NULL, 2}, /*1 */
+{xZeroPage, NULL, NULL, 3}, /*2 */
+{xZeroPage, NULL, NULL, 4}, /*3 */
+{xZeroPage, NULL, NULL, 5}, /*4 */
+{xZeroPage, NULL, NULL, 6}, /*5 */
+{xZeroPage, NULL, NULL, 7}, /*6 */
+{xZeroPage, NULL, NULL, 8}, /*7 */
+{xZeroPage, NULL, NULL, 9}, /*8 */
+{xZeroPage, NULL, NULL, 10}, /*9 */
+{xZeroPage, NULL, NULL, 12}, /*10*/
+{xZeroPage, NULL, NULL, 14}, /*11*/
+{xZeroPage, NULL, NULL, 16}, /*12*/
+{xZeroPage, NULL, NULL, 18}, /*13*/
+{xZeroPage, NULL, NULL, 20}, /*14*/
+{xZeroPage, NULL, NULL, 24}, /*15*/
+{xZeroPage, NULL, NULL, 28}, /*16*/
+{xZeroPage, NULL, NULL, 38}, /*17*/
+{xZeroPage, NULL, NULL, 50}, /*18*/
+{xZeroPage, NULL, NULL, 63}, /*19*/
+{xZeroPage, NULL, NULL, 84}, /*20*/
+{xZeroPage, NULL, NULL, 101}, /*21*/
+{xZeroPage, NULL, NULL, 126}  /*22*/
 };
 
-xBin x_Size2Bin[/*126*/] = {
-&x_StaticBin[0], /* 8 */
-&x_StaticBin[1], /* 16 */
-&x_StaticBin[2], /* 24 */
-&x_StaticBin[3], /* 32 */
-&x_StaticBin[4], /* 40 */
-&x_StaticBin[5], /* 48 */
-&x_StaticBin[6], /* 56 */
-&x_StaticBin[7], /* 64 */
-&x_StaticBin[8], /* 72 */
-&x_StaticBin[9], /* 80 */
-&x_StaticBin[10], /* 88 */
-&x_StaticBin[10], /* 96 */
-&x_StaticBin[11], /* 104 */
-&x_StaticBin[11], /* 112 */
-&x_StaticBin[12], /* 120 */
-&x_StaticBin[12], /* 128 */
-&x_StaticBin[13], /* 136 */
-&x_StaticBin[13], /* 144 */
-&x_StaticBin[14], /* 152 */
-&x_StaticBin[14], /* 160 */
-&x_StaticBin[15], /* 168 */
-&x_StaticBin[15], /* 176 */
-&x_StaticBin[15], /* 184 */
-&x_StaticBin[15], /* 192 */
-&x_StaticBin[16], /* 200 */
-&x_StaticBin[16], /* 208 */
-&x_StaticBin[16], /* 216 */
-&x_StaticBin[16], /* 224 */
-&x_StaticBin[17], /* 232 */
-&x_StaticBin[17], /* 240 */
-&x_StaticBin[17], /* 248 */
-&x_StaticBin[17], /* 256 */
-&x_StaticBin[17], /* 264 */
-&x_StaticBin[17], /* 272 */
-&x_StaticBin[17], /* 280 */
-&x_StaticBin[17], /* 288 */
-&x_StaticBin[17], /* 296 */
-&x_StaticBin[17], /* 304 */
-&x_StaticBin[18], /* 312 */
-&x_StaticBin[18], /* 320 */
-&x_StaticBin[18], /* 328 */
-&x_StaticBin[18], /* 336 */
-&x_StaticBin[18], /* 344 */
-&x_StaticBin[18], /* 352 */
-&x_StaticBin[18], /* 360 */
-&x_StaticBin[18], /* 368 */
-&x_StaticBin[18], /* 376 */
-&x_StaticBin[18], /* 384 */
-&x_StaticBin[18], /* 392 */
-&x_StaticBin[18], /* 400 */
-&x_StaticBin[19], /* 408 */
-&x_StaticBin[19], /* 416 */
-&x_StaticBin[19], /* 424 */
-&x_StaticBin[19], /* 432 */
-&x_StaticBin[19], /* 440 */
-&x_StaticBin[19], /* 448 */
-&x_StaticBin[19], /* 456 */
-&x_StaticBin[19], /* 464 */
-&x_StaticBin[19], /* 472 */
-&x_StaticBin[19], /* 480 */
-&x_StaticBin[19], /* 488 */
-&x_StaticBin[19], /* 496 */
-&x_StaticBin[19], /* 504 */
-&x_StaticBin[20], /* 512 */
-&x_StaticBin[20], /* 520 */
-&x_StaticBin[20], /* 528 */
-&x_StaticBin[20], /* 536 */
-&x_StaticBin[20], /* 544 */
-&x_StaticBin[20], /* 552 */
-&x_StaticBin[20], /* 560 */
-&x_StaticBin[20], /* 568 */
-&x_StaticBin[20], /* 576 */
-&x_StaticBin[20], /* 584 */
-&x_StaticBin[20], /* 592 */
-&x_StaticBin[20], /* 600 */
-&x_StaticBin[20], /* 608 */
-&x_StaticBin[20], /* 616 */
-&x_StaticBin[20], /* 624 */
-&x_StaticBin[20], /* 632 */
-&x_StaticBin[20], /* 640 */
-&x_StaticBin[20], /* 648 */
-&x_StaticBin[20], /* 656 */
-&x_StaticBin[20], /* 664 */
-&x_StaticBin[20], /* 672 */
-&x_StaticBin[21], /* 680 */
-&x_StaticBin[21], /* 688 */
-&x_StaticBin[21], /* 696 */
-&x_StaticBin[21], /* 704 */
-&x_StaticBin[21], /* 712 */
-&x_StaticBin[21], /* 720 */
-&x_StaticBin[21], /* 728 */
-&x_StaticBin[21], /* 736 */
-&x_StaticBin[21], /* 744 */
-&x_StaticBin[21], /* 752 */
-&x_StaticBin[21], /* 760 */
-&x_StaticBin[21], /* 768 */
-&x_StaticBin[21], /* 776 */
-&x_StaticBin[21], /* 784 */
-&x_StaticBin[21], /* 792 */
-&x_StaticBin[21], /* 800 */
-&x_StaticBin[21], /* 808 */
-&x_StaticBin[22], /* 816 */
-&x_StaticBin[22], /* 824 */
-&x_StaticBin[22], /* 832 */
-&x_StaticBin[22], /* 840 */
-&x_StaticBin[22], /* 848 */
-&x_StaticBin[22], /* 856 */
-&x_StaticBin[22], /* 864 */
-&x_StaticBin[22], /* 872 */
-&x_StaticBin[22], /* 880 */
-&x_StaticBin[22], /* 888 */
-&x_StaticBin[22], /* 896 */
-&x_StaticBin[22], /* 904 */
-&x_StaticBin[22], /* 912 */
-&x_StaticBin[22], /* 920 */
-&x_StaticBin[22], /* 928 */
-&x_StaticBin[22], /* 936 */
-&x_StaticBin[22], /* 944 */
-&x_StaticBin[22], /* 952 */
-&x_StaticBin[22], /* 960 */
-&x_StaticBin[22], /* 968 */
-&x_StaticBin[22], /* 976 */
-&x_StaticBin[22], /* 984 */
-&x_StaticBin[22], /* 992 */
-&x_StaticBin[22], /* 1000 */
-&x_StaticBin[22] /* 1008 */};
+xBin xSize2Bin[/*126*/] = {
+&xStaticBin[0], /* 8 */
+&xStaticBin[1], /* 16 */
+&xStaticBin[2], /* 24 */
+&xStaticBin[3], /* 32 */
+&xStaticBin[4], /* 40 */
+&xStaticBin[5], /* 48 */
+&xStaticBin[6], /* 56 */
+&xStaticBin[7], /* 64 */
+&xStaticBin[8], /* 72 */
+&xStaticBin[9], /* 80 */
+&xStaticBin[10], /* 88 */
+&xStaticBin[10], /* 96 */
+&xStaticBin[11], /* 104 */
+&xStaticBin[11], /* 112 */
+&xStaticBin[12], /* 120 */
+&xStaticBin[12], /* 128 */
+&xStaticBin[13], /* 136 */
+&xStaticBin[13], /* 144 */
+&xStaticBin[14], /* 152 */
+&xStaticBin[14], /* 160 */
+&xStaticBin[15], /* 168 */
+&xStaticBin[15], /* 176 */
+&xStaticBin[15], /* 184 */
+&xStaticBin[15], /* 192 */
+&xStaticBin[16], /* 200 */
+&xStaticBin[16], /* 208 */
+&xStaticBin[16], /* 216 */
+&xStaticBin[16], /* 224 */
+&xStaticBin[17], /* 232 */
+&xStaticBin[17], /* 240 */
+&xStaticBin[17], /* 248 */
+&xStaticBin[17], /* 256 */
+&xStaticBin[17], /* 264 */
+&xStaticBin[17], /* 272 */
+&xStaticBin[17], /* 280 */
+&xStaticBin[17], /* 288 */
+&xStaticBin[17], /* 296 */
+&xStaticBin[17], /* 304 */
+&xStaticBin[18], /* 312 */
+&xStaticBin[18], /* 320 */
+&xStaticBin[18], /* 328 */
+&xStaticBin[18], /* 336 */
+&xStaticBin[18], /* 344 */
+&xStaticBin[18], /* 352 */
+&xStaticBin[18], /* 360 */
+&xStaticBin[18], /* 368 */
+&xStaticBin[18], /* 376 */
+&xStaticBin[18], /* 384 */
+&xStaticBin[18], /* 392 */
+&xStaticBin[18], /* 400 */
+&xStaticBin[19], /* 408 */
+&xStaticBin[19], /* 416 */
+&xStaticBin[19], /* 424 */
+&xStaticBin[19], /* 432 */
+&xStaticBin[19], /* 440 */
+&xStaticBin[19], /* 448 */
+&xStaticBin[19], /* 456 */
+&xStaticBin[19], /* 464 */
+&xStaticBin[19], /* 472 */
+&xStaticBin[19], /* 480 */
+&xStaticBin[19], /* 488 */
+&xStaticBin[19], /* 496 */
+&xStaticBin[19], /* 504 */
+&xStaticBin[20], /* 512 */
+&xStaticBin[20], /* 520 */
+&xStaticBin[20], /* 528 */
+&xStaticBin[20], /* 536 */
+&xStaticBin[20], /* 544 */
+&xStaticBin[20], /* 552 */
+&xStaticBin[20], /* 560 */
+&xStaticBin[20], /* 568 */
+&xStaticBin[20], /* 576 */
+&xStaticBin[20], /* 584 */
+&xStaticBin[20], /* 592 */
+&xStaticBin[20], /* 600 */
+&xStaticBin[20], /* 608 */
+&xStaticBin[20], /* 616 */
+&xStaticBin[20], /* 624 */
+&xStaticBin[20], /* 632 */
+&xStaticBin[20], /* 640 */
+&xStaticBin[20], /* 648 */
+&xStaticBin[20], /* 656 */
+&xStaticBin[20], /* 664 */
+&xStaticBin[20], /* 672 */
+&xStaticBin[21], /* 680 */
+&xStaticBin[21], /* 688 */
+&xStaticBin[21], /* 696 */
+&xStaticBin[21], /* 704 */
+&xStaticBin[21], /* 712 */
+&xStaticBin[21], /* 720 */
+&xStaticBin[21], /* 728 */
+&xStaticBin[21], /* 736 */
+&xStaticBin[21], /* 744 */
+&xStaticBin[21], /* 752 */
+&xStaticBin[21], /* 760 */
+&xStaticBin[21], /* 768 */
+&xStaticBin[21], /* 776 */
+&xStaticBin[21], /* 784 */
+&xStaticBin[21], /* 792 */
+&xStaticBin[21], /* 800 */
+&xStaticBin[21], /* 808 */
+&xStaticBin[22], /* 816 */
+&xStaticBin[22], /* 824 */
+&xStaticBin[22], /* 832 */
+&xStaticBin[22], /* 840 */
+&xStaticBin[22], /* 848 */
+&xStaticBin[22], /* 856 */
+&xStaticBin[22], /* 864 */
+&xStaticBin[22], /* 872 */
+&xStaticBin[22], /* 880 */
+&xStaticBin[22], /* 888 */
+&xStaticBin[22], /* 896 */
+&xStaticBin[22], /* 904 */
+&xStaticBin[22], /* 912 */
+&xStaticBin[22], /* 920 */
+&xStaticBin[22], /* 928 */
+&xStaticBin[22], /* 936 */
+&xStaticBin[22], /* 944 */
+&xStaticBin[22], /* 952 */
+&xStaticBin[22], /* 960 */
+&xStaticBin[22], /* 968 */
+&xStaticBin[22], /* 976 */
+&xStaticBin[22], /* 984 */
+&xStaticBin[22], /* 992 */
+&xStaticBin[22], /* 1000 */
+&xStaticBin[22] /* 1008 */};
 #else
-struct xBin_s x_StaticBin[/*24*/] = {
-{NULL, NULL, 2}, /* 0 */
-{NULL, NULL, 3}, /* 1 */
-{NULL, NULL, 4}, /* 2 */
-{NULL, NULL, 5}, /* 3 */
-{NULL, NULL, 6}, /* 4 */
-{NULL, NULL, 7}, /* 5 */
-{NULL, NULL, 8}, /* 6 */
-{NULL, NULL, 10}, /* 7 */
-{NULL, NULL, 12}, /* 8 */
-{NULL, NULL, 14}, /* 9 */
-{NULL, NULL, 16}, /* 10 */
-{NULL, NULL, 20}, /* 11 */
-{NULL, NULL, 24}, /* 12 */
-{NULL, NULL, 28}, /* 13 */
-{NULL, NULL, 32}, /* 14 */
-{NULL, NULL, 40}, /* 15 */
-{NULL, NULL, 48}, /* 16 */
-{NULL, NULL, 56}, /* 17 */
-{NULL, NULL, 78}, /* 18 */
-{NULL, NULL, 101}, /* 19 */
-{NULL, NULL, 127}, /* 20 */
-{NULL, NULL, 169}, /* 21 */
-{NULL, NULL, 203}, /* 22 */
-{NULL, NULL, 254} /* 23 */
+struct xBinStruct xStaticBin[/*24*/] = {
+{xZeroPage, NULL, NULL, 2}, /* 0 */
+{xZeroPage, NULL, NULL, 3}, /* 1 */
+{xZeroPage, NULL, NULL, 4}, /* 2 */
+{xZeroPage, NULL, NULL, 5}, /* 3 */
+{xZeroPage, NULL, NULL, 6}, /* 4 */
+{xZeroPage, NULL, NULL, 7}, /* 5 */
+{xZeroPage, NULL, NULL, 8}, /* 6 */
+{xZeroPage, NULL, NULL, 10}, /* 7 */
+{xZeroPage, NULL, NULL, 12}, /* 8 */
+{xZeroPage, NULL, NULL, 14}, /* 9 */
+{xZeroPage, NULL, NULL, 16}, /* 10 */
+{xZeroPage, NULL, NULL, 20}, /* 11 */
+{xZeroPage, NULL, NULL, 24}, /* 12 */
+{xZeroPage, NULL, NULL, 28}, /* 13 */
+{xZeroPage, NULL, NULL, 32}, /* 14 */
+{xZeroPage, NULL, NULL, 40}, /* 15 */
+{xZeroPage, NULL, NULL, 48}, /* 16 */
+{xZeroPage, NULL, NULL, 56}, /* 17 */
+{xZeroPage, NULL, NULL, 78}, /* 18 */
+{xZeroPage, NULL, NULL, 101}, /* 19 */
+{xZeroPage, NULL, NULL, 127}, /* 20 */
+{xZeroPage, NULL, NULL, 169}, /* 21 */
+{xZeroPage, NULL, NULL, 203}, /* 22 */
+{xZeroPage, NULL, NULL, 254} /* 23 */
 };
 
-xBin x_Size2Bin[/*254*/] = {
-&x_StaticBin[0], /* 4 */
-&x_StaticBin[0], /* 8 */
-&x_StaticBin[1], /* 12 */
-&x_StaticBin[2], /* 16 */
-&x_StaticBin[3], /* 20 */
-&x_StaticBin[4], /* 24 */
-&x_StaticBin[5], /* 28 */
-&x_StaticBin[6], /* 32 */
-&x_StaticBin[7], /* 36 */
-&x_StaticBin[7], /* 40 */
-&x_StaticBin[8], /* 44 */
-&x_StaticBin[8], /* 48 */
-&x_StaticBin[9], /* 52 */
-&x_StaticBin[9], /* 56 */
-&x_StaticBin[10], /* 60 */
-&x_StaticBin[10], /* 64 */
-&x_StaticBin[11], /* 68 */
-&x_StaticBin[11], /* 72 */
-&x_StaticBin[11], /* 76 */
-&x_StaticBin[11], /* 80 */
-&x_StaticBin[12], /* 84 */
-&x_StaticBin[12], /* 88 */
-&x_StaticBin[12], /* 92 */
-&x_StaticBin[12], /* 96 */
-&x_StaticBin[13], /* 100 */
-&x_StaticBin[13], /* 104 */
-&x_StaticBin[13], /* 108 */
-&x_StaticBin[13], /* 112 */
-&x_StaticBin[14], /* 116 */
-&x_StaticBin[14], /* 120 */
-&x_StaticBin[14], /* 124 */
-&x_StaticBin[14], /* 128 */
-&x_StaticBin[15], /* 132 */
-&x_StaticBin[15], /* 136 */
-&x_StaticBin[15], /* 140 */
-&x_StaticBin[15], /* 144 */
-&x_StaticBin[15], /* 148 */
-&x_StaticBin[15], /* 152 */
-&x_StaticBin[15], /* 156 */
-&x_StaticBin[15], /* 160 */
-&x_StaticBin[16], /* 164 */
-&x_StaticBin[16], /* 168 */
-&x_StaticBin[16], /* 172 */
-&x_StaticBin[16], /* 176 */
-&x_StaticBin[16], /* 180 */
-&x_StaticBin[16], /* 184 */
-&x_StaticBin[16], /* 188 */
-&x_StaticBin[16], /* 192 */
-&x_StaticBin[17], /* 196 */
-&x_StaticBin[17], /* 200 */
-&x_StaticBin[17], /* 204 */
-&x_StaticBin[17], /* 208 */
-&x_StaticBin[17], /* 212 */
-&x_StaticBin[17], /* 216 */
-&x_StaticBin[17], /* 220 */
-&x_StaticBin[17], /* 224 */
-&x_StaticBin[18], /* 228 */
-&x_StaticBin[18], /* 232 */
-&x_StaticBin[18], /* 236 */
-&x_StaticBin[18], /* 240 */
-&x_StaticBin[18], /* 244 */
-&x_StaticBin[18], /* 248 */
-&x_StaticBin[18], /* 252 */
-&x_StaticBin[18], /* 256 */
-&x_StaticBin[18], /* 260 */
-&x_StaticBin[18], /* 264 */
-&x_StaticBin[18], /* 268 */
-&x_StaticBin[18], /* 272 */
-&x_StaticBin[18], /* 276 */
-&x_StaticBin[18], /* 280 */
-&x_StaticBin[18], /* 284 */
-&x_StaticBin[18], /* 288 */
-&x_StaticBin[18], /* 292 */
-&x_StaticBin[18], /* 296 */
-&x_StaticBin[18], /* 300 */
-&x_StaticBin[18], /* 304 */
-&x_StaticBin[18], /* 308 */
-&x_StaticBin[18], /* 312 */
-&x_StaticBin[19], /* 316 */
-&x_StaticBin[19], /* 320 */
-&x_StaticBin[19], /* 324 */
-&x_StaticBin[19], /* 328 */
-&x_StaticBin[19], /* 332 */
-&x_StaticBin[19], /* 336 */
-&x_StaticBin[19], /* 340 */
-&x_StaticBin[19], /* 344 */
-&x_StaticBin[19], /* 348 */
-&x_StaticBin[19], /* 352 */
-&x_StaticBin[19], /* 356 */
-&x_StaticBin[19], /* 360 */
-&x_StaticBin[19], /* 364 */
-&x_StaticBin[19], /* 368 */
-&x_StaticBin[19], /* 372 */
-&x_StaticBin[19], /* 376 */
-&x_StaticBin[19], /* 380 */
-&x_StaticBin[19], /* 384 */
-&x_StaticBin[19], /* 388 */
-&x_StaticBin[19], /* 392 */
-&x_StaticBin[19], /* 396 */
-&x_StaticBin[19], /* 400 */
-&x_StaticBin[19], /* 404 */
-&x_StaticBin[20], /* 408 */
-&x_StaticBin[20], /* 412 */
-&x_StaticBin[20], /* 416 */
-&x_StaticBin[20], /* 420 */
-&x_StaticBin[20], /* 424 */
-&x_StaticBin[20], /* 428 */
-&x_StaticBin[20], /* 432 */
-&x_StaticBin[20], /* 436 */
-&x_StaticBin[20], /* 440 */
-&x_StaticBin[20], /* 444 */
-&x_StaticBin[20], /* 448 */
-&x_StaticBin[20], /* 452 */
-&x_StaticBin[20], /* 456 */
-&x_StaticBin[20], /* 460 */
-&x_StaticBin[20], /* 464 */
-&x_StaticBin[20], /* 468 */
-&x_StaticBin[20], /* 472 */
-&x_StaticBin[20], /* 476 */
-&x_StaticBin[20], /* 480 */
-&x_StaticBin[20], /* 484 */
-&x_StaticBin[20], /* 488 */
-&x_StaticBin[20], /* 492 */
-&x_StaticBin[20], /* 496 */
-&x_StaticBin[20], /* 500 */
-&x_StaticBin[20], /* 504 */
-&x_StaticBin[20], /* 508 */
-&x_StaticBin[21], /* 512 */
-&x_StaticBin[21], /* 516 */
-&x_StaticBin[21], /* 520 */
-&x_StaticBin[21], /* 524 */
-&x_StaticBin[21], /* 528 */
-&x_StaticBin[21], /* 532 */
-&x_StaticBin[21], /* 536 */
-&x_StaticBin[21], /* 540 */
-&x_StaticBin[21], /* 544 */
-&x_StaticBin[21], /* 548 */
-&x_StaticBin[21], /* 552 */
-&x_StaticBin[21], /* 556 */
-&x_StaticBin[21], /* 560 */
-&x_StaticBin[21], /* 564 */
-&x_StaticBin[21], /* 568 */
-&x_StaticBin[21], /* 572 */
-&x_StaticBin[21], /* 576 */
-&x_StaticBin[21], /* 580 */
-&x_StaticBin[21], /* 584 */
-&x_StaticBin[21], /* 588 */
-&x_StaticBin[21], /* 592 */
-&x_StaticBin[21], /* 596 */
-&x_StaticBin[21], /* 600 */
-&x_StaticBin[21], /* 604 */
-&x_StaticBin[21], /* 608 */
-&x_StaticBin[21], /* 612 */
-&x_StaticBin[21], /* 616 */
-&x_StaticBin[21], /* 620 */
-&x_StaticBin[21], /* 624 */
-&x_StaticBin[21], /* 628 */
-&x_StaticBin[21], /* 632 */
-&x_StaticBin[21], /* 636 */
-&x_StaticBin[21], /* 640 */
-&x_StaticBin[21], /* 644 */
-&x_StaticBin[21], /* 648 */
-&x_StaticBin[21], /* 652 */
-&x_StaticBin[21], /* 656 */
-&x_StaticBin[21], /* 660 */
-&x_StaticBin[21], /* 664 */
-&x_StaticBin[21], /* 668 */
-&x_StaticBin[21], /* 672 */
-&x_StaticBin[21], /* 676 */
-&x_StaticBin[22], /* 680 */
-&x_StaticBin[22], /* 684 */
-&x_StaticBin[22], /* 688 */
-&x_StaticBin[22], /* 692 */
-&x_StaticBin[22], /* 696 */
-&x_StaticBin[22], /* 700 */
-&x_StaticBin[22], /* 704 */
-&x_StaticBin[22], /* 708 */
-&x_StaticBin[22], /* 712 */
-&x_StaticBin[22], /* 716 */
-&x_StaticBin[22], /* 720 */
-&x_StaticBin[22], /* 724 */
-&x_StaticBin[22], /* 728 */
-&x_StaticBin[22], /* 732 */
-&x_StaticBin[22], /* 736 */
-&x_StaticBin[22], /* 740 */
-&x_StaticBin[22], /* 744 */
-&x_StaticBin[22], /* 748 */
-&x_StaticBin[22], /* 752 */
-&x_StaticBin[22], /* 756 */
-&x_StaticBin[22], /* 760 */
-&x_StaticBin[22], /* 764 */
-&x_StaticBin[22], /* 768 */
-&x_StaticBin[22], /* 772 */
-&x_StaticBin[22], /* 776 */
-&x_StaticBin[22], /* 780 */
-&x_StaticBin[22], /* 784 */
-&x_StaticBin[22], /* 788 */
-&x_StaticBin[22], /* 792 */
-&x_StaticBin[22], /* 796 */
-&x_StaticBin[22], /* 800 */
-&x_StaticBin[22], /* 804 */
-&x_StaticBin[22], /* 808 */
-&x_StaticBin[22], /* 812 */
-&x_StaticBin[23], /* 816 */
-&x_StaticBin[23], /* 820 */
-&x_StaticBin[23], /* 824 */
-&x_StaticBin[23], /* 828 */
-&x_StaticBin[23], /* 832 */
-&x_StaticBin[23], /* 836 */
-&x_StaticBin[23], /* 840 */
-&x_StaticBin[23], /* 844 */
-&x_StaticBin[23], /* 848 */
-&x_StaticBin[23], /* 852 */
-&x_StaticBin[23], /* 856 */
-&x_StaticBin[23], /* 860 */
-&x_StaticBin[23], /* 864 */
-&x_StaticBin[23], /* 868 */
-&x_StaticBin[23], /* 872 */
-&x_StaticBin[23], /* 876 */
-&x_StaticBin[23], /* 880 */
-&x_StaticBin[23], /* 884 */
-&x_StaticBin[23], /* 888 */
-&x_StaticBin[23], /* 892 */
-&x_StaticBin[23], /* 896 */
-&x_StaticBin[23], /* 900 */
-&x_StaticBin[23], /* 904 */
-&x_StaticBin[23], /* 908 */
-&x_StaticBin[23], /* 912 */
-&x_StaticBin[23], /* 916 */
-&x_StaticBin[23], /* 920 */
-&x_StaticBin[23], /* 924 */
-&x_StaticBin[23], /* 928 */
-&x_StaticBin[23], /* 932 */
-&x_StaticBin[23], /* 936 */
-&x_StaticBin[23], /* 940 */
-&x_StaticBin[23], /* 944 */
-&x_StaticBin[23], /* 948 */
-&x_StaticBin[23], /* 952 */
-&x_StaticBin[23], /* 956 */
-&x_StaticBin[23], /* 960 */
-&x_StaticBin[23], /* 964 */
-&x_StaticBin[23], /* 968 */
-&x_StaticBin[23], /* 972 */
-&x_StaticBin[23], /* 976 */
-&x_StaticBin[23], /* 980 */
-&x_StaticBin[23], /* 984 */
-&x_StaticBin[23], /* 988 */
-&x_StaticBin[23], /* 992 */
-&x_StaticBin[23], /* 996 */
-&x_StaticBin[23], /* 1000 */
-&x_StaticBin[23], /* 1004 */
-&x_StaticBin[23], /* 1008 */
-&x_StaticBin[23], /* 1012 */
-&x_StaticBin[23] /* 1016 */};
+xBin xSize2Bin[/*254*/] = {
+&xStaticBin[0], /* 4 */
+&xStaticBin[0], /* 8 */
+&xStaticBin[1], /* 12 */
+&xStaticBin[2], /* 16 */
+&xStaticBin[3], /* 20 */
+&xStaticBin[4], /* 24 */
+&xStaticBin[5], /* 28 */
+&xStaticBin[6], /* 32 */
+&xStaticBin[7], /* 36 */
+&xStaticBin[7], /* 40 */
+&xStaticBin[8], /* 44 */
+&xStaticBin[8], /* 48 */
+&xStaticBin[9], /* 52 */
+&xStaticBin[9], /* 56 */
+&xStaticBin[10], /* 60 */
+&xStaticBin[10], /* 64 */
+&xStaticBin[11], /* 68 */
+&xStaticBin[11], /* 72 */
+&xStaticBin[11], /* 76 */
+&xStaticBin[11], /* 80 */
+&xStaticBin[12], /* 84 */
+&xStaticBin[12], /* 88 */
+&xStaticBin[12], /* 92 */
+&xStaticBin[12], /* 96 */
+&xStaticBin[13], /* 100 */
+&xStaticBin[13], /* 104 */
+&xStaticBin[13], /* 108 */
+&xStaticBin[13], /* 112 */
+&xStaticBin[14], /* 116 */
+&xStaticBin[14], /* 120 */
+&xStaticBin[14], /* 124 */
+&xStaticBin[14], /* 128 */
+&xStaticBin[15], /* 132 */
+&xStaticBin[15], /* 136 */
+&xStaticBin[15], /* 140 */
+&xStaticBin[15], /* 144 */
+&xStaticBin[15], /* 148 */
+&xStaticBin[15], /* 152 */
+&xStaticBin[15], /* 156 */
+&xStaticBin[15], /* 160 */
+&xStaticBin[16], /* 164 */
+&xStaticBin[16], /* 168 */
+&xStaticBin[16], /* 172 */
+&xStaticBin[16], /* 176 */
+&xStaticBin[16], /* 180 */
+&xStaticBin[16], /* 184 */
+&xStaticBin[16], /* 188 */
+&xStaticBin[16], /* 192 */
+&xStaticBin[17], /* 196 */
+&xStaticBin[17], /* 200 */
+&xStaticBin[17], /* 204 */
+&xStaticBin[17], /* 208 */
+&xStaticBin[17], /* 212 */
+&xStaticBin[17], /* 216 */
+&xStaticBin[17], /* 220 */
+&xStaticBin[17], /* 224 */
+&xStaticBin[18], /* 228 */
+&xStaticBin[18], /* 232 */
+&xStaticBin[18], /* 236 */
+&xStaticBin[18], /* 240 */
+&xStaticBin[18], /* 244 */
+&xStaticBin[18], /* 248 */
+&xStaticBin[18], /* 252 */
+&xStaticBin[18], /* 256 */
+&xStaticBin[18], /* 260 */
+&xStaticBin[18], /* 264 */
+&xStaticBin[18], /* 268 */
+&xStaticBin[18], /* 272 */
+&xStaticBin[18], /* 276 */
+&xStaticBin[18], /* 280 */
+&xStaticBin[18], /* 284 */
+&xStaticBin[18], /* 288 */
+&xStaticBin[18], /* 292 */
+&xStaticBin[18], /* 296 */
+&xStaticBin[18], /* 300 */
+&xStaticBin[18], /* 304 */
+&xStaticBin[18], /* 308 */
+&xStaticBin[18], /* 312 */
+&xStaticBin[19], /* 316 */
+&xStaticBin[19], /* 320 */
+&xStaticBin[19], /* 324 */
+&xStaticBin[19], /* 328 */
+&xStaticBin[19], /* 332 */
+&xStaticBin[19], /* 336 */
+&xStaticBin[19], /* 340 */
+&xStaticBin[19], /* 344 */
+&xStaticBin[19], /* 348 */
+&xStaticBin[19], /* 352 */
+&xStaticBin[19], /* 356 */
+&xStaticBin[19], /* 360 */
+&xStaticBin[19], /* 364 */
+&xStaticBin[19], /* 368 */
+&xStaticBin[19], /* 372 */
+&xStaticBin[19], /* 376 */
+&xStaticBin[19], /* 380 */
+&xStaticBin[19], /* 384 */
+&xStaticBin[19], /* 388 */
+&xStaticBin[19], /* 392 */
+&xStaticBin[19], /* 396 */
+&xStaticBin[19], /* 400 */
+&xStaticBin[19], /* 404 */
+&xStaticBin[20], /* 408 */
+&xStaticBin[20], /* 412 */
+&xStaticBin[20], /* 416 */
+&xStaticBin[20], /* 420 */
+&xStaticBin[20], /* 424 */
+&xStaticBin[20], /* 428 */
+&xStaticBin[20], /* 432 */
+&xStaticBin[20], /* 436 */
+&xStaticBin[20], /* 440 */
+&xStaticBin[20], /* 444 */
+&xStaticBin[20], /* 448 */
+&xStaticBin[20], /* 452 */
+&xStaticBin[20], /* 456 */
+&xStaticBin[20], /* 460 */
+&xStaticBin[20], /* 464 */
+&xStaticBin[20], /* 468 */
+&xStaticBin[20], /* 472 */
+&xStaticBin[20], /* 476 */
+&xStaticBin[20], /* 480 */
+&xStaticBin[20], /* 484 */
+&xStaticBin[20], /* 488 */
+&xStaticBin[20], /* 492 */
+&xStaticBin[20], /* 496 */
+&xStaticBin[20], /* 500 */
+&xStaticBin[20], /* 504 */
+&xStaticBin[20], /* 508 */
+&xStaticBin[21], /* 512 */
+&xStaticBin[21], /* 516 */
+&xStaticBin[21], /* 520 */
+&xStaticBin[21], /* 524 */
+&xStaticBin[21], /* 528 */
+&xStaticBin[21], /* 532 */
+&xStaticBin[21], /* 536 */
+&xStaticBin[21], /* 540 */
+&xStaticBin[21], /* 544 */
+&xStaticBin[21], /* 548 */
+&xStaticBin[21], /* 552 */
+&xStaticBin[21], /* 556 */
+&xStaticBin[21], /* 560 */
+&xStaticBin[21], /* 564 */
+&xStaticBin[21], /* 568 */
+&xStaticBin[21], /* 572 */
+&xStaticBin[21], /* 576 */
+&xStaticBin[21], /* 580 */
+&xStaticBin[21], /* 584 */
+&xStaticBin[21], /* 588 */
+&xStaticBin[21], /* 592 */
+&xStaticBin[21], /* 596 */
+&xStaticBin[21], /* 600 */
+&xStaticBin[21], /* 604 */
+&xStaticBin[21], /* 608 */
+&xStaticBin[21], /* 612 */
+&xStaticBin[21], /* 616 */
+&xStaticBin[21], /* 620 */
+&xStaticBin[21], /* 624 */
+&xStaticBin[21], /* 628 */
+&xStaticBin[21], /* 632 */
+&xStaticBin[21], /* 636 */
+&xStaticBin[21], /* 640 */
+&xStaticBin[21], /* 644 */
+&xStaticBin[21], /* 648 */
+&xStaticBin[21], /* 652 */
+&xStaticBin[21], /* 656 */
+&xStaticBin[21], /* 660 */
+&xStaticBin[21], /* 664 */
+&xStaticBin[21], /* 668 */
+&xStaticBin[21], /* 672 */
+&xStaticBin[21], /* 676 */
+&xStaticBin[22], /* 680 */
+&xStaticBin[22], /* 684 */
+&xStaticBin[22], /* 688 */
+&xStaticBin[22], /* 692 */
+&xStaticBin[22], /* 696 */
+&xStaticBin[22], /* 700 */
+&xStaticBin[22], /* 704 */
+&xStaticBin[22], /* 708 */
+&xStaticBin[22], /* 712 */
+&xStaticBin[22], /* 716 */
+&xStaticBin[22], /* 720 */
+&xStaticBin[22], /* 724 */
+&xStaticBin[22], /* 728 */
+&xStaticBin[22], /* 732 */
+&xStaticBin[22], /* 736 */
+&xStaticBin[22], /* 740 */
+&xStaticBin[22], /* 744 */
+&xStaticBin[22], /* 748 */
+&xStaticBin[22], /* 752 */
+&xStaticBin[22], /* 756 */
+&xStaticBin[22], /* 760 */
+&xStaticBin[22], /* 764 */
+&xStaticBin[22], /* 768 */
+&xStaticBin[22], /* 772 */
+&xStaticBin[22], /* 776 */
+&xStaticBin[22], /* 780 */
+&xStaticBin[22], /* 784 */
+&xStaticBin[22], /* 788 */
+&xStaticBin[22], /* 792 */
+&xStaticBin[22], /* 796 */
+&xStaticBin[22], /* 800 */
+&xStaticBin[22], /* 804 */
+&xStaticBin[22], /* 808 */
+&xStaticBin[22], /* 812 */
+&xStaticBin[23], /* 816 */
+&xStaticBin[23], /* 820 */
+&xStaticBin[23], /* 824 */
+&xStaticBin[23], /* 828 */
+&xStaticBin[23], /* 832 */
+&xStaticBin[23], /* 836 */
+&xStaticBin[23], /* 840 */
+&xStaticBin[23], /* 844 */
+&xStaticBin[23], /* 848 */
+&xStaticBin[23], /* 852 */
+&xStaticBin[23], /* 856 */
+&xStaticBin[23], /* 860 */
+&xStaticBin[23], /* 864 */
+&xStaticBin[23], /* 868 */
+&xStaticBin[23], /* 872 */
+&xStaticBin[23], /* 876 */
+&xStaticBin[23], /* 880 */
+&xStaticBin[23], /* 884 */
+&xStaticBin[23], /* 888 */
+&xStaticBin[23], /* 892 */
+&xStaticBin[23], /* 896 */
+&xStaticBin[23], /* 900 */
+&xStaticBin[23], /* 904 */
+&xStaticBin[23], /* 908 */
+&xStaticBin[23], /* 912 */
+&xStaticBin[23], /* 916 */
+&xStaticBin[23], /* 920 */
+&xStaticBin[23], /* 924 */
+&xStaticBin[23], /* 928 */
+&xStaticBin[23], /* 932 */
+&xStaticBin[23], /* 936 */
+&xStaticBin[23], /* 940 */
+&xStaticBin[23], /* 944 */
+&xStaticBin[23], /* 948 */
+&xStaticBin[23], /* 952 */
+&xStaticBin[23], /* 956 */
+&xStaticBin[23], /* 960 */
+&xStaticBin[23], /* 964 */
+&xStaticBin[23], /* 968 */
+&xStaticBin[23], /* 972 */
+&xStaticBin[23], /* 976 */
+&xStaticBin[23], /* 980 */
+&xStaticBin[23], /* 984 */
+&xStaticBin[23], /* 988 */
+&xStaticBin[23], /* 992 */
+&xStaticBin[23], /* 996 */
+&xStaticBin[23], /* 1000 */
+&xStaticBin[23], /* 1004 */
+&xStaticBin[23], /* 1008 */
+&xStaticBin[23], /* 1012 */
+&xStaticBin[23] /* 1016 */};
 #endif
 
 xPage xGetPageFromBlock(void* ptr) {
