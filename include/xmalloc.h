@@ -45,20 +45,72 @@ enum xError_e {
   xError_MaxError
 };
 
-struct xPage_s;
-typedef struct xPage_s *xPage;
+struct xPageStruct;
+typedef struct xPageStruct *xPage;
 
-struct xBin_s {
-  xPage currentPage;
-  xPage lastPage;
-  long sizeInWords; /* size in words */
+struct xBinStruct;
+typedef struct xBinStruct *xBin;
+
+struct xRegionStruct;
+typedef struct xRegionStruct *xRegion;
+
+
+struct xInfoStruct;
+typedef struct xInfoStruct xInfo_t;
+
+struct xBlockStruct;
+typedef struct xBlockStruct *xBlock;
+
+
+/**
+ * \struct xPageStruct
+ * \brief Structure of the internal xmalloc page including a header for better
+ * handling in the allocator.
+ */
+struct xPageStruct {
+   void*    bin;              /**< pointer to free list this page is in */  
+   xPage    prev;             /**< previous page in the free list */
+   xPage    next;             /**< next page in the free list */
+   long     numberUsedBlocks; /**< number of used blocks in ths page */
+   xRegion  region;           /**< region this page comes from */
 };
 
-typedef struct xBin_s *xBin;
+/**
+ * \struct xBinStruct
+ * \brief Structure of the free list holding pages divided into the same number
+ * of blocks, i.e. for the same size class
+ */
+struct xBinStruct {
+  xPage   currentPage;  /**< Current page in the free list of this size class */
+  xPage   lastPage;     /**< Last page of the free list of this size class */
+  xBin    next;         /**< Next page in the free list of this size class */
+  size_t  sizeInWords;  /**< Size class in word size */
+  long    maxBlocks;    /**< Maximum number of blocks per page w.r.t. the size 
+                             class: If > 0 => #blocks per page
+                                    If < 0 => #pages per block */
+};
 
-struct xInfo_s;
-typedef struct xInfo_s xInfo_t;
-struct xInfo_s {
+/**
+ * \struct xRegionStruct
+ * \brief Structure of the regions new free pages are allocated in the first
+ * place. They present a block in memory representing an array of pages.
+ */
+struct xRegionStruct {
+  void* current;        /**< current entry in the free list of pages */
+  xRegion prev;         /**< previous region */
+  xRegion next;         /**< next region */
+  char* initAddr;       /**< pointer portion of initial chunk which is still 
+                             free */
+  char* addr;           /**< address returned by alloc when allocating the 
+                             region */
+  int numberInitPages;  /**< number of free pages still available in the
+                             initial chunk */
+  int numberUsedPages;  /**< number of used pages in this region */
+  int totalNumberPages; /**< total number of pages allocated in this region */
+};
+
+
+struct xInfoStruct {
   long MaxBytesSystem;      /* set in xUpdateInfo(), is more accurate with malloc support   */
   long CurrentBytesSystem;  /* set in xUpdateInfo(), is more accurate with malloc support */
   long MaxBytesSbrk;        /* always up-to-date, not very accurate, needs xInintInfo() */
@@ -82,9 +134,9 @@ struct xInfo_s {
   long CurrentRegionsAlloc;     /* always kept up-to-date */
 };
 
-extern struct xInfo_s x_Info;
+extern struct xInfoStruct x_Info;
 
-struct xOpts_s;
+struct xOptsStruct;
 extern struct xOpts_s {
   int MinTrack;
   int MinCheck;
@@ -99,26 +151,11 @@ extern struct xOpts_s {
   void (*ErrorHook)();
 } x_Opts;
 
-typedef struct xOpts_s xOpts_t;
+typedef struct xOptsStruct xOpts_t;
 
-struct xBlock_s;
-typedef struct xBlock_s *xBlock;
-struct xBlock_s {
+struct xBlockStruct {
   xBlock next;
 };
-
-struct xRegion_s;
-typedef struct xRegion_s *xRegion;
-
-struct xPage_s {
-   xBin   bin;
-   xPage  prev;
-   xPage  next;
-   long   numberUsedBlocks; /* number of used blocks in ths page */
-   xBlock free;             /* free blocks in this page */
-   void*  data;             /* start of data, must be last*/
-};
-
 extern int x_sing_opt_show_mem;
 
 void* xMalloc(size_t size);
