@@ -11,6 +11,7 @@
 #include <string.h>
 #include "include/xmalloc-config.h"
 #include "include/xDataStructures.h"
+#include "include/xGlobals.h"
 
 #define X_XMALLOC
 

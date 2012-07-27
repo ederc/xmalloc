@@ -11,6 +11,7 @@ SUBDIRS=
 
 BASIC_HDRS =		\
 	xDataStructures.h \
+	xGlobals.h \
 	xmalloc.h
 
 pkginclude_HEADERS =			\
