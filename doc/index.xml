@@ -42,7 +42,8 @@
     <caution>
       <para>
         xmalloc is dedicated for fast, packed allocation and deallocation of 
-        memory blocks of size smaller than approximately 1024kB.
+        memory blocks of size smaller than approximately 1024kB. It is not
+        supposed to replace your system allocator.
       </para>
     </caution>
   </sect1>

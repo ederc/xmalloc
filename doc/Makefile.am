@@ -5,11 +5,10 @@
 
 if BUILD_DOCS
 DOC_TARGETS = doc
-REFDOC_TARGETS = html/index.html
 endif
 
 if BUILD_REFS
-
+REFDOC_TARGETS = html/index.html
 endif
 
 all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
