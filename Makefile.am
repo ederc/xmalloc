@@ -9,11 +9,11 @@ ACLOCAL_AMFLAGS=-I m4
 
 bin_SCRIPTS=xmalloc-config
 
-DISTCLEANFILES=_configs.sed
-
 EXTRA_DIST=PROJECTS
 
 DISTCLEANFILES= \
+	_configs.sed	\
 	xmalloc-config xmalloc-config~	\
 	include/xmalloc-config.h*	\
 	include/stamp-h1
+	doc/index.html

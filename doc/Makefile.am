@@ -20,10 +20,9 @@ doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
 refdocdir = $(datadir)/doc/xmalloc-$(VERSION)/reference
 refdoc_DATA = $(REFDOC_TARGETS)
 
-doc: $(srcdir)/config.xsl $(srcdir)/tutorial.xml
-	$(XMLTO) xhtml -m $(srcdir)/config.xsl $(srcdir)/tutorial.xml
-	sed -e s/index.html/tutorial.html/g index.html >tutorial.html
-	rm -f index.html
+doc: $(srcdir)/config.xsl $(srcdir)/index.xml
+	$(XMLTO) xhtml -m $(srcdir)/config.xsl $(srcdir)/index.xml
+#sed -e s/index.html/index.html/g index.html >index.html
 
 html/index.html:
 	$(DOXYGEN)
@@ -51,12 +50,17 @@ dist-hook:
 	fi
 
 EXTRA_DIST = \
-	tutorial.xml	\
-	tutorial.html	\
+	index.xml	\
 	caution.png	\
 	note.png	\
 	config.xsl	\
 	docbook.css
 
+CLEANFILES = \
+	index.html*
+
+DISTCLEANFILES = \
+	index.html*
+
 MAINTAINERCLEANFILES = \
-	tutorial.html
+	index.html*
