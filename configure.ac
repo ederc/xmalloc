@@ -86,6 +86,8 @@ case $FOUR_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT32="long";
+  XMALLOC_PAGES_PER_REGION="4080";
+  XMALLOC_MAX_SMALL_BLOCK_SIZE="1016";
      ;;
 esac
 
@@ -98,6 +100,8 @@ case $EIGHT_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT64="long";
+    XMALLOC_PAGES_PER_REGION="4068";
+    XMALLOC_MAX_SMALL_BLOCK_SIZE="1008";
      ;;
   $ac_cv_sizeof_long_long)
      XMALLOC_INT64="long long";
@@ -118,6 +122,13 @@ case $THIRTY_TWO_BYTES in
      XMALLOC_UINT256="__uint256_t";
      ;;
 esac
+
+
+
+AC_DEFINE_UNQUOTED(PAGES_PER_REGION, $XMALLOC_PAGES_PER_REGION, Depending on
+    SIZEOF_LONG)
+AC_DEFINE_UNQUOTED(MAX_SMALL_BLOCK_SIZE, $XMALLOC_MAX_SMALL_BLOCK_SIZE, Depending on
+    SIZEOF_LONG)
 
 AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
 AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)

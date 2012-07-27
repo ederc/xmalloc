@@ -5,15 +5,6 @@
 #include <limits.h>
 #include <xmalloc.h>
 
-#if __XMALLOC_SIZEOF_LONG == 8 /* 64bit */
-#define __XMALLOC_PAGES_PER_REGION 4068
-#define __XMALLOC_MAX_SMALL_BLOCK  1008    
-  #else /* 32bit */
-#define __XMALLOC_PAGES_PER_REGION 4080
-#define __XMALLOC_MAX_SMALL_BLOCK  1016    
-  
-#endif
-
 xPage xGetPageFromBlock(void* ptr) {
   unsigned long page  =   (unsigned long) ptr;
   page                &=  ~4095;
@@ -84,7 +75,7 @@ void* xGetNewPage() {
 }
 
 xBin xGetBin(size_t size) {
-  if (size <= __XMALLOC_MAX_SMALL_BLOCK)
+  if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE)
     return x_Size2Bin[(size - 1) / (__XMALLOC_SIZEOF_LONG)];
   return NULL;
 }
@@ -159,7 +150,7 @@ void* xAllocFromPage(xPage page) {
 
 void* xMalloc(size_t size) {
   /*assume (s>0);*/
-  if (size <= __XMALLOC_MAX_SMALL_BLOCK) {
+  if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xPage page  = xGetPageFromSize(size);
     return xAllocFromPage(page);
   } else {
