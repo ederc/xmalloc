@@ -11,18 +11,6 @@ xPage xGetPageFromBlock(void* ptr) {
   return (xPage)page;
 }
 
-long xSizeOfAddr(void* ptr) {
-  xRegion reg = xIsBinBlock((unsigned long)ptr);
-  if (reg != NULL)  {
-    xPage page =  xGetPageFromBlock(ptr);
-    return page->bin->sizeInWords * __XMALLOC_SIZEOF_LONG;
-  } else {
-    long* newPtr  = (long*) ptr; 
-    newPtr--; 
-    return *newPtr;
-  }
-}
-
 void xMakePage(void* ptr, size_t size) {
   xPage page      = (xPage)ptr;
   xBlock pageData = (xBlock)&(page->data);
@@ -79,8 +67,6 @@ xBin xGetBin(size_t size) {
     return x_Size2Bin[(size - 1) / (__XMALLOC_SIZEOF_LONG)];
   return NULL;
 }
-
-xPage xPageForMalloc  = (xPage)1;
 
 xBin xGetSpecBin(size_t size) {
   xBin bin  = xGetBin(size);

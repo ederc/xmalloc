@@ -44,6 +44,8 @@ enum xError_e {
   xError_MaxError
 };
 
+typedef enum{false = 0, true  = 1} bool;
+
 struct xPageStruct;
 typedef struct xPageStruct*   xPage;
 

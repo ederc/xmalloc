@@ -26,7 +26,13 @@ void xfree(void *ptr);
 
 void xFreeSizeFunc(void *ptr, size_t size);
 
-long xSizeOfAddr(void *ptr);
+static inline bool xIsPageAddr(const void *addr) {
+}
+
+static inline size_t xSizeOfAddr(void *addr) {
+  return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
+}
+
 xRegion xIsBinBlock(unsigned long region);
 
 static inline void* xMalloc0(size_t size) {

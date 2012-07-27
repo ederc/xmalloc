@@ -9,8 +9,8 @@
 
 #define X_XMALLOC
 
+xPage xPageForMalloc  = (xPage)1;
 xRegion baseRegion  = NULL;
-
 /* zero page for initializing static bins */
 struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
 
