@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <xmalloc.h>
 
 #if __XMALLOC_SIZEOF_LONG == 8 /* 64bit */
@@ -21,7 +22,7 @@
 xRegion baseRegion  = NULL;
 
 /* zero page for initializing static bins */
-xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
+struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
 
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {
