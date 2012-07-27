@@ -9,9 +9,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h> // for ULLONG_MAX etc.
 #include "include/xmalloc-config.h"
 #include "include/xDataStructures.h"
 #include "include/xGlobals.h"
+#include "include/xPage.h"
 
 #define X_XMALLOC
 
@@ -25,13 +27,6 @@ void xFree(void *ptr);
 void xfree(void *ptr);
 
 void xFreeSizeFunc(void *ptr, size_t size);
-
-static inline bool xIsPageAddr(const void *addr) {
-}
-
-static inline size_t xSizeOfAddr(void *addr) {
-  return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
-}
 
 xRegion xIsBinBlock(unsigned long region);
 

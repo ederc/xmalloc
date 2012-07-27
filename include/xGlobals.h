@@ -14,6 +14,10 @@ xRegion baseRegion  = NULL;
 /* zero page for initializing static bins */
 struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
 
+unsigned long xMinPageIndex = ULLONG_MAX;
+unsigned long xMaxPageIndex = 0;
+unsigned long *xPageIndices;
+
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {
 {xZeroPage, NULL, NULL, 1}, /*0 */

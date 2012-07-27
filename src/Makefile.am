@@ -9,9 +9,10 @@ AM_CXXFLAGS = -g -Wall -DDEBUG -O0 -fomit-frame-pointer
 
 SUBDIRS=
 
-BASIC_HDRS =		\
+BASIC_HDRS =				\
 	xDataStructures.h \
-	xGlobals.h \
+	xGlobals.h 				\
+	xPage.h 					\
 	xmalloc.h
 
 pkginclude_HEADERS =			\
