@@ -24,8 +24,8 @@ body {
         font-size: 1em;
         display: block;
         padding: 10px;
-        border: 1px solid #999;
-        background-color: #538a53;
+        border: 1px solid #333;
+        background-color: #467446;
         color: #eee;   
         overflow: auto;
         border-radius: 2.5px;
@@ -36,7 +36,8 @@ body {
 .caution, .warning {
         padding-top: 10px;
         padding-left: 10px;
-        border: 1px solid #cb2323;
+        background-color: #921e1e;
+        border: 1px solid #333;
         overflow: auto;
         border-radius: 2.5px;
         -moz-border-radius: 2.5px;
