@@ -1,5 +1,7 @@
 body {
          font-family: luxi sans,sans-serif;
+         color: #eee;
+         background-color: #333;
 }
 
 .screen {
@@ -22,9 +24,9 @@ body {
         font-size: 1em;
         display: block;
         padding: 10px;
-        border: 1px solid #bbb;
-        background-color: #ddd;
-        color: #000;   
+        border: 1px solid #333;
+        background-color: #538a53;
+        color: #eee;   
         overflow: auto;
         border-radius: 2.5px;
         -moz-border-radius: 2.5px;
@@ -32,9 +34,46 @@ body {
 }
 
 .caution, .warning {
-        border: 1px solid #f00;
+        padding-top: 10px;
+        padding-left: 10px;
+        border: 1px solid #cb2323;
 }
 
 .caution {
-      font-size: 1.2em;
+      //font-size: 1.2em;
+}
+
+.toc a {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.toc a:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.ulink:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink:visited {
+  color: #dddd33;
+  text-decoration: none;
 }

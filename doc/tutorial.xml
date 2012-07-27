@@ -1,33 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
                "docbook/dtd/xml/4.2/docbookx.dtd">
-
 <article>
   <articleinfo>
-    <title>Getting started with XMALLOC</title>
+    <title>Getting started with xmalloc</title>
     <copyright>
       <year>2012</year>
       <holder>Christian Eder</holder>
     </copyright>
   </articleinfo>
-  <section>
+  <sect1>
     <title>Downloading and installing</title>
 
     <para>
-      Developement of XMALLOC occurs at
+      Developement of xmalloc occurs at
       its <ulink url="https://github.com/ederc/xmalloc">GIT
       repository</ulink> to which anyone may obtain read-only access.
     </para>
-
     <para>
-      See the file INSTALL in the XMALLOC-distribution for detailed
+      See the file INSTALL in the xmalloc-distribution for detailed
       installation-instructions. The basic procedure is
       <programlisting>
-./autogen.sh
-./configure
-make
-make install</programlisting>
+        ./autogen.sh
+        ./configure
+        make
+        make install</programlisting>
     </para>
-    </section>
+  </sect1>
+  <sect1>
+    <title>General ideas behind xmalloc</title> 
+    <para>
+      xmalloc allocates memory on a page-based style, i.e. for each size class 
+      xmalloc always keeps a complete page as free list. The general idea is to
+      allocate huge continuous blocks of memory rarely on a global level.
+      Whenever a thread needs a new page for a given size class, this is taken
+      from the global pool in order to make allocation faster. Moreover, we 
+      adopt the thread-caching idea from 
+      <ulink url="http://gperftools.googlecode.com/">tcmalloc</ulink> to
+      keep operations as much lock-free as possible.
+    </para>
+    <caution>
+      <para>
+        xmalloc is dedicated for fast, packed allocation and deallocation of 
+        memory blocks of size smaller than approximately 1024kB.
+      </para>
+    </caution>
+  </sect1>
+  <sect1>
+    <title>Basic data structures in xmalloc</title> 
+    <orderedlist>
+      <listitem>
+        <para>
+          <emphasis>xRegion</emphasis>s are the largest objects of continuous 
+          memory handled by xmalloc. At the very beginning and once in a while during
+          the computations your programm needs new memory from the system. In order to
+          keep the influence of this slow and locking process as small as possible
+          xmalloc allocates a huge chunk of pages from the system at once and stores 
+          it as an <emphasis>xRegion</emphasis>. Those <emphasis>xRegion</emphasis>s 
+          represent pools of memory for xmalloc from which it can get memory quite
+          fast.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Since the emphasis of xmalloc lies in allocating and freeing lots of 
+          same-sized memory chunks smaller than 1024 kB fast we keep for a number
+          of small size classes free lists. Those lists are called 
+          <emphasis>xBin</emphasis>s. Besides the lists of free memory chunks
+          and its handling an <emphasis>xBin</emphasis> consists of meta data:
+          <orderedlist>
+            <listitem>
+              <para>
+                The size class of the objects stored in the free lists.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The number of blocks available in each entry of memory chunk
+                in the free lists.
+              </para>
+            </listitem>
+          </orderedlist>
+          Whereas the second meta data sounds strange at a first look the idea
+          behind it is based on the fact that each such free list consists of
+          complete system pages. Thus the number of blocks available can be
+          calculated beforehand without any bigger overhead, making later checks of 
+          available free memory faster.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          For handling the pages in xmalloc a so-called <emphasis>xPage</emphasis> 
+          is used. Since all such pages are stored in a given <emphasis>xBin
+          </emphasis> it is not necessary to store meta data like the size 
+          class or the number of blocks. This allows a tighter packing of 
+          data and improves cache locality. Again, note, that each such <emphasis>
+          xPage</emphasis> corresponds to an entry in a free list of an <emphasis>
+          xBin</emphasis>.
+        </para>
+      </listitem>
+    </orderedlist>
+  </sect1>
 </article>

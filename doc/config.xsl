@@ -10,6 +10,7 @@
   <!-- Configure the stylesheet to use -->
   <xsl:param name="html.stylesheet" select="'docbook.css'"/>
 
+  <xsl:param name="section.autolabel" select="1"></xsl:param>
   <xsl:param name="chunk.section.depth" select="0"></xsl:param>
   <xsl:param name="callout.graphics" select="'1'"></xsl:param>
   <xsl:param name="callout.graphics.path"></xsl:param>
