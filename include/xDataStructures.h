@@ -1,7 +1,10 @@
-/* Copyright 2012 Christian Eder
- * 
- * This file is part of XMALLOC, licensed under the GNU General Public
- * License version 3. See COPYING for more information.
+/**
+ * @file   xDataStructures.h
+ * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * @date   July 2012
+ * @brief  Basic data structures needed for xmalloc.
+ *         This file is part of XMALLOC, licensed under the GNU General
+ *         Public License version 3. See COPYING for more information.
  */
 
 #ifndef X_DATA_STRUCTURES_H

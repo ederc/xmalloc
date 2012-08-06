@@ -1,7 +1,10 @@
-/* Copyright 2012 Christian Eder
- * 
- * This file is part of XMALLOC, licensed under the GNU General Public
- * License version 3. See COPYING for more information.
+/**
+ * @file   xmalloc.h
+ * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * @date   July 2012
+ * @brief  General header file for xmalloc.
+ *         This file is part of XMALLOC, licensed under the GNU General
+ *         Public License version 3. See COPYING for more information.
  */
 
 #ifndef XMEMORY_H
