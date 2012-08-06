@@ -39,6 +39,14 @@
       <ulink url="http://gperftools.googlecode.com/">tcmalloc</ulink> to
       keep operations as much lock-free as possible.
     </para>
+    <para>
+      xmalloc is a fork of <emphasis>omalloc</emphasis>, the memory allocator 
+      developed especially for the computer algebra system SINGULAR. The hope 
+      is to switch from omalloc to xmalloc in the near future since omalloc 
+      lacks support for multi-threaded computations. Moreover, one of the main
+      tasks developing xmalloc is to introduce a good-balanced thread handling
+      system without losing too much speed compared to omalloc.
+    </para>
     <caution>
       <para>
         xmalloc is dedicated for fast, packed allocation and deallocation of 
