@@ -459,4 +459,8 @@ xBin xSize2Bin[/*254*/] = {
 &xStaticBin[23], /* 1012 */
 &xStaticBin[23] /* 1016 */};
 #endif
+
+#define xSmallSize2Bin(size)                              \
+  xSize2Bin[((size)-1) >> __XMALLOC_LOG_SIZEOF_ALIGNMENT]
+
 #endif
