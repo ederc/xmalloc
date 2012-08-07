@@ -42,7 +42,9 @@
 */
 
 /**
- * \brief Computes the page shift for address \var addr .
+ * @fn static inline unsigned long xGetPageShitOfAddr(const void *addr)
+ *
+ * @brief Computes the page shift for address \var addr .
  *
  * @param addr Const pointer to the corresponding address
  *
@@ -53,7 +55,9 @@ static inline unsigned long xGetPageShitOfAddr(const void *addr) {
 }
 
 /**
- * \brief Computes the page index for address \var addr .
+ * @fn static inline unsigned long xGetPageIndexOfAddr(const void *addr)
+ *
+ * @brief Computes the page index for address \var addr .
  *
  * @param addr Const pointer to the corresponding address
  *
@@ -63,7 +67,9 @@ static inline unsigned long xGetPageIndexOfAddr(const void *addr) {
 }
 
 /**
- * \brief Checks if \var addr is an address in the xPages or not.
+ * @fn static inline bool xIsPageAddr(const void *addr)
+ *
+ * @brief Checks if \var addr is an address in the xPages or not.
  *
  * @param addr Const pointer to the corresponding address
  *
@@ -77,7 +83,9 @@ static inline bool xIsPageAddr(const void *addr) {
 }
 
 /**
- * \brief Get the size of the memory chunk stored at address \var addr .
+ * @fn static inline size_t xSizeOfAddr(const void *addr)
+ *
+ * @brief Get the size of the memory chunk stored at address \var addr .
  *
  * @param addr Const pointer to the corresponding address.
  *
@@ -86,4 +94,30 @@ static inline size_t xSizeOfAddr(const void *addr) {
   return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
 }
 
+/**
+ * @fn static inline void xAllocFromNonEmptyPage(void *addr, xPage page)
+ *
+ * @brief Sets \var addr to memory address from the non empty \var xPage \var
+ * page.
+ *
+ * @param addr pointer to the corresponding address.
+ * @param page \var xPage the memory should be allocated in.
+ *
+ */
+static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
+  page->numberUsedBlocks++;
+  addr          = (void*) page->current;
+  page->current = *(void**) page->current;
+}
+
+/**
+ * @fn void xAllocFromFullPage(void *addr, xBin bin)
+ *
+ * @brief Sets \var addr to memory address from a newly allocated page.
+ *
+ * @param addr pointer to the corresponding address.
+ * @param bin \var xBin the new page becomes a part of 
+ *
+ */
+void xAllocFromFullPage(void *addr, xBin bin);
 #endif

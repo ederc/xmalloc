@@ -143,11 +143,13 @@ void* xAllocFromPage(xPage page) {
   return (void *)ptr;
 }
 
-void* xMalloc(size_t size) {
+void* xMalloc(const size_t size) {
   /*assume (s>0);*/
+  void *addr;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
-    xPage page  = xGetPageFromSize(size);
-    return xAllocFromPage(page);
+    xBin bin  = xSmallSize2Bin(size); 
+    xAllocBin(addr, size);
+    return addr;
   } else {
      long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
      *ptr       = size;
@@ -182,12 +184,54 @@ xRegion xIsSmallBlock(void *ptr) {
   return NULL;
 }
 
-void* xAllocBin(xBin bin) {
-  xPage page  = bin->currentPage;
-  if (page == xPageForMalloc) 
-    return xMalloc(bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
-  page  = xGetPageFromBin(bin);
-  return xAllocFromPage(page);
+void xAllocBin(xBin bin) {
+  register xPage page = bin->currentPage;
+  if(page->current != NULL)
+    xAllocFromNonEmptyPage(addr, page);
+  else
+    xAllocBinFromFullPage(addr, bin);
+}
+
+void xInsertPageToBin(xBin bin, xPage page) {
+  if(bin->currentPage == xZeroPage) {
+    page->prev        = NULL;
+    page->next        = NULL;
+    bin->currentPage  = page;
+    bin->lastPage     = page;
+  } else {
+    if(bin->currentPage == bin->lastPage) {
+      bin->lastPage = page;
+    } else {
+      bin->currentPage->next->prev  = page;
+    }
+    page->next              = bin->currentPage->next;
+    bin->currentPage->next  = page;
+    page->prev              = bin->currentPage;
+  }
+}
+
+xPage xAllocNewPageForBin(xBin bin) {
+  xPage newPage;
+  void *tmp;
+  int i = 1;
+
+  // block size < page size
+  if(bin->numberBlocks > 0)
+    newPage = xAllocPageForBin(); // TOODOO
+  // block size > page size
+  else
+    newPage = xAllocPagesForBin(); // TOODOO
+
+  newPage->numberUsedBlocks = -1;
+  newPage->currentPage      = (void*) (((char*) newPage) + 
+                                __XMALLOC_SIZEOF_PAGE_HEADER);
+  tmp                       = newPage->currentPage;
+  while(i < bin->numberBlocks) {
+    tmp = *((void**)tmp)  = ((void**) tmp) + bin->sizeInWords;
+    i++;
+  }
+  *((void**) tmp) = NULL;
+  return newPage;
 }
 
 xRegion xIsBinBlock(unsigned long unsignedLongPtr) {

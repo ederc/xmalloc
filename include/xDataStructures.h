@@ -66,21 +66,23 @@ typedef struct xBlockStruct*  xBlock;
 
 
 /**
- * \struct xPageStruct
- * \brief Structure of the internal xmalloc page including a header for better
+ * @struct xPageStruct
+ *
+ * @brief Structure of the internal xmalloc page including a header for better
  * handling in the allocator.
  */
 struct xPageStruct {
    long     numberUsedBlocks; /**< number of used blocks in ths page */
-   void*    bin;              /**< pointer to free list this page is in */  
+   void*    current;          /**< pointer to free list this page is in */  
    xPage    prev;             /**< previous page in the free list */
    xPage    next;             /**< next page in the free list */
    xRegion  region;           /**< region this page comes from */
 };
 
 /**
- * \struct xBinStruct
- * \brief Structure of the free list holding pages divided into the same number
+ * @struct xBinStruct
+ *
+ * @brief Structure of the free list holding pages divided into the same number
  * of blocks, i.e. for the same size class
  */
 struct xBinStruct {
@@ -94,8 +96,9 @@ struct xBinStruct {
 };
 
 /**
- * \struct xRegionStruct
- * \brief Structure of the regions new free pages are allocated in the first
+ * @struct xRegionStruct
+ *
+ * @brief Structure of the regions new free pages are allocated in the first
  * place. They present a block in memory representing an array of pages.
  */
 struct xRegionStruct {
