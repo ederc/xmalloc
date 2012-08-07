@@ -17,6 +17,7 @@
 #include "include/xDataStructures.h"
 #include "include/xGlobals.h"
 #include "include/xPage.h"
+#include "include/xBin.h"
 
 #define X_XMALLOC
 
@@ -82,39 +83,6 @@ static inline void* xMemDup(void *str) {
   memcpy(newPtr, str, oldSize);
   return newPtr;
 }
-
-void* xAllocBin(xBin bin);
-void xFreeBin(void *ptr, xBin bin);
-
-static inline void* xAlloc0Bin(xBin bin) {
-  void *ptr = xAllocBin(bin);
-  memset(ptr, 0, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
-  return ptr;
-}
-
-xBin xGetSpecBin(size_t size);
-void xUnGetSpecBin(xBin *bin);
-
-/**
- * @fn void xInsertPageToBin(xBin bin, xPage page)
- *
- * @brief Inserts the newly allocated \var xPage \var page to \var bin.
- *
- * @param bin \var xBin the new page becomes a part of 
- * @param page \var xPage the new page 
- *
- */
-void xInsertPageToBin(xBin bin, xPage page);
-
-/**
- * @fn xPage xAllocNewPageForBin(xBin bin) 
- *
- * @brief Allocates a new \var xPage to \var bin.
- *
- * @param bin \var xBin the new page becomes a part of 
- *
- */
-xPage xAllocNewPageForBin(xBin bin);
 
 //void xInfo();
 

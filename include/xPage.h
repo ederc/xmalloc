@@ -10,6 +10,13 @@
 #ifndef X_PAGE_H
 #define X_PAGE_H
 
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h> // for ULLONG_MAX etc.
+#include "include/xmalloc-config.h"
+#include "include/xDataStructures.h"
+#include "include/xGlobals.h"
+
 /***********************************************************************
  *
  * Identifying whether an address is an xPageAddr or not:
