@@ -96,10 +96,10 @@ xPage xAllocNewPageForBin(xBin bin) {
                         __XMALLOC_SIZEOF_PAGE_HEADER);
   tmp               = newPage->current;
   while(i < bin->numberBlocks) {
-    tmp = *((void**)tmp)  = ((void**) tmp) + bin->sizeInWords;
+    tmp = __XMALLOC_NEXT(tmp)  = ((void**) tmp) + bin->sizeInWords;
     i++;
   }
-  *((void**) tmp) = NULL;
+  __XMALLOC_NEXT(tmp) = NULL;
   return newPage;
 }
 
@@ -110,8 +110,8 @@ void xFreeBin(void *ptr, xBin bin) {
   }
   xPage page  = xGetPageFromBlock(ptr);
   if (page->numberUsedBlocks > 1) {
-    *((void**) (ptr)) = page->free;
-    page->free        = ptr;
+    __XMALLOC_NEXT(ptr) = page->free;
+    page->free          = ptr;
     page->numberUsedBlocks--;
   } else {
     xRegion reg = xIsBinBlock((unsigned long)ptr);

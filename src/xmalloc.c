@@ -155,8 +155,8 @@ xRegion xIsBinBlock(unsigned long unsignedLongPtr) {
 void xFreeBinRegion(xRegion reg, void *ptr) {
   xPage page  = xGetPageFromBlock(ptr);
   if (page->numberUsedBlocks  > 1) {
-    *((void**) (ptr)) = page->free;
-    page->free        = ptr;
+    __XMALLOC_NEXT(ptr) = page->free;
+    page->free          = ptr;
     page->numberUsedBlocks--;
   } else {
     xBin bin  = page->bin;

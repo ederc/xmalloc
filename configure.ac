@@ -162,6 +162,7 @@ fi
 if test "x$XMALLOC_UINT256" != "x"; then
   AC_DEFINE_UNQUOTED(UINT256, $XMALLOC_UINT256, Canonical 256-bit data type)
 fi
+AC_DEFINE_UNQUOTED(NEXT(addr), *((void**) addr), Jump to next entry)
 
 # Feature checks
 # LB_MISC

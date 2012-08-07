@@ -114,7 +114,7 @@ static inline size_t xSizeOfAddr(const void *addr) {
 static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
   page->numberUsedBlocks++;
   addr          = (void*) page->current;
-  page->current = *(void**) page->current;
+  page->current = __XMALLOC_NEXT(page->current);
 }
 
 /**
