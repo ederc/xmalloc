@@ -59,3 +59,4 @@ void xInsertPageToBin(xBin bin, xPage page);
  *
  */
 xPage xAllocNewPageForBin(xBin bin);
+#endif
