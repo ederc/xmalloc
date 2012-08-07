@@ -107,14 +107,14 @@ void xUnGetSpecBin(xBin *bin);
 void xInsertPageToBin(xBin bin, xPage page);
 
 /**
- * @fn void xAllocNewPageForBin(xBin bin) 
+ * @fn xPage xAllocNewPageForBin(xBin bin) 
  *
  * @brief Allocates a new \var xPage to \var bin.
  *
  * @param bin \var xBin the new page becomes a part of 
  *
  */
-void xAllocNewPageForBin(xBin bin);
+xPage xAllocNewPageForBin(xBin bin);
 
 //void xInfo();
 

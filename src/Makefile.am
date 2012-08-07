@@ -21,6 +21,8 @@ pkginclude_HEADERS =			\
 lib_LTLIBRARIES=libxmalloc.la
 
 
-libxmalloc_la_SOURCES=xmalloc.c
+libxmalloc_la_SOURCES=	\
+	xmalloc.c    					\
+	xPage.c
 
 libxmalloc_la_LIBADD= 
