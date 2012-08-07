@@ -59,4 +59,28 @@ void xInsertPageToBin(xBin bin, xPage page);
  *
  */
 xPage xAllocNewPageForBin(xBin bin);
+
+/**
+ * @fn static xPage xAllocSmallBlockPageForBin()
+ *
+ * @brief Allocates a new \var xPage for small block free lists.
+ *
+ * @note This function does NEITHER subdivide NOR structure the allocated page.
+ * This must be done afterwards.
+ *
+ */
+xPage xAllocSmallBlockPageForBin();
+
+/**
+ * @fn static xPage xAllocBigBlockPagesForBin()
+ *
+ * @brief Allocates new \var xPages for big block memory.
+ *
+ * @param numberNeeded is the number of pages to be allocated.
+ *
+ * @note This function does NEITHER subdivide NOR structure the allocated pages.
+ * This must be done afterwards.
+ *
+ */
+xPage xAllocBigBlockPagesForBin(int numberNeeded);
 #endif

@@ -9,6 +9,10 @@
 
 #include <xBin.h>
 
+
+/************************************************
+ * SPEC-BIN STUFF
+ ***********************************************/
 xBin xGetSpecBin(size_t size) {
   xBin bin  = xGetBin(size);
   if (bin == NULL) {
@@ -32,6 +36,9 @@ void xUnGetSpecBin(xBin* bin) {
   *bin  = NULL;
 }
 
+/************************************************
+ * PAGE-BIN-CONNECTIONS
+ ***********************************************/
 xPage xGetPageFromBin(xBin bin) {
   if (bin->currentPage != NULL) {
     if (bin->currentPage->free != NULL)
@@ -79,6 +86,9 @@ void xInsertPageToBin(xBin bin, xPage page) {
   }
 }
 
+/************************************************
+ * ALLOCATING PAGES FOR BINS
+ ***********************************************/
 xPage xAllocNewPageForBin(xBin bin) {
   xPage newPage;
   void *tmp;
@@ -86,10 +96,10 @@ xPage xAllocNewPageForBin(xBin bin) {
 
   // block size < page size
   if(bin->numberBlocks > 0)
-    newPage = xAllocPageForBin(); // TOODOO
+    newPage = xAllocSmallBlockPageForBin(); // TOODOO
   // block size > page size
   else
-    newPage = xAllocPagesForBin(); // TOODOO
+    newPage = xAllocBigBlockPagesForBin(); // TOODOO
 
   newPage->numberUsedBlocks = -1;
   newPage->current  = (void*) (((char*) newPage) + 
@@ -103,6 +113,97 @@ xPage xAllocNewPageForBin(xBin bin) {
   return newPage;
 }
 
+xPage xAllocSmallBlockPageForBin() {
+  xPage newPage;
+
+  if(NULL == baseRegion)
+    baseRegion  = xAllocNewRegion(1); // TOODOO
+  
+  while(1) {
+    // current page in region can be used
+    if(NULL != baseRegion->current) {
+      newPage             = baseRegion->current;
+      baseRegion->current = __XMALLOC_NEXT(newPage);
+      goto Found;
+    }
+    // there exist pages in this region we can use
+    if(baseRegion->numberInitPages > 0) {
+      newPage = (xPage) baseRegion->initAddr;
+      baseRegion->numberInitPages--;
+      if(baseRegion->numberInitPages > 0)
+        baseRegion->initAddr  +=  __XMALLOC_SIZEOF_SYSTEM_PAGE;
+      else
+        baseRegion->initAddr  =   NULL;
+      goto Found;
+    }
+    // there exists already a next region we can allocate from
+    if(NULL != baseRegion->next) {
+      baseRegion  = baseRegion->next;
+    } else {
+      xRegion region  = xAllocNewRegion(1);
+      region->prev    = baseRegion;
+      baseRegion      = baseRegion->next  = region;
+    }
+  }
+
+  Found:
+  page->region  = baseRegion;
+  baseRegion->numberUsedPages++;
+  return page;
+}
+
+xPage xAllocBigBlockPagesForBin(int numberNeeded) {
+  register xPage page;
+  xRegion region;
+  
+  // take care that there is at least 1 region active, if
+  // not then we allocate a big enough region for the memory chunk
+  if(NULL == baseRegion)
+    baseRegion  = xAllocNewRegion(numberNeeded);
+  
+  region  = baseRegion;
+  while(1) {
+    // memory chunk fits in this region
+    if(region->numberInitPages >= numberNeeded) {
+      page                    =   (xPage) region->initAddr;
+      region->numberInitPages -=  numberNeeded;
+      if(region->numberInitPages > 0)
+        region->initAddr  +=  numberNeeded * __XMALLOC_SIZEOF_SYSTEM_PAGE;
+      else
+        region->initAddr  =   NULL;
+      goto Found;
+    }
+    // check if there is a consecutive chunk of numberNeeded pages in region we
+    // can get
+    page  = xGetConsecutivePagesFromRegion(region, numberNeeded);
+    if(NULL != page)
+      goto Found;
+    // there already exists a next region we can allocate from
+    if(NULL != region->next) {
+      region  = region->next;
+    } else {
+      xRegion newRegion = xAllocNewRegion(numberNeeded);
+      region->next      = newRegion;
+      newRegion->prev   = region;
+      region            = newRegion;
+    }
+  }
+
+  Found:
+  page->region            =   region;
+  region->numberUsedPages +=  numberNeeded;
+  
+  if(baseRegion != region) {
+    xTakeOutRegion(region); // TOODOO
+    xInsertRegionBefore(region, baseRegion); // TOODOO
+  }
+  return page;
+
+}
+
+/************************************************
+ * FREEING BINS
+ ***********************************************/
 void xFreeBin(void *ptr, xBin bin) {
   if (bin->currentPage == xPageForMalloc) { 
     xFree(ptr);

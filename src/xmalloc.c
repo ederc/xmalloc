@@ -134,7 +134,7 @@ void xAllocBin(xBin bin) {
   if(page->current != NULL)
     xAllocFromNonEmptyPage(addr, page);
   else
-    xAllocBinFromFullPage(addr, bin);
+    xAllocFromFullPage(addr, bin);
 }
 
 xRegion xIsBinBlock(unsigned long unsignedLongPtr) {
