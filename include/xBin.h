@@ -16,6 +16,7 @@
 #include "include/xmalloc-config.h"
 #include "include/xDataStructures.h"
 #include "include/xGlobals.h"
+#include "include/xRegion.h"
 
 void* xAllocBin(xBin bin);
 void xFreeBin(void *ptr, xBin bin);

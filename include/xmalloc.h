@@ -18,6 +18,7 @@
 #include "include/xGlobals.h"
 #include "include/xPage.h"
 #include "include/xBin.h"
+#include "include/xRegion.h"
 
 #define X_XMALLOC
 
