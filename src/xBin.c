@@ -194,8 +194,8 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   region->numberUsedPages +=  numberNeeded;
   
   if(baseRegion != region) {
-    xTakeOutRegion(region); // TOODOO
-    xInsertRegionBefore(region, baseRegion); // TOODOO
+    xTakeOutRegion(region);
+    xInsertRegionBefore(region, baseRegion);
   }
   return page;
 

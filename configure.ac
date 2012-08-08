@@ -52,6 +52,7 @@ AC_C_BIGENDIAN(
 
 XMALLOC_SIZEOF_SYSTEM_PAGE=4096;
 XMALLOC_LOG_BIT_SIZEOF_SYSTEM_PAGE=12;
+XMALLOC_MIN_NUMBER_PAGES_PER_REGION=512;
 
 # We hereby assume that a character is always one byte
 XMALLOC_INT8="char";
@@ -152,6 +153,9 @@ AC_DEFINE_UNQUOTED(SIZEOF_PAGE,
 AC_DEFINE_UNQUOTED(INDEX_PAGE_SHIFT,
     (__XMALLOC_LOG_BIT_SIZEOF_LONG + __XMALLOC_LOG_BIT_SIZEOF_SYSTEM_PAGE), Depending on
     LOG_BIT_SIZEOF_LONG)
+AC_DEFINE_UNQUOTED(MIN_NUMBER_PAGES_PER_REGION,
+    $XMALLOC_MIN_NUMBER_PAGES_PER_REGION, default minimal value of the number of
+    pages allocated for a new region)
 AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
 AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)
 AC_DEFINE_UNQUOTED(INT32, $XMALLOC_INT32, Canonical 32-bit data type)
@@ -163,6 +167,10 @@ if test "x$XMALLOC_UINT256" != "x"; then
   AC_DEFINE_UNQUOTED(UINT256, $XMALLOC_UINT256, Canonical 256-bit data type)
 fi
 AC_DEFINE_UNQUOTED(NEXT(addr), *((void**) addr), Jump to next entry)
+AC_DEFINE_UNQUOTED(MAX(a,b), ((a) > (b) ? (a) : (b)), maximum of two comparable
+    values)
+AC_DEFINE_UNQUOTED(MIN(a,b), ((a) > (b) ? (b) : (a)), minimum of two comparable
+    values)
 
 # Feature checks
 # LB_MISC
