@@ -18,3 +18,41 @@ void xAllocFromFullPage(void *addr, xBin bin) {
   bin->currentPage  = newPage; 
   xAllocFromNonEmptyPage(addr, newpage);
 }
+
+void xRegisterPages(void *startAddr, int numberPages) {
+  char *endAddr = (char*) startAddr +
+                    (numberPages - 1) * __XMALLOC_SIZEOF_SYSTEM_PAGE;
+
+  unsigned long startIndex  = xGetPageIndexOfAddr(startAddr);
+  unsigned long endIndex    = xGetPageIndexOfAddr(endAddr);
+  unsigned long shift;
+
+  // check indices & correct them if necessary
+  if(startIndex < xMinPageIndex || endIndex > xMaxPageIndex)
+    xPageIndexFault(startIndex, endIndex); // TOODOO
+
+  shift = xGetPageShiftOfAddr(startAddr);
+  if(startIndex < endIndex) {
+    if(0 == shift)
+      xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
+    else
+      xPageIndices[startIndex - xMinPageIndex]  |= 
+        ~((((unsigned long) 1) << shift) - 1);
+    for(shift = startIndex + 1; shift < endIndex; shift++) 
+      xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
+    shift = xGetPageShiftOfAddr(endAddr);
+    if(__XMALLOC_BIT_SIZEOF_LONG - 1 == shift)
+      xPageIndices[endIndex - xMinPageIndex]  = ULLONG_MAX;
+    else
+      xPageIndices[endIndex - xMinPageIndex]  |=
+        ((((unsigned long) 1) << (shift + 1)) - 1);
+  } else {
+    endIndex  = xGetPageShiftOfAddr(endAddr);
+    while(endIndex > shift) {
+      xPageIndices[startIndex - xMinPageIndex] |=
+        (((unsigned long) 1) << endIndex);
+      endIndex--;
+    }
+    xPageIndices[startIndex - xMinPageIndex] |= (((unsigned long) 1) << shift);
+  }
+}

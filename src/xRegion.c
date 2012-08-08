@@ -14,7 +14,7 @@
  * REGION ALLOCATION
  ***********************************************/
 xRegion xAllocNewRegion(int minNumberPages) {
-  xRegion region  = xAllocFromSystem(sizeof(struct xRegionStruct));
+  xRegion region  = xAllocFromSystem(sizeof(xRegionType)); // TOODOO
   void *addr;
   int numberPages = __XMALLOC_MAX(minNumberPages, 
                       __XMALLOC_MIN_NUMBER_PAGES_PER_REGION);
@@ -26,7 +26,7 @@ xRegion xAllocNewRegion(int minNumberPages) {
   }
 
   // register and initialize the region
-  xRegisterPagesInRegion(addr, numberPages); // TOODOO
+  xRegisterPages(addr, numberPages); // TOODOO
   region->current           = NULL;
   region->prev              = NULL;
   region->next              = NULL;

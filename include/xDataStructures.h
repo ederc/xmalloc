@@ -50,20 +50,16 @@ enum xError_e {
 typedef enum{false = 0, true  = 1} bool;
 
 struct xPageStruct;
-typedef struct xPageStruct*   xPage;
+typedef struct xPageStruct    xPageType;
+typedef xPageType*            xPage;
 
 struct xBinStruct;
-typedef struct xBinStruct*    xBin;
+typedef struct xBinStruct     xBinType;
+typedef xBinType*             xBin;
 
 struct xRegionStruct;
-typedef struct xRegionStruct* xRegion;
-
-struct xInfoStruct;
-typedef struct xInfoStruct*   xInfo;
-
-struct xBlockStruct;
-typedef struct xBlockStruct*  xBlock;
-
+typedef struct xRegionStruct  xRegionType;
+typedef xRegionType*          xRegion;
 
 /**
  * @struct xPageStruct

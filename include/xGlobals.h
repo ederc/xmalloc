@@ -19,7 +19,7 @@ struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
 
 unsigned long xMinPageIndex = ULLONG_MAX;
 unsigned long xMaxPageIndex = 0;
-unsigned long *xPageIndices;
+unsigned long *xPageIndices = NULL;
 
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {

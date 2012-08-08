@@ -32,7 +32,7 @@
           PAGE_INDEX   PAGE_SHIFT PAGE_OFFSET    PAGE_BASE
 
   xPageIndices is an array of bit-fields which is indexed by
-  xGetPageIndexOfAddr(addr) - om_MinBinPageIndex.
+  xGetPageIndexOfAddr(addr) - xMinPageIndex.
   Its maximal length is 2^15.
 
   xGetPageShiftOfAdd(addr) is used as index into the bit-field.
@@ -49,14 +49,14 @@
 */
 
 /**
- * @fn static inline unsigned long xGetPageShitOfAddr(const void *addr)
+ * @fn static inline unsigned long xGetPageShiftOfAddr(const void *addr)
  *
  * @brief Computes the page shift for address \var addr .
  *
  * @param addr Const pointer to the corresponding address
  *
  */
-static inline unsigned long xGetPageShitOfAddr(const void *addr) {
+static inline unsigned long xGetPageShiftOfAddr(const void *addr) {
   return((((unsigned long) addr) & (__XMALLOC_SIZEOF_INDEX_PAGE_MINUS_ONE))
       >> __XMALLOC_LOG_BIT_SIZEOF_SYSTEM_PAGE);
 }
@@ -127,4 +127,17 @@ static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
  *
  */
 void xAllocFromFullPage(void *addr, xBin bin);
+
+/**
+ * @fn void xRegisterPages(void *startAddr, int numberPages)
+ *
+ * @brief Uses memory chunk of \var numberPages system pages and registers them
+ * as \var xPages.
+ *
+ * @param startAddr address if the beginning of the memory chunk of continuous
+ * system pages.
+ * @param numberPages number of pages in the memory chunk to be registered
+ *
+ */
+void xRegisterPages(void *startAddr, int numberPages);
 #endif
