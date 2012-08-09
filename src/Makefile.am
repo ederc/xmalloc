@@ -15,6 +15,7 @@ BASIC_HDRS =				\
 	xPage.h 					\
 	xBin.h 						\
 	xRegion.h 				\
+	xSystem.h 				\
 	xmalloc.h
 
 pkginclude_HEADERS =			\
@@ -27,6 +28,7 @@ libxmalloc_la_SOURCES=	\
 	xPage.c								\
 	xBin.c								\
 	xRegion.c							\
+	xSystem.c							\
 	xmalloc.c
 
 libxmalloc_la_LIBADD= 
