@@ -71,24 +71,6 @@ void* xGetNewPage() {
   }
 }
 
-xBin xGetBin(size_t size) {
-  if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE)
-    return xSize2Bin[(size - 1) / (__XMALLOC_SIZEOF_LONG)];
-  return NULL;
-}
-xPage xGetPageFromSize(size_t size) {
-  xBin bin  = xGetBin(size);
-  return xGetPageFromBin(bin);
-}
-
-void* xAllocFromPage(xPage page) {
-  xBlock ptr  = page->free;
-  page->free  = ptr->next;
-  page->numberUsedBlocks++;
-  memset(ptr, 0, page->bin->sizeInWords * __XMALLOC_SIZEOF_LONG); /*debug!*/
-  return (void *)ptr;
-}
-
 void* xMalloc(const size_t size) {
   void *addr;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {

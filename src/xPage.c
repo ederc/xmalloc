@@ -9,16 +9,6 @@
 
 #include <xPage.h>
 
-void xAllocFromFullPage(void *addr, xBin bin) {
-  if(bin->currentPage != xZeroPage) {
-    bin->currentPage->numberUsedBlocks  = 0;
-  }
-  xPage newPage     = xAllocNewPageForBin(bin);
-  xInsertPageToBin(bin, newPage);
-  bin->currentPage  = newPage; 
-  xAllocFromNonEmptyPage(addr, newPage);
-}
-
 /**********************************************
  * PAGE REGISTRATION
  *********************************************/

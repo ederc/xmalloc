@@ -16,6 +16,7 @@
 #include "include/xmalloc-config.h"
 #include "include/xDataStructures.h"
 #include "include/xGlobals.h"
+#include "xRegion.h"
 
 /***********************************************************************
  *
@@ -118,17 +119,6 @@ static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
 }
 
 /**
- * @fn void xAllocFromFullPage(void *addr, xBin bin)
- *
- * @brief Sets \var addr to memory address from a newly allocated page.
- *
- * @param addr pointer to the corresponding address.
- * @param bin \var xBin the new page becomes a part of 
- *
- */
-void xAllocFromFullPage(void *addr, xBin bin);
-
-/**
  * @fn void xRegisterPages(void *startAddr, int numberPages)
  *
  * @brief Uses memory chunk of \var numberPages system pages and registers them
@@ -140,4 +130,57 @@ void xAllocFromFullPage(void *addr, xBin bin);
  *
  */
 void xRegisterPages(void *startAddr, int numberPages);
+
+/************************************************
+ * INLINED PAGE TESTS / ADDRESS HANDLINGS
+ ***********************************************/
+/**
+ * @fn inline long xIsAddrPageAligned(void *addr)
+ *
+ * @brief Tests if \var addr is page aligned or not.
+ *
+ * @param addr memory address to be checked
+ *
+ */
+inline long xIsAddrPageAligned(void *addr) {
+  return (((long) addr & (__XMALLOC_SIZEOF_SYSTEM_PAGE - 1)) == 0);
+}
+
+/**
+ * @fn inline xPage xGetPageOfAddr(void *addr)
+ *
+ * @brief Returns \var xPage \var addr is included in.
+ *
+ * @param addr memory address to be checked
+ *
+ */
+inline xPage xGetPageOfAddr(void *addr) {
+  return (xPage) ((long) addr & ~(__XMALLOC_SIZEOF_SYSTEM_PAGE - 1));
+}
+
+/**
+ * @fn inline bool xIsAddrOnPage(void *addr, xPage page)
+ *
+ * @brief Checks if \var addr is on \var page .
+ *
+ * @param addr memory address to be checked
+ * @param page \var xPage to be checked
+ *
+ */
+inline bool xIsAddrOnPage(void *addr, xPage page) {
+  return(xGetPageOfAddr(addr) == page);
+}
+
+/**
+ * @fn inline bool xAreAddressesOnSamePage(void *addr1, void *addr2)
+ *
+ * @brief Checks if \var addr1 and \var addr2 lie on the same page.
+ *
+ * @param addr1 memory address to be checked
+ * @param addr2 memory address to be checked
+ *
+ */
+inline bool xAreAddressesOnSamePage(void *addr1, void *addr2) {
+  return(xGetPageAddr(addr1) == xGetPageAddr(addr2));
+}
 #endif

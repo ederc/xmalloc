@@ -8,65 +8,66 @@
  */
 
 #include <xBin.h>
+#include <xRegion.h>
 
 
 /************************************************
  * SPEC-BIN STUFF
  ***********************************************/
-xBin xGetSpecBin(size_t size) {
-  xBin bin  = xGetBin(size);
-  if (bin == NULL) {
-    bin = (xBin)malloc(sizeof(*bin));
-    memset(bin, 0, sizeof(*bin));
-    bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
-    bin->currentPage  = xPageForMalloc;
-  }
-  return bin;
-}
+//xBin xGetSpecBin(size_t size) {
+//  xBin bin  = xGetBin(size);
+//  if (bin == NULL) {
+//    bin = (xBin)malloc(sizeof(*bin));
+//    memset(bin, 0, sizeof(*bin));
+//    bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
+//    bin->currentPage  = xPageForMalloc;
+//  }
+//  return bin;
+//}
 
-void xUnGetSpecBin(xBin* bin) {
-  if (*bin  ==  NULL) {
-    printf("xUnGetSpecBin(NULL\n");
-  } else {
-    if ((*bin)->currentPage == xPageForMalloc) {
-      /* TODO */
-      free(*bin);
-    }
-  }
-  *bin  = NULL;
-}
+//void xUnGetSpecBin(xBin* bin) {
+//  if (*bin  ==  NULL) {
+//    printf("xUnGetSpecBin(NULL\n");
+//  } else {
+//    if ((*bin)->currentPage == xPageForMalloc) {
+//      /* TODO */
+//      free(*bin);
+//    }
+//  }
+//  *bin  = NULL;
+//}
 
 /************************************************
  * PAGE-BIN-CONNECTIONS
  ***********************************************/
-xPage xGetPageFromBin(xBin bin) {
-  if (bin->currentPage != NULL) {
-    if (bin->currentPage->free != NULL)
-      return bin->currentPage;
-    else {
-      xPage page  = bin->lastPage;
-      while ((page != NULL) && (page->free == NULL)) 
-        page  = page->prev;
-      if ((page != NULL) && (page->free != NULL)) { 
-        bin->currentPage  = page; 
-        return page; 
-      }
-    }
-  }
-  /* now b->current==NULL or all pages are full */
-  //extern void *xGetNewPage();
-  xPage page  = (xPage)xGetNewPage();
-  xMakePage(page, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
-  page->prev  = bin->lastPage;
-  page->next  = NULL;
-  if (bin->lastPage !=  NULL) 
-    bin->lastPage->next = page;
-  bin->lastPage         = page;
-  bin->currentPage      = page;
-  page->bin             = bin;
-  return page;
-  //return b->currentPage;
-}
+//xPage xGetPageFromBin(xBin bin) {
+//  if (bin->currentPage != NULL) {
+//    if (bin->currentPage->free != NULL)
+//      return bin->currentPage;
+//    else {
+//      xPage page  = bin->lastPage;
+//      while ((page != NULL) && (page->free == NULL)) 
+//        page  = page->prev;
+//      if ((page != NULL) && (page->free != NULL)) { 
+//        bin->currentPage  = page; 
+//        return page; 
+//      }
+//    }
+//  }
+//  /* now b->current==NULL or all pages are full */
+//  //extern void *xGetNewPage();
+//  xPage page  = (xPage)xGetNewPage();
+//  xMakePage(page, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
+//  page->prev  = bin->lastPage;
+//  page->next  = NULL;
+//  if (bin->lastPage !=  NULL) 
+//    bin->lastPage->next = page;
+//  bin->lastPage         = page;
+//  bin->currentPage      = page;
+//  page->bin             = bin;
+//  return page;
+//  //return b->currentPage;
+//}
 
 void xInsertPageToBin(xBin bin, xPage page) {
   if(bin->currentPage == xZeroPage) {
@@ -87,6 +88,19 @@ void xInsertPageToBin(xBin bin, xPage page) {
 }
 
 /************************************************
+ * ALLOCATING PAGES IN BINS
+ ***********************************************/
+void xAllocFromFullPage(void *addr, xBin bin) {
+  if(bin->currentPage != xZeroPage) {
+    bin->currentPage->numberUsedBlocks  = 0;
+  }
+  xPage newPage     = xAllocNewPageForBin(bin);
+  xInsertPageToBin(bin, newPage);
+  bin->currentPage  = newPage; 
+  xAllocFromNonEmptyPage(addr, newPage);
+}
+
+/************************************************
  * ALLOCATING PAGES FOR BINS
  ***********************************************/
 xPage xAllocNewPageForBin(xBin bin) {
@@ -99,7 +113,7 @@ xPage xAllocNewPageForBin(xBin bin) {
     newPage = xAllocSmallBlockPageForBin(); // TOODOO
   // block size > page size
   else
-    newPage = xAllocBigBlockPagesForBin(); // TOODOO
+    newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks); // TOODOO
 
   newPage->numberUsedBlocks = -1;
   newPage->current  = (void*) (((char*) newPage) + 
@@ -147,9 +161,9 @@ xPage xAllocSmallBlockPageForBin() {
   }
 
   Found:
-  page->region  = baseRegion;
+  newPage->region = baseRegion;
   baseRegion->numberUsedPages++;
-  return page;
+  return newPage;
 }
 
 xPage xAllocBigBlockPagesForBin(int numberNeeded) {
@@ -198,34 +212,4 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
     xInsertRegionBefore(region, baseRegion);
   }
   return page;
-
-}
-
-/************************************************
- * FREEING BINS
- ***********************************************/
-void xFreeBin(void *ptr, xBin bin) {
-  if (bin->currentPage == xPageForMalloc) { 
-    xFree(ptr);
-    return;
-  }
-  xPage page  = xGetPageFromBlock(ptr);
-  if (page->numberUsedBlocks > 1) {
-    __XMALLOC_NEXT(ptr) = page->free;
-    page->free          = ptr;
-    page->numberUsedBlocks--;
-  } else {
-    xRegion reg = xIsBinBlock((unsigned long)ptr);
-    /*xBin bin=page->bin;*/
-    if (page->next != NULL) 
-      page->next->prev  = page->prev; 
-    if (page->prev != NULL) 
-      page->prev->next  = page->next; 
-    if (bin->lastPage == page) 
-      bin->lastPage = page->prev;
-    if (bin->currentPage == page) 
-      bin->currentPage  = page->prev;
-    reg->numberUsedBlocks++;
-    reg->bits[(((unsigned long)ptr) - reg->start) / 4096] = '\0';
-  }
 }

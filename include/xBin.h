@@ -16,10 +16,10 @@
 #include "include/xmalloc-config.h"
 #include "include/xDataStructures.h"
 #include "include/xGlobals.h"
+#include "include/xPage.h"
 #include "include/xRegion.h"
 
 void* xAllocBin(xBin bin);
-void xFreeBin(void *ptr, xBin bin);
 
 static inline void* xAlloc0Bin(xBin bin) {
   void *ptr = xAllocBin(bin);
@@ -62,7 +62,7 @@ void xInsertPageToBin(xBin bin, xPage page);
 xPage xAllocNewPageForBin(xBin bin);
 
 /**
- * @fn static xPage xAllocSmallBlockPageForBin()
+ * @fn xPage xAllocSmallBlockPageForBin()
  *
  * @brief Allocates a new \var xPage for small block free lists.
  *
@@ -73,7 +73,7 @@ xPage xAllocNewPageForBin(xBin bin);
 xPage xAllocSmallBlockPageForBin();
 
 /**
- * @fn static xPage xAllocBigBlockPagesForBin()
+ * @fn xPage xAllocBigBlockPagesForBin(int numberNeeded)
  *
  * @brief Allocates new \var xPages for big block memory.
  *
@@ -84,4 +84,26 @@ xPage xAllocSmallBlockPageForBin();
  *
  */
 xPage xAllocBigBlockPagesForBin(int numberNeeded);
+
+/**
+ * @fn void xAllocFromFullPage(void *addr, xBin bin)
+ *
+ * @brief Sets \var addr to memory address from a newly allocated page.
+ *
+ * @param addr pointer to the corresponding address.
+ * @param bin \var xBin the new page becomes a part of 
+ *
+ */
+void xAllocFromFullPage(void *addr, xBin bin);
+
+
+/************************************************
+ * FREEING BINS
+ ***********************************************/
+inline void xFreeBin(void *addr) {
+    register void *__addr = (void*) addr;
+    register xPage __page = xGetPageOfAddr(__addr);
+    xFreeToPage(__addr, __page);
+}
+
 #endif

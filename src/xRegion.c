@@ -8,6 +8,7 @@
  */
 
 #include <xBin.h>
+#include <xSystem.h>
 
 
 /************************************************
@@ -19,10 +20,10 @@ xRegion xAllocNewRegion(int minNumberPages) {
   int numberPages = __XMALLOC_MAX(minNumberPages, 
                       __XMALLOC_MIN_NUMBER_PAGES_PER_REGION);
   
-  addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE, 1);
+  addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE); //TOODOO
   if(NULL == addr) {
     numberPages = minNumberPages;
-    addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE, 1);
+    addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
   }
 
   // register and initialize the region
@@ -37,4 +38,12 @@ xRegion xAllocNewRegion(int minNumberPages) {
   region->totalNumberPages  = numberPages;
 
   return region;
+}
+
+/************************************************
+ * PAGE HANDLING IN REGIONS
+ ***********************************************/
+xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) { // TOODOO
+  xPage page = NULL;
+  return page;
 }

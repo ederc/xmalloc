@@ -81,4 +81,16 @@ inline void xInsertRegionAfter(xRegion insert, xRegion after) {
   if(NULL != insert->next)
     insert->next->prev  = insert;
 }
+
+/**
+ * @fn xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded)
+ *
+ * @brief Gets a consecutive memory chunk of \var numberNeeded \var
+ * xPages out of \var region.
+ *
+ * @param region is the region the pages are allocated from.
+ * @param numberNeeded is the number of pages to be allocated.
+ *
+ */
+xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
 #endif
