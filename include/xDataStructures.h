@@ -57,6 +57,10 @@ struct xBinStruct;
 typedef struct xBinStruct     xBinType;
 typedef xBinType*             xBin;
 
+struct xBlockStruct;
+typedef struct xBlockStruct   xBlockType;
+typedef xBlockType*           xBlock;
+
 struct xRegionStruct;
 typedef struct xRegionStruct  xRegionType;
 typedef xRegionType*          xRegion;

@@ -16,9 +16,12 @@ void xAllocFromFullPage(void *addr, xBin bin) {
   xPage newPage     = xAllocNewPageForBin(bin);
   xInsertPageToBin(bin, newPage);
   bin->currentPage  = newPage; 
-  xAllocFromNonEmptyPage(addr, newpage);
+  xAllocFromNonEmptyPage(addr, newPage);
 }
 
+/**********************************************
+ * PAGE REGISTRATION
+ *********************************************/
 void xRegisterPages(void *startAddr, int numberPages) {
   char *endAddr = (char*) startAddr +
                     (numberPages - 1) * __XMALLOC_SIZEOF_SYSTEM_PAGE;
@@ -36,12 +39,11 @@ void xRegisterPages(void *startAddr, int numberPages) {
     if(0 == shift)
       xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
     else
-      xPageIndices[startIndex - xMinPageIndex]  |= 
-        ~((((unsigned long) 1) << shift) - 1);
+      xPageIndices[startIndex - xMinPageIndex]  |= ~((((unsigned long) 1) << shift) - 1);
     for(shift = startIndex + 1; shift < endIndex; shift++) 
       xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
     shift = xGetPageShiftOfAddr(endAddr);
-    if(__XMALLOC_BIT_SIZEOF_LONG - 1 == shift)
+    if((__XMALLOC_BIT_SIZEOF_LONG - 1) == shift)
       xPageIndices[endIndex - xMinPageIndex]  = ULLONG_MAX;
     else
       xPageIndices[endIndex - xMinPageIndex]  |=

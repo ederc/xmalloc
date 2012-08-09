@@ -24,9 +24,9 @@ lib_LTLIBRARIES=libxmalloc.la
 
 
 libxmalloc_la_SOURCES=	\
-	xmalloc.c    					\
 	xPage.c								\
 	xBin.c								\
-	xRegion.c
+	xRegion.c							\
+	xmalloc.c
 
 libxmalloc_la_LIBADD= 
