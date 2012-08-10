@@ -14,7 +14,7 @@
 
 void* xAllocFromSystem(size_t size) {
   void *addr  = malloc(size);
-  if(NULL == addr)
+  if (NULL == addr)
     // try it once more
     addr  = malloc(size);
   return addr; // possibly addr == NULL
@@ -22,7 +22,7 @@ void* xAllocFromSystem(size_t size) {
 
 void* xVallocFromSystem(size_t size) {
   void *addr  = valloc(size);
-  if(NULL == addr)
+  if (NULL == addr)
     // try it once more
     addr = valloc(size);
   return addr; // possibly addr == NULL

@@ -70,13 +70,13 @@
 //}
 
 void xInsertPageToBin(xBin bin, xPage page) {
-  if(bin->currentPage == xZeroPage) {
+  if (bin->currentPage == xZeroPage) {
     page->prev        = NULL;
     page->next        = NULL;
     bin->currentPage  = page;
     bin->lastPage     = page;
   } else {
-    if(bin->currentPage == bin->lastPage) {
+    if (bin->currentPage == bin->lastPage) {
       bin->lastPage = page;
     } else {
       bin->currentPage->next->prev  = page;
@@ -91,7 +91,7 @@ void xInsertPageToBin(xBin bin, xPage page) {
  * ALLOCATING PAGES IN BINS
  ***********************************************/
 void xAllocFromFullPage(void *addr, xBin bin) {
-  if(bin->currentPage != xZeroPage) {
+  if (bin->currentPage != xZeroPage) {
     bin->currentPage->numberUsedBlocks  = 0;
   }
   xPage newPage     = xAllocNewPageForBin(bin);
@@ -109,7 +109,7 @@ xPage xAllocNewPageForBin(xBin bin) {
   int i = 1;
 
   // block size < page size
-  if(bin->numberBlocks > 0)
+  if (bin->numberBlocks > 0)
     newPage = xAllocSmallBlockPageForBin(); // TOODOO
   // block size > page size
   else
@@ -119,7 +119,7 @@ xPage xAllocNewPageForBin(xBin bin) {
   newPage->current  = (void*) (((char*) newPage) + 
                         __XMALLOC_SIZEOF_PAGE_HEADER);
   tmp               = newPage->current;
-  while(i < bin->numberBlocks) {
+  while (i < bin->numberBlocks) {
     tmp = __XMALLOC_NEXT(tmp)  = ((void**) tmp) + bin->sizeInWords;
     i++;
   }
@@ -130,28 +130,28 @@ xPage xAllocNewPageForBin(xBin bin) {
 xPage xAllocSmallBlockPageForBin() {
   xPage newPage;
 
-  if(NULL == baseRegion)
+  if (NULL == baseRegion)
     baseRegion  = xAllocNewRegion(1); // TOODOO
   
-  while(1) {
+  while (1) {
     // current page in region can be used
-    if(NULL != baseRegion->current) {
+    if (NULL != baseRegion->current) {
       newPage             = baseRegion->current;
       baseRegion->current = __XMALLOC_NEXT(newPage);
       goto Found;
     }
     // there exist pages in this region we can use
-    if(baseRegion->numberInitPages > 0) {
+    if (baseRegion->numberInitPages > 0) {
       newPage = (xPage) baseRegion->initAddr;
       baseRegion->numberInitPages--;
-      if(baseRegion->numberInitPages > 0)
+      if (baseRegion->numberInitPages > 0)
         baseRegion->initAddr  +=  __XMALLOC_SIZEOF_SYSTEM_PAGE;
       else
         baseRegion->initAddr  =   NULL;
       goto Found;
     }
     // there exists already a next region we can allocate from
-    if(NULL != baseRegion->next) {
+    if (NULL != baseRegion->next) {
       baseRegion  = baseRegion->next;
     } else {
       xRegion region  = xAllocNewRegion(1);
@@ -172,16 +172,16 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   
   // take care that there is at least 1 region active, if
   // not then we allocate a big enough region for the memory chunk
-  if(NULL == baseRegion)
+  if (NULL == baseRegion)
     baseRegion  = xAllocNewRegion(numberNeeded);
   
   region  = baseRegion;
-  while(1) {
+  while (1) {
     // memory chunk fits in this region
-    if(region->numberInitPages >= numberNeeded) {
+    if (region->numberInitPages >= numberNeeded) {
       page                    =   (xPage) region->initAddr;
       region->numberInitPages -=  numberNeeded;
-      if(region->numberInitPages > 0)
+      if (region->numberInitPages > 0)
         region->initAddr  +=  numberNeeded * __XMALLOC_SIZEOF_SYSTEM_PAGE;
       else
         region->initAddr  =   NULL;
@@ -190,10 +190,10 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
     // check if there is a consecutive chunk of numberNeeded pages in region we
     // can get
     page  = xGetConsecutivePagesFromRegion(region, numberNeeded);
-    if(NULL != page)
+    if (NULL != page)
       goto Found;
     // there already exists a next region we can allocate from
-    if(NULL != region->next) {
+    if (NULL != region->next) {
       region  = region->next;
     } else {
       xRegion newRegion = xAllocNewRegion(numberNeeded);
@@ -207,7 +207,7 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   page->region            =   region;
   region->numberUsedPages +=  numberNeeded;
   
-  if(baseRegion != region) {
+  if (baseRegion != region) {
     xTakeOutRegion(region);
     xInsertRegionBefore(region, baseRegion);
   }

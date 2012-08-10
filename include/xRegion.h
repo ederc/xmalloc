@@ -37,10 +37,10 @@ xRegion xAllocNewRegion(int minNumberPages);
  *
  */
 inline void xTakeOutRegion(xRegion region) {
-  if(NULL != region->prev)
+  if (NULL != region->prev)
     region->prev->next  = region->next;
 
-  if(NULL != region->next)
+  if (NULL != region->next)
     region->next->prev  = region->prev;
 }
 
@@ -59,7 +59,7 @@ inline void xInsertRegionBefore(xRegion insert, xRegion before) {
   insert->next  = before;
   before->prev  = insert;
   
-  if(NULL != insert->prev)
+  if (NULL != insert->prev)
     insert->prev->next  = insert;
 }
 
@@ -78,7 +78,7 @@ inline void xInsertRegionAfter(xRegion insert, xRegion after) {
   insert->prev  = after;
   after->next   = insert;
 
-  if(NULL != insert->next)
+  if (NULL != insert->next)
     insert->next->prev  = insert;
 }
 

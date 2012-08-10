@@ -21,7 +21,7 @@ xRegion xAllocNewRegion(int minNumberPages) {
                       __XMALLOC_MIN_NUMBER_PAGES_PER_REGION);
   
   addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE); //TOODOO
-  if(NULL == addr) {
+  if (NULL == addr) {
     numberPages = minNumberPages;
     addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
   }

@@ -39,25 +39,12 @@ void xMakePage(void* ptr, size_t size) {
     printf("xMakePage(%ld)\n", (long)size);
 }
 
-xRegion xAllocRegion() {
-  xRegion reg  = (xRegion)malloc(sizeof(*reg));
-  void *ptr;
-  memset(reg, 0, sizeof(*reg));
-  posix_memalign(&ptr, 4096, 4096 * __XMALLOC_PAGES_PER_REGION);
-  reg->start            = (unsigned long)ptr;
-  reg->end              = reg->start + 4096 * __XMALLOC_PAGES_PER_REGION;
-  reg->numberUsedBlocks = __XMALLOC_PAGES_PER_REGION;
-  reg->next             = baseRegion;
-  baseRegion            = reg;
-  return reg;
-}
-
 void* xGetNewPage() {
   xRegion reg = baseRegion;
   int i;
   while (1) {
     if (reg == NULL)
-      reg = xAllocRegion();
+      reg = xAllocNewRegion();
     if (reg->numberUsedBlocks > 0) {
       for (i = 0; i < __XMALLOC_PAGES_PER_REGION; i++) {
         if (reg->bits[i] == '\0') {
@@ -113,7 +100,7 @@ xRegion xIsSmallBlock(void *ptr) {
 
 void xAllocBin(xBin bin) {
   register xPage page = bin->currentPage;
-  if(page->current != NULL)
+  if (page->current != NULL)
     xAllocFromNonEmptyPage(addr, page);
   else
     xAllocFromFullPage(addr, bin);
