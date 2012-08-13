@@ -25,11 +25,13 @@
  *******************************************************************/
 
 /* For this explanation assume that
-    __XMALLOC_SIZEOF_LONG == 2^3 and
+    __XMALLOC_SIZEOF_LONG == 2^2,
+    __XMALLOC_SIZEOF_LOG_LONG == 2,
+    __XMALLOC_SIZEOF_BIT_LOG_LONG == 5,
     __XMALLOC_SIZEOF_SYSTEM_PAGE = 2^12:
 
    Let
-   addr: |    15      |  3       |    12        |
+   addr: |    15      |  5       |    12        |
           PAGE_INDEX   PAGE_SHIFT PAGE_OFFSET    PAGE_BASE
 
   xPageShifts is an array of bit-fields which is indexed by
