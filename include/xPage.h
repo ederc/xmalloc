@@ -32,7 +32,7 @@
    addr: |    15      |  3       |    12        |
           PAGE_INDEX   PAGE_SHIFT PAGE_OFFSET    PAGE_BASE
 
-  xPageIndices is an array of bit-fields which is indexed by
+  xPageShifts is an array of bit-fields which is indexed by
   xGetPageIndexOfAddr(addr) - xMinPageIndex.
   Its maximal length is 2^15.
 
@@ -86,7 +86,7 @@ static inline bool xIsPageAddr(const void *addr) {
   register unsigned long testAddr = xGetPageIndexOfAddr(addr);
   return((testAddr >= xMinPageIndex) &&
          (testAddr <= xMaxPageIndex) && 
-         ((xPageIndices[testAddr - xMinPageIndex] & 
+         ((xPageShifts[testAddr - xMinPageIndex] & 
           ((unsigned long) 1) << xGetPageShiftOfAddr(addr)) != 0));
 }
 

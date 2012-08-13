@@ -27,24 +27,24 @@ void xRegisterPages(void *startAddr, int numberPages) {
   shift = xGetPageShiftOfAddr(startAddr);
   if (startIndex < endIndex) {
     if (0 == shift)
-      xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
+      xPageShifts[startIndex - xMinPageIndex]  = ULLONG_MAX;
     else
-      xPageIndices[startIndex - xMinPageIndex]  |= ~((((unsigned long) 1) << shift) - 1);
+      xPageShifts[startIndex - xMinPageIndex]  |= ~((((unsigned long) 1) << shift) - 1);
     for (shift = startIndex + 1; shift < endIndex; shift++) 
-      xPageIndices[startIndex - xMinPageIndex]  = ULLONG_MAX;
+      xPageShifts[startIndex - xMinPageIndex]  = ULLONG_MAX;
     shift = xGetPageShiftOfAddr(endAddr);
     if ((__XMALLOC_BIT_SIZEOF_LONG - 1) == shift)
-      xPageIndices[endIndex - xMinPageIndex]  = ULLONG_MAX;
+      xPageShifts[endIndex - xMinPageIndex]  = ULLONG_MAX;
     else
-      xPageIndices[endIndex - xMinPageIndex]  |=
+      xPageShifts[endIndex - xMinPageIndex]  |=
         ((((unsigned long) 1) << (shift + 1)) - 1);
   } else {
     endIndex  = xGetPageShiftOfAddr(endAddr);
     while (endIndex > shift) {
-      xPageIndices[startIndex - xMinPageIndex] |=
+      xPageShifts[startIndex - xMinPageIndex] |=
         (((unsigned long) 1) << endIndex);
       endIndex--;
     }
-    xPageIndices[startIndex - xMinPageIndex] |= (((unsigned long) 1) << shift);
+    xPageShifts[startIndex - xMinPageIndex] |= (((unsigned long) 1) << shift);
   }
 }
