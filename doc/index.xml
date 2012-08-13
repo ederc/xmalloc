@@ -28,86 +28,220 @@
     </para>
   </sect1>
   <sect1>
-    <title>General ideas behind xmalloc</title> 
+    <title>General ideas behind xmalloc</title>
     <para>
-      xmalloc allocates memory on a page-based style, i.e. for each size class 
+      xmalloc allocates memory on a page-based style, i.e. for each size class
       xmalloc always keeps a complete page as free list. The general idea is to
       allocate huge continuous blocks of memory rarely on a global level.
       Whenever a thread needs a new page for a given size class, this is taken
-      from the global pool in order to make allocation faster. Moreover, we 
-      adopt the thread-caching idea from 
+      from the global pool in order to make allocation faster. Moreover, we
+      adopt the thread-caching idea from
       <ulink url="http://gperftools.googlecode.com/">tcmalloc</ulink> to
       keep operations as much lock-free as possible.
     </para>
     <para>
-      xmalloc is a fork of <emphasis>omalloc</emphasis>, the memory allocator 
-      developed especially for the computer algebra system SINGULAR. The hope 
-      is to switch from omalloc to xmalloc in the near future since omalloc 
+      xmalloc is a fork of <type>omalloc</type>, the memory allocator
+      developed especially for the computer algebra system SINGULAR. The hope
+      is to switch from omalloc to xmalloc in the near future since omalloc
       lacks support for multi-threaded computations. Moreover, one of the main
       tasks developing xmalloc is to introduce a good-balanced thread handling
       system without losing too much speed compared to omalloc.
     </para>
     <caution>
       <para>
-        xmalloc is dedicated for fast, packed allocation and deallocation of 
+        xmalloc is dedicated for fast, packed allocation and deallocation of
         memory blocks of size smaller than approximately 1024kB. It is not
         supposed to replace your system allocator.
       </para>
     </caution>
   </sect1>
   <sect1>
-    <title>Basic data structures in xmalloc</title> 
-    <orderedlist>
-      <listitem>
-        <para>
-          <emphasis>xRegion</emphasis>s are the largest objects of continuous 
-          memory handled by xmalloc. At the very beginning and once in a while during
-          the computations your programm needs new memory from the system. In order to
-          keep the influence of this slow and locking process as small as possible
-          xmalloc allocates a huge chunk of pages from the system at once and stores 
-          it as an <emphasis>xRegion</emphasis>. Those <emphasis>xRegion</emphasis>s 
-          represent pools of memory for xmalloc from which it can get memory quite
-          fast.
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Since the emphasis of xmalloc lies in allocating and freeing lots of 
-          same-sized memory chunks smaller than 1024 kB fast we keep for a number
-          of small size classes free lists. Those lists are called 
-          <emphasis>xBin</emphasis>s. Besides the lists of free memory chunks
-          and its handling an <emphasis>xBin</emphasis> consists of meta data:
-          <orderedlist>
-            <listitem>
-              <para>
-                The size class of the objects stored in the free lists.
-              </para>
-            </listitem>
-            <listitem>
-              <para>
-                The number of blocks available in each entry of memory chunk
-                in the free lists.
-              </para>
-            </listitem>
-          </orderedlist>
-          Whereas the second meta data sounds strange at a first look the idea
-          behind it is based on the fact that each such free list consists of
-          complete system pages. Thus the number of blocks available can be
-          calculated beforehand without any bigger overhead, making later checks of 
-          available free memory faster.
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          For handling the pages in xmalloc a so-called <emphasis>xPage</emphasis> 
-          is used. Since all such pages are stored in a given <emphasis>xBin
-          </emphasis> it is not necessary to store meta data like the size 
-          class or the number of blocks. This allows a tighter packing of 
-          data and improves cache locality. Again, note, that each such <emphasis>
-          xPage</emphasis> corresponds to an entry in a free list of an <emphasis>
-          xBin</emphasis>.
-        </para>
-      </listitem>
-    </orderedlist>
+    <title>Basic data structures in xmalloc</title>
+    <para>
+      xmalloc is mainly based on 3 data structures.
+    </para>
+  <sect2>
+    <title>xRegions, pools of system pages</title>
+    <para>
+      <type>xRegion</type>s are the largest objects of continuous
+      memory handled by xmalloc. At the very beginning and once in a while during
+      the computations your programm needs new memory from the system. In order to
+      keep the influence of this slow and locking process as small as possible
+      xmalloc allocates a huge chunk of pages from the system at once and stores
+      it as an <type>xRegion</type>. Those <type>xRegion</type>s
+      represent pools of memory for xmalloc from which it can get memory quite
+      fast.
+    </para>
+  </sect2>
+  <sect2>
+    <title>xBins, free lists of same sized memory chunks</title>
+    <para>
+      Since the emphasis of xmalloc lies in allocating and freeing lots of
+      same-sized memory chunks smaller than 1024 kB fast we keep for a number
+      of small size classes free lists. Those lists are called
+      <type>xBin</type>s. Besides the lists of free memory chunks
+      and its handling an <type>xBin</type> consists of meta data:
+      <orderedlist>
+        <listitem>
+          <para>
+            The size class of the objects stored in the free lists.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The number of blocks available in each entry of memory chunk
+            in the free lists.
+          </para>
+        </listitem>
+      </orderedlist>
+      Whereas the second meta data sounds strange at a first look the idea
+      behind it is based on the fact that each such free list consists of
+      complete system pages. Thus the number of blocks available can be
+      calculated beforehand without any bigger overhead, making later checks of
+      available free memory faster.
+    </para>
+  </sect2>
+  <sect2>
+    <title>xPages, system pages with special headers</title>
+    <para>
+      For handling the pages in xmalloc a so-called <type>xPage</type>
+      is used. Since all such pages are stored in a given <type>xBin
+      </type> it is not necessary to store meta data like the size
+      class or the number of blocks. This allows a tighter packing of
+      data and improves cache locality. Again, note, that each such <type>
+      xPage</type> corresponds to an entry in a free list of an <type>
+      xBin</type>.
+    </para>
+  </sect2>
+  </sect1>
+  <sect1>
+    <title>
+      How to find out if a chunk of memory is allocated to xmalloc or not?
+    </title>
+    <para>
+      At some points during allocations and freeings xmalloc needs to find out
+      if a given memory address was allocated by xmalloc or by system malloc.
+      xmalloc uses some global data about <type>xRegion</type>s
+      in order to make such a check faster.
+    </para>
+  <sect2>
+    <title>Preconditions</title>
+    <para>
+      Of course, such a check depends on the architecture and system one is
+      working on. Let us assume that we work on a 32-bit machine with
+      <programlisting>
+        sizeof(long)        = 8
+        sizeof(system_page) = 4096</programlisting>
+      From this we get
+      <programlisting>
+        sizeof(bit_long)            = 32
+        sizeof(log_long)            = 3
+        sizeof(log_bit_long)        = 5
+        sizeof(log_bit_system_page) = 12</programlisting>
+      For xmalloc a memory address reads like described in the following:
+      <programlisting>
+        |    15 bits    |     5 bits    |   12 bits    |
+        ----------------------------------------------------------
+        | index of addr | shift of addr | page offset  | page base</programlisting>
+    </para>
+    <para>
+    Thus, in xmalloc we define the size of the index part of a memory
+    address via
+    <programlisting>
+      sizeof(index_part) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)</programlisting>
+    </para>
+    <para>
+    With this we are ready to compute of any given memory address its index and its shift:
+    <programlisting>
+     xGetPageIndexOfAddr(addr) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)
+     xGetPageShiftOfAddr(addr) = ((unsigned long) addr &amp; sizeof(index_part) - 1) &gt;&gt; sizeof(log_bit_system_page)</programlisting>
+    </para>
+  </sect2>
+  <sect2>
+    <title>Registration of xRegions</title>
+    <para>
+      Having structured the memory addresses it is clear that xmalloc must allocate
+      <type>xRegion</type>s, i.e. chunks of continuous system pages in a
+      special way. The idea is to register the memory in a special way, more or
+      less by keeping track of the boundary, i.e. the lowest and the highest memory
+      address of the allocated <type>xRegion</type>. Subdividing memory
+      addresses in index and shift parts make inclusion tests way faster than a usual
+      check on the complete address.
+    </para>
+    <para>
+      The boundaries of the memory allocated and handled by xmalloc are given by
+      <varname>xMinPageIndex</varname> and <varname>xMaxPageIndex</varname>,
+      initially defined in <filename>include/xGlobals.h</filename> by
+      <programlisting>
+        xMinPageIndex = ULLONG_MAX   // max. unsigned long value
+        xMinPageIndex = 0</programlisting>
+    </para>
+    <para>
+      Those values are set before even the first <type>xRegion</type> is allocated.
+      Once this is done, during its registration the check if the index part of
+      the lowest address <varname>startAddr</varname> of the region is greater
+      than <varname>xMinPageIndex</varname> fails and xmalloc resets
+      <varname>xMinPageIndex</varname> and <varname>xMaxPageIndex</varname>
+      correctly. This explains why the initial
+      values of those 2 variables are chosen so strangely.
+    </para>
+    <para>
+      By definition we know that every memory address between <varname>startAddr
+      </varname> and
+      <programlisting>endAddr = startAddr + (numberOfPagesInRegion - 1) * sizeof(system_page)</programlisting>
+      is allocated by xmalloc. It is most of the time wrong to assume that any memory address with index between
+      <function>xGetPageIndexOfAddr(startAddr)</function> and <function>xGetPageIndexOfAddr(endAddr)</function>
+      is allocated by xmalloc, since <varname>startAddr</varname> resp. <varname>endAddr</varname>
+      can have bits set resp. not set on positions not in the index part of the memory address.
+    </para>
+    <para>
+      Since <type>xRegion</type>s are aligned by 2^12 bits, the only problems of
+      set resp. unset bits can occur in the "shift" section of the memory address.
+      When xmalloc registers a new <type>xRegion</type> it keeps track of "correct"
+      shifts by storing them in an array called <varname>xPageShifts</varname>:
+      For each index of a memory address allocated by xmalloc, <varname>xPageShifts</varname>
+      stores the correct shift, it is indexed by <varname>xGetPageIndex(addr)-xMinPageIndex</varname>.
+      Clearly, for <function>xGetPageIndexOfAddr(startAddr)</function> as
+      well as <function>xGetPageIndexOfAddr(endAddr)</function> these values need to be computed
+      correctly, for any index <varname>inbetweenIndex</varname> inbetween we can set all
+      bits in the shift part:
+      <programlisting>
+        xPageShifts[xGetPageIndexOfAddr(startAddr)-xMinPageIndex] |= ~(((unsigned long 1) &lt;&lt; xGetPageShiftOfAddr(startAddr)) - 1)
+        xPageShifts[inbetweenIndex-xMinPageIndex]                 |= ULLONG_MAX
+        xPageShifts[xGetPageIndexOfAddr(endAddr)-xMinPageIndex]   |= (((unsigned long 1) &lt;&lt; (xGetPageShiftOfAddr(endAddr)+1)) - 1)</programlisting>
+    </para>
+    <note>
+      <para>
+        It is important to set the corresponding <varname>xPageShifts</varname> entries by |= instead of =.
+        If for the given page index another <type>xRegion</type> was already
+        allocated then there are already bits set in the corresponding entry of
+        <varname>xPageShifts</varname>. Thus we would corrupt data by overriding
+        this values.
+      </para>
+    </note>
+    <para>
+    With this information, any memory address between <varname>startAddr</varname>
+    and <varname>endAddr</varname> can be detected to be allocated by xmalloc, as
+    we see in the following.
+    </para>
+  </sect2>
+  <sect2>
+    <title>
+      Detecting memory addresses allocated by xmalloc
+    </title>
+    <para>
+      If we have a memory address <varname>addr</varname> of which we would
+      like to know if it is allocated by xmalloc we can check this via the
+      function <function>xIsPageAddr(addr)</function>. There 3 tests are done:
+      <programlisting>
+        xGetPageIndexOfAddr(addr) &gt;= xMinPageIndex &amp;&amp;
+        xGetPageIndexOfAddr(addr) &lt;= xMaxPageIndex &amp;&amp;
+        ((xPageShifts[xGetPageIndexOfAddr(addr) - xMinPageIndex] &amp; ((unsigned long) 1 &lt;&lt; xGetPageShiftOfAddr(addr))) != 0)
+      </programlisting>
+      The first 2 comparisons check whether the page index of <varname>addr</varname> lies inbetween the
+      boundaries of xmalloc's allocated memory chunks. If those hold, then we need to check even more if
+      the shift is correct for the given index. This is done by the  3rd comparison.
+    </para>
+  </sect2>
   </sect1>
 </article>
