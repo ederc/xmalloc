@@ -234,13 +234,26 @@
       like to know if it is allocated by xmalloc we can check this via the
       function <function>xIsPageAddr(addr)</function>. There 3 tests are done:
       <programlisting>
-        xGetPageIndexOfAddr(addr) &gt;= xMinPageIndex &amp;&amp;
-        xGetPageIndexOfAddr(addr) &lt;= xMaxPageIndex &amp;&amp;
+        xGetPageIndexOfAddr(addr) &ge; xMinPageIndex &amp;&amp;
+        xGetPageIndexOfAddr(addr) &le; xMaxPageIndex &amp;&amp;
         ((xPageShifts[xGetPageIndexOfAddr(addr) - xMinPageIndex] &amp; ((unsigned long) 1 &lt;&lt; xGetPageShiftOfAddr(addr))) != 0)
       </programlisting>
       The first 2 comparisons check whether the page index of <varname>addr</varname> lies inbetween the
       boundaries of xmalloc's allocated memory chunks. If those hold, then we need to check even more if
       the shift is correct for the given index. This is done by the  3rd comparison.
+    </para>
+  </sect2>
+  <sect2>
+    <title>Concluding remarks</title>
+    <para>
+      xmalloc can decide whether a memory address belongs to it or not quite
+      fast using a structured attempt. Subdividing an address in an index 
+      and a shift part enables xmalloc to track memory addresses without too 
+      much memory overhead. Note that
+      <programlisting>
+        sizeof(xPageShifts) &le; 2^15 * sizeof(unsigned long)</programlisting>
+      Without using a shift part, this size needs to be ( in the given example )
+      32 times greater. This can have a tremendous effect on the memory consumption.
     </para>
   </sect2>
   </sect1>
