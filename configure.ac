@@ -51,9 +51,12 @@ AC_C_BIGENDIAN(
 # Create some useful data types of fixed, known lengths
 
 XMALLOC_SIZEOF_SYSTEM_PAGE=4096;
+XMALLOC_PAGES_PER_REGION=512;
 XMALLOC_LOG_BIT_SIZEOF_SYSTEM_PAGE=12;
 XMALLOC_BIT_SIZEOF_CHAR=8;
 XMALLOC_MIN_NUMBER_PAGES_PER_REGION=512;
+XMALLOC_SIZEOF_ALIGNMENT=8;
+XMALLOC_LOG_SIZEOF_ALIGNMENT=3;
 
 # We hereby assume that a character is always one byte
 XMALLOC_INT8="char";
@@ -92,7 +95,6 @@ case $FOUR_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT32="long";
-     XMALLOC_PAGES_PER_REGION=4080;
      XMALLOC_MAX_SMALL_BLOCK_SIZE=1016;
      XMALLOC_LOG_BIT_SIZEOF_LONG=5;
      ;;
@@ -107,7 +109,6 @@ case $EIGHT_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT64="long";
-     XMALLOC_PAGES_PER_REGION=4068;
      XMALLOC_MAX_SMALL_BLOCK_SIZE=1008;
      XMALLOC_LOG_BIT_SIZEOF_LONG=6;
      ;;
@@ -161,6 +162,12 @@ AC_DEFINE_UNQUOTED(INDEX_PAGE_SHIFT,
 AC_DEFINE_UNQUOTED(MIN_NUMBER_PAGES_PER_REGION,
     $XMALLOC_MIN_NUMBER_PAGES_PER_REGION, default minimal value of the number of
     pages allocated for a new region)
+AC_DEFINE_UNQUOTED(SIZEOF_ALIGNMENT,
+    $XMALLOC_SIZEOF_ALIGNMENT, bitsize of alignment of memory allocated by
+    xmalloc)
+AC_DEFINE_UNQUOTED(LOG_SIZEOF_ALIGNMENT,
+    $XMALLOC_LOG_SIZEOF_ALIGNMENT, log bitsize of alignment of memory allocated by
+    xmalloc)
 AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
 AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)
 AC_DEFINE_UNQUOTED(INT32, $XMALLOC_INT32, Canonical 32-bit data type)

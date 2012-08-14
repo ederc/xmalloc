@@ -3,7 +3,7 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-SUBDIRS=src m4 tests doc
+SUBDIRS= src m4 tests doc
 
 ACLOCAL_AMFLAGS=-I m4
 
@@ -17,3 +17,6 @@ DISTCLEANFILES= \
 	include/xmalloc-config.h*	\
 	include/stamp-h1
 	doc/index.html
+
+doc:
+	(cd doc; make)

@@ -20,31 +20,13 @@ xPage xGetPageFromBlock(void* ptr) {
   return (xPage)page;
 }
 
-void xMakePage(void* ptr, size_t size) {
-  xPage page      = (xPage)ptr;
-  xBlock pageData = (xBlock)&(page->data);
-  /*unsigned long header=(unsigned long)t-(unsigned long)p;*/
-  #if 1
-  memset((void*)page, 0, 4096);
-  #else
-  page->free=0;
-  page->numberUsedBlocks=0;
-  #endif
-  while (((unsigned long)pageData) + size <= (((unsigned long)page) + 4096)) {
-    pageData->next  = page->free;
-    page->free      = pageData;
-    pageData        = (xBlock)(((unsigned long)pageData)+size);
-  }
-  if (page->free == NULL)
-    printf("xMakePage(%ld)\n", (long)size);
-}
-
+/*
 void* xGetNewPage() {
   xRegion reg = baseRegion;
   int i;
   while (1) {
     if (reg == NULL)
-      reg = xAllocNewRegion();
+      reg = xAllocNewRegion(__XMALLOC_MIN_NUMBER_PAGES_PER_REGION);
     if (reg->numberUsedBlocks > 0) {
       for (i = 0; i < __XMALLOC_PAGES_PER_REGION; i++) {
         if (reg->bits[i] == '\0') {
@@ -57,12 +39,13 @@ void* xGetNewPage() {
     reg = reg->next;
   }
 }
+*/
 
 void* xMalloc(const size_t size) {
   void *addr;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin bin  = xSmallSize2Bin(size); 
-    xAllocBin(addr, size);
+    xAllocFromBin(addr, bin);
     return addr;
   } else {
      long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
@@ -79,6 +62,7 @@ void* xmalloc(size_t size) {
     return NULL;
 }
 
+/*
 void xFreeToPage(xPage page, void *ptr) {
   xBlock xBlockPtr  = (xBlock)ptr;
   xBlockPtr->next   = page->free;
@@ -96,14 +80,6 @@ xRegion xIsSmallBlock(void *ptr) {
       return reg;
   }
   return NULL;
-}
-
-void xAllocBin(xBin bin) {
-  register xPage page = bin->currentPage;
-  if (page->current != NULL)
-    xAllocFromNonEmptyPage(addr, page);
-  else
-    xAllocFromFullPage(addr, bin);
 }
 
 xRegion xIsBinBlock(unsigned long unsignedLongPtr) {
@@ -142,7 +118,7 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
     reg->bits[(unsignedLongPtr - reg->start) / 4096]  = '\0';
   }
 }
-
+*/
 void xFree(void *ptr) {
   if (ptr == NULL) {
     printf("xFree(NULL)\n");
@@ -168,6 +144,7 @@ void xFreeSizeFunc(void *ptr, size_t size) {
   xFree(ptr); 
 }
 
+/*
 void xInfo() {
   int i       = 0;
   int kb      = 0;
@@ -200,3 +177,4 @@ void xInfo() {
             (unsigned long)x_StaticBin[i].currentPage, kb, kb2);
   }
 }
+*/

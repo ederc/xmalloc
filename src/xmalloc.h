@@ -13,12 +13,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
-#include "include/xmalloc-config.h"
-#include "include/xDataStructures.h"
-#include "include/xGlobals.h"
-#include "include/xPage.h"
-#include "include/xBin.h"
-#include "include/xRegion.h"
+#include <xmalloc-config.h>
+#include <xDataStructures.h>
+#include <xGlobals.h>
+#include <xPage.h>
+#include <xBin.h>
+#include <xRegion.h>
 
 #define X_XMALLOC
 
