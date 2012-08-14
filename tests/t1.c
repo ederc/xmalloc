@@ -8,20 +8,21 @@
  */
 
 #include <stdio.h>
-#include <xmalloc.h>
+#include <xmalloc-config.h>
+#include "src/xmalloc.h"
 
-#define X_MAX_SMALL_BLOCK 1012
+extern xPage  xPageForMalloc; 
 
 int main()
 {
   int i;
-  for (i=1;i<X_MAX_SMALL_BLOCK;i++)
+  for (i=1;i<__XMALLOC_MAX_SMALL_BLOCK_SIZE;i++)
   {
     xBin b=xGetSpecBin(i);
     void *p=xMalloc(i);
     if ((i>b->sizeInWords*4)
     || (b->sizeInWords*4!=xSizeOfAddr(p)))
-      printf(" %d (%d vs %d)\n",i,b->sizeInWords*4,xSizeOfAddr(p));
+      printf(" %d (%d vs %d)\n",i,((int) b->sizeInWords)*4,(int) xSizeOfAddr(p));
     xFree(p);
   }
   return 0;

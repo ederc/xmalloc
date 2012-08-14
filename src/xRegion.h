@@ -14,8 +14,8 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include <xmalloc-config.h>
-#include <xDataStructures.h>
-#include <xGlobals.h>
+#include "xDataStructures.h"
+#include "xGlobals.h"
 
 /**
  * @fn xRegion xAllocNewRegion(int minNumberPages)
@@ -29,14 +29,14 @@
 xRegion xAllocNewRegion(int minNumberPages);
 
 /**
- * @fn inline void xTakeOutRegion(xRegion region)
+ * @fn static inline void xTakeOutRegion(xRegion region)
  *
  * @brief Removes a region from the list of regions.
  *
  * @param region \var xRegion removed from the list of regions
  *
  */
-inline void xTakeOutRegion(xRegion region) {
+static inline void xTakeOutRegion(xRegion region) {
   if (NULL != region->prev)
     region->prev->next  = region->next;
 
@@ -45,7 +45,7 @@ inline void xTakeOutRegion(xRegion region) {
 }
 
 /**
- * @fn inline void xInsertRegionBefore(xRegion insert, xRegion before)
+ * @fn static inline void xInsertRegionBefore(xRegion insert, xRegion before)
  *
  * @brief Inserts a region before another one.
  *
@@ -54,7 +54,7 @@ inline void xTakeOutRegion(xRegion region) {
  * @param before \var xRegion before which a new region has to be inserted
  *
  */
-inline void xInsertRegionBefore(xRegion insert, xRegion before) {
+static inline void xInsertRegionBefore(xRegion insert, xRegion before) {
   insert->prev  = before->prev;
   insert->next  = before;
   before->prev  = insert;
@@ -64,7 +64,7 @@ inline void xInsertRegionBefore(xRegion insert, xRegion before) {
 }
 
 /**
- * @fn inline void xInsertRegionAfter(xRegion insert, xRegion after)
+ * @fn static inline void xInsertRegionAfter(xRegion insert, xRegion after)
  *
  * @brief Inserts a region after another one.
  *
@@ -73,7 +73,7 @@ inline void xInsertRegionBefore(xRegion insert, xRegion before) {
  * @param after \var xRegion after which a new region has to be inserted
  *
  */
-inline void xInsertRegionAfter(xRegion insert, xRegion after) {
+static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
   insert->next  = after->next;
   insert->prev  = after;
   after->next   = insert;

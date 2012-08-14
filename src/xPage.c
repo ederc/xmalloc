@@ -9,6 +9,13 @@
 
 #include <xPage.h>
 
+/* zero page for initializing static bins */
+struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
+
+unsigned long xMinPageIndex = ULLONG_MAX;
+unsigned long xMaxPageIndex = 0;
+unsigned long *xPageShifts = NULL;
+
 /**********************************************
  * PAGE REGISTRATION
  *********************************************/

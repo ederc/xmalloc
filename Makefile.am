@@ -3,7 +3,7 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-SUBDIRS= src m4 tests doc
+SUBDIRS= src m4 tests doc .
 
 ACLOCAL_AMFLAGS=-I m4
 
@@ -11,12 +11,30 @@ bin_SCRIPTS=xmalloc-config
 
 EXTRA_DIST=PROJECTS
 
-DISTCLEANFILES= \
-	_configs.sed	\
+CLEANFILES=				\
+	tags						\
+	*~
+
+distclean-local:
+	rm -rf autom4te.cache
+
+DISTCLEANFILES= 									\
+	_configs.sed										\
+	config.sub											\
+	config.guess										\
+	configure.in										\
+	configure												\
+	Makefile.in											\
 	xmalloc-config xmalloc-config~	\
-	include/xmalloc-config.h*	\
-	include/stamp-h1
-	doc/index.html
+	include/xmalloc-config.h*				\
+	include/stamp-h1a         			\
+	doc/index.html									\
+	*~
 
 doc:
 	(cd doc; make)
+
+ctags:
+	ctags -R *
+
+all-am: ctags

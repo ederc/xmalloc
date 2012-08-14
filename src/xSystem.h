@@ -14,8 +14,6 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include <xmalloc-config.h>
-#include <xDataStructures.h>
-#include <xGlobals.h>
 
 /*
  * @fn void* xAllocFromSystem(size_t size)

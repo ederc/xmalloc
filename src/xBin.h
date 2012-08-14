@@ -14,10 +14,11 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include <xmalloc-config.h>
-#include <xDataStructures.h>
-#include <xGlobals.h>
-#include <xPage.h>
-#include <xRegion.h>
+#include "xDataStructures.h"
+#include "xGlobals.h"
+#include "xPage.h"
+#include "xRegion.h"
+
 
 xBin xGetSpecBin(size_t size);
 void xUnGetSpecBin(xBin *bin);
@@ -92,7 +93,15 @@ void xAllocFromFullPage(void *addr, xBin bin);
 /************************************************
  * FREEING BINS
  ***********************************************/
-inline void xFreeBin(void *addr) {
+/**
+ * @fn static inline void xFreeBin(void *addr)
+ *
+ * @brief Frees the memory of @var addr .
+ *
+ * @param addr memory address that should be freed.
+ *
+ */
+static inline void xFreeBin(void *addr) {
     register void *__addr = (void*) addr;
     register xPage __page = xGetPageOfAddr(__addr);
     xFreeToPage(__addr, __page);
@@ -102,7 +111,7 @@ inline void xFreeBin(void *addr) {
  * ALLOCATING MEMORY FROM BINS
  ***********************************************/
 /**
- * @fn inline void xAllocFromBin(void *addr, xBin bin)
+ * @fn static inline void xAllocFromBin(void *addr, xBin bin)
  *
  * @brief Generic memory allocation from @var bin.
  *
@@ -111,7 +120,7 @@ inline void xFreeBin(void *addr) {
  * @param bin @var xBin the bin memory should be allocated from
  *
  */
-inline void xAllocFromBin(void *addr, xBin bin) {
+static inline void xAllocFromBin(void *addr, xBin bin) {
   register xPage page = bin->currentPage;
   if (page->current != NULL)
     xAllocFromNonEmptyPage(addr, page);
