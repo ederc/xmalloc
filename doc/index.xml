@@ -247,13 +247,60 @@
     <title>Concluding remarks</title>
     <para>
       xmalloc can decide whether a memory address belongs to it or not quite
-      fast using a structured attempt. Subdividing an address in an index 
-      and a shift part enables xmalloc to track memory addresses without too 
+      fast using a structured attempt. Subdividing an address in an index
+      and a shift part enables xmalloc to track memory addresses without too
       much memory overhead. Note that
       <programlisting>
         sizeof(xPageShifts) &le; 2^15 * sizeof(unsigned long)</programlisting>
       Without using a shift part, this size needs to be ( in the given example )
       32 times greater. This can have a tremendous effect on the memory consumption.
+    </para>
+  </sect2>
+  </sect1>
+  <sect1>
+    <title>Customized usages of xBins for special purposes</title>
+  <sect2>
+    <title>The idea behind sticky xBins ( a feature which is still omalloc-only )</title>
+    <para>
+      There is one special kind of <type>omBin</type>s, so-called <emphasis>
+      sticky</emphasis> ones. Those can be used if one knows beforehand that
+      lots of same-sized blocks are needed in the following, but which are
+      only alive for a small period of time. In this situation omalloc
+      allocates a new bin for the needed size-class, although there exists
+      already a usual bin. This newly allocated one is denoted <emphasis>
+      sticky</emphasis> since it sticks to the <emphasis>real</emphasis>
+      bin.
+    </para>
+    <para>
+      There are two main advantages of this attempt:
+      <orderedlist>
+        <listitem>
+          <para>
+            All of those temporary objects are packed really tight. Thus a
+            good cache locality is achieved, which is of great importance
+            for this kind of data.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The complete sticky bin can be freed once the data in it is not
+            used anymore. This means a very fast freeing of the complete
+            temporary data at once.
+          </para>
+        </listitem>
+      </orderedlist>
+    </para>
+    <para>
+      Right now, there is one situation in SINGULAR where sticky bins are used:
+      In the computation of a Groebner basis SINGULAR internally switches, if
+      possible, to some easier temporary rings, e.g. small finite characteristic.
+      Doing computations like polynomial reductions in this temporary ring can be
+      a lot easier from the computational point of view than the corresponding
+      operations in the initial ring. Since the applicability of this method
+      depends on the underlying data, SINGULAR cannot use such a temporary ring
+      for several elements in a row, but has to recompute the properties resp.
+      usefulness each time from scratch. Thus these temporary rings and their
+      internal data have to be deleted completely once used.
     </para>
   </sect2>
   </sect1>
