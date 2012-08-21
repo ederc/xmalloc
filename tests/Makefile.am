@@ -4,13 +4,13 @@
 # License version 3. See COPYING for more information.
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
-AM_CXXFLAGS = -g -Wall -DDEBUG -O0 -fomit-frame-pointer
+AM_CXXFLAGS = -g -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
 SUBDIRS = data
 
-LDADD = $(top_builddir)/src/libxmalloc.la
+LDADD = $(top_builddir)/src/libxmalloc_debug.la
 
 malloc_test_LDFLAGS = -pthread
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  

@@ -21,14 +21,28 @@ BASIC_HDRS =				\
 pkginclude_HEADERS =			\
 	$(BASIC_HDRS)
 
+if ENABLE_DEBUG
+lib_LTLIBRARIES=libxmalloc.la libxmalloc_debug.la
+else
 lib_LTLIBRARIES=libxmalloc.la
+endif
 
 
-libxmalloc_la_SOURCES=	\
-	xPage.c								\
-	xBin.c								\
-	xRegion.c							\
-	xSystem.c							\
+libxmalloc_debug_la_CPPFLAGS= -g -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer $(INCLUDES)
+
+SOURCES=		\
+	xPage.c		\
+	xBin.c		\
+	xRegion.c	\
+	xSystem.c	\
 	xmalloc.c
 
+libxmalloc_la_SOURCES=	\
+	$(SOURCES)
+
+libxmalloc_debug_la_SOURCES=	\
+	$(SOURCES)
+
 libxmalloc_la_LIBADD= 
+
+libxmalloc_debug_la_LIBADD=

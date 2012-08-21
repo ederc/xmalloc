@@ -77,6 +77,18 @@ static inline unsigned long xGetPageIndexOfAddr(const void *addr) {
 }
 
 /**
+ * @fn static inline xBin xGetHeadOfBinAddr(const void *addr) {
+ *
+ * @brief Get head of bin the memory chunk at address \var addr is stored in.
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline xPage xGetPageOfBinAddr(const void *addr) {
+  return((xPage) ((long) addr & ~(__XMALLOC_SIZEOF_SYSTEM_PAGE - 1)));
+}
+
+/**
  * @fn static inline bool xIsPageAddr(const void *addr)
  *
  * @brief Checks if \var addr is an address in the xPages or not.
@@ -90,18 +102,6 @@ static inline bool xIsPageAddr(const void *addr) {
          (testAddr <= xMaxPageIndex) && 
          ((xPageShifts[testAddr - xMinPageIndex] & 
           ((unsigned long) 1) << xGetPageShiftOfAddr(addr)) != 0));
-}
-
-/**
- * @fn static inline size_t xSizeOfAddr(const void *addr)
- *
- * @brief Get the size of the memory chunk stored at address \var addr .
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline size_t xSizeOfAddr(const void *addr) {
-  return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
 }
 
 /**

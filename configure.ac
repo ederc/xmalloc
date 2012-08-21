@@ -31,6 +31,16 @@ AC_PROG_CXX
 AC_STDC_HEADERS
 LT_INIT([disable-shared])
 
+AC_ARG_ENABLE([debug],
+              [AC_HELP_STRING([--disable-debug],
+                              [Disable debug version])],
+              [],
+              [enable_debug=yes])
+
+
+AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
+
+
 # Machine characteristics
 
 AC_CHECK_SIZEOF(char, 8)
@@ -214,29 +224,6 @@ AM_CONDITIONAL(BUILD_REFS,[test x$DOXYGEN != x])
 
 # this is bogus so far as I can tell.  -bds
 #AM_CXXFLAGS="${CXXFLAGS}"
-
-##########################################################################
-# debug compilation support
-##########################################################################
-
-AC_MSG_CHECKING([whether to build with debug information])
-AC_ARG_ENABLE([debug],
-    [AS_HELP_STRING([--enable-debug],
-        [enable debug data generation (def=no)])],
-    [debugit="$enableval"],
-    [debugit=no])
-AC_MSG_RESULT([$debugit])
-
-if test x"$debugit" = x"yes"; then
-    AC_DEFINE([DEBUG],[],[Debug Mode])
-    CXXFLAGS="$CXXFLAGS -g -Wall -Werror -Wno-uninitialized -O0"
-else
-    AC_DEFINE([NDEBUG],[],[No-debug Mode])
-    CXXFLAGS="$CXXFLAGS -g -Wall -O3 -fomit-frame-pointer"
-fi
-
-##########################################################################
-
 AC_SUBST([CXXFLAGS])
 
 

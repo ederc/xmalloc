@@ -458,16 +458,16 @@ xBin xSize2Bin[/*254*/] = {
 /************************************************
  * SPEC-BIN STUFF
  ***********************************************/
-//xBin xGetSpecBin(size_t size) {
-//  xBin bin  = xGetBin(size);
-//  if (bin == NULL) {
-//    bin = (xBin)malloc(sizeof(*bin));
-//    memset(bin, 0, sizeof(*bin));
-//    bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
-//    bin->currentPage  = xPageForMalloc;
-//  }
-//  return bin;
-//}
+xBin xGetSpecBin(size_t size) {
+  xBin bin  = xGetBin(size);
+  if (bin == NULL) {
+    bin = (xBin)malloc(sizeof(*bin));
+    memset(bin, 0, sizeof(*bin));
+    bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
+    bin->currentPage  = xPageForMalloc;
+  }
+  return bin;
+}
 
 //void xUnGetSpecBin(xBin* bin) {
 //  if (*bin  ==  NULL) {

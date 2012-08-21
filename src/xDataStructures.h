@@ -72,11 +72,14 @@ typedef xRegionType*          xRegion;
  * handling in the allocator.
  */
 struct xPageStruct {
-   long     numberUsedBlocks; /**< number of used blocks in ths page */
+   long     numberUsedBlocks; /**< number of used blocks in this page */
    void*    current;          /**< pointer to free list this page is in */  
    xPage    prev;             /**< previous page in the free list */
    xPage    next;             /**< next page in the free list */
    xRegion  region;           /**< region this page comes from */
+#ifdef __XMALLOC_DEBUG
+   void*    debugBin;         /**< sticky bin of this page */
+#endif
 };
 
 /**

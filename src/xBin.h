@@ -23,16 +23,9 @@
 xBin xGetSpecBin(size_t size);
 void xUnGetSpecBin(xBin *bin);
 
-/**
- * @fn xPage xGetPageFromBin(xBin bin)
- *
- * @brief Gets a currently free page from \var bin.
- *
- * @param bin \var xBin the bin the page should be part of
- *
- */
-xPage xGetPageFromBin(xBin bin);
-  
+/************************************************
+ * GET BIN INFORMATION FOR PAGES/ADDRESSES
+ ***********************************************/
 /**
  * @fn void xInsertPageToBin(xBin bin, xPage page)
  *
@@ -42,6 +35,7 @@ xPage xGetPageFromBin(xBin bin);
  * @param page \var xPage the new page 
  *
  */
+
 void xInsertPageToBin(xBin bin, xPage page);
 
 /**
@@ -133,4 +127,41 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
   memset(addr, 0, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
 }
 
+/************************************************
+ * DEBUGGING INFORMATION
+ ***********************************************/
+#ifdef __XMALLOC_DEBUG
+/**
+ * @fn static inline xBin xGetTopBinOfPage(const xPage page) {
+ *
+ * @brief Get top bin the page @var page .
+ *
+ * @param page Const @var xPage .
+ *
+ */
+static inline xBin xGetTopBinOfPage(const xPage page) {
+  return((xBin) ((unsigned long) page->debugBin)); // TOODOO
+}
+
+/**
+ * @fn xPage xGetPageFromBin(xBin bin)
+ *
+ * @brief Gets a currently free page from \var bin.
+ *
+ * @param bin \var xBin the bin the page should be part of
+ *
+ */
+xPage xGetPageFromBin(xBin bin);
+
+/**
+ * @fn void xInsertPageToBin(xBin bin, xPage page)
+ *
+ * @brief Inserts the newly allocated \var xPage \var page to \var bin.
+ *
+ * @param bin \var xBin the new page becomes a part of
+ *
+ * @param page \var xPage the new page
+ *
+ */
+#endif
 #endif
