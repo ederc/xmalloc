@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 AC_PREREQ(2.50)
-AC_INIT(xmalloc,0.0.1,xmalloc@googlegroups.com) 
+AC_INIT(xmalloc,0.0.1,ederc@mathematik.uni-kl.de)
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
 AM_CONFIG_HEADER([include/xmalloc-config.h])
 AX_PREFIX_CONFIG_H(include/xmalloc-config.h, __XMALLOC)
