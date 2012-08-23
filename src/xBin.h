@@ -164,5 +164,6 @@ xPage xGetPageFromBin(xBin bin);
  * @param page \var xPage the new page
  *
  */
+void xInsertPageToBin(xBin bin, xPage page);
 #endif
 #endif

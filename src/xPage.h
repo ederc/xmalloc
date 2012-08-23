@@ -161,8 +161,8 @@ static inline long xIsAddrPageAligned(void *addr) {
  * @param addr memory address to be checked
  *
  */
-static inline xPage xGetPageOfAddr(void *addr) {
-  return (xPage) ((long) addr & ~(__XMALLOC_SIZEOF_SYSTEM_PAGE - 1));
+static inline void* xGetPageOfAddr(void *addr) {
+  return (void *) ((long) addr & ~(__XMALLOC_SIZEOF_SYSTEM_PAGE - 1));
 }
 
 /**
@@ -188,6 +188,49 @@ static inline bool xIsAddrOnPage(void *addr, xPage page) {
  *
  */
 static inline bool xAreAddressesOnSamePage(void *addr1, void *addr2) {
-  return(xGetPageAddr(addr1) == xGetPageAddr(addr2));
+  return(xGetPageOfAddr(addr1) == xGetPageOfAddr(addr2));
+}
+
+/************************************************
+ * FREEING OPERATIONS CONCERNING PAGES
+ ***********************************************/
+/**
+ * @fn void xFreeToPageFault(xPage page, void *addr)
+ *
+ * @brief If there was a problem in @var xFreeToPage() this function has to
+ * take care of the freeing: At the point this function is called we already
+ * know that @var page->numberUsedBlocks <= 0.
+ * There are 3 different strategies on what to do with pages which were full and
+ * have a free block now:
+ * 1. Insert at the end ( default ).
+ * 2. Insert after @var current_page
+ *    => #define __XMALLOC_PAGE_AFTER_CURRENT
+ * 3. Insert before @var current_page , i.e. let it be the new current page
+ *    => #define __XMALLOC_PAGE_BEFORE_CURRENT
+ *
+ * @param page \c xPage the freed memory should be given to
+ *
+ * @param addr memory address to be checked
+ *
+ */
+void xFreeToPageFault(xPage page, void *addr); // TOODOO
+
+/**
+ * @fn static inline void xFreeToPage(xPage page, void *addr)
+ *
+ * @brief Frees memory at @var addr to @c xPage @var page .
+ *
+ * @param page @c xPage the freed memory should be given to
+ *
+ * @param addr memory address to be checked
+ *
+ */
+static inline void xFreeToPage(xPage page, void *addr) {
+  if (page->numberUsedBlocks > 0L) {
+    *((void **) addr) = page->current;
+    page->current     = addr;
+  } else {
+    xFreeToPageFault(page, addr);
+  }
 }
 #endif

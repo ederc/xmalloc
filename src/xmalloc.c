@@ -63,13 +63,6 @@ void* xmalloc(size_t size) {
 }
 
 /*
-void xFreeToPage(xPage page, void *ptr) {
-  xBlock xBlockPtr  = (xBlock)ptr;
-  xBlockPtr->next   = page->free;
-  page->free        = xBlockPtr;
-  page->numberUsedBlocks--;
-}
-
 xRegion xIsSmallBlock(void *ptr) {
   xRegion reg           = baseRegion;
   unsigned long longPtr = (unsigned long)ptr;

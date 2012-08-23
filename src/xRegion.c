@@ -15,12 +15,12 @@
  * REGION ALLOCATION
  ***********************************************/
 xRegion xAllocNewRegion(int minNumberPages) {
-  xRegion region  = xAllocFromSystem(sizeof(xRegionType)); // TOODOO
+  xRegion region  = xAllocFromSystem(sizeof(xRegionType));
   void *addr;
   int numberPages = __XMALLOC_MAX(minNumberPages, 
                       __XMALLOC_MIN_NUMBER_PAGES_PER_REGION);
   
-  addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE); //TOODOO
+  addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
   if (NULL == addr) {
     numberPages = minNumberPages;
     addr  = xVallocFromSystem(numberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
@@ -44,6 +44,24 @@ xRegion xAllocNewRegion(int minNumberPages) {
  * PAGE HANDLING IN REGIONS
  ***********************************************/
 xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) { // TOODOO
-  xPage page = NULL;
+  void  *current, *page, *prev = NULL;
+  char  *iter;
+  int   found;
+  current = region->current;
+  while (NULL != current) {
+    found = 1;
+    iter  = current;
+    while (__XMALLOC_NEXT(iter) == (iter + __XMALLOC_SIZEOF_SYSTEM_PAGE)) {
+      iter  = __XMALLOC_NEXT(iter);
+      // it is possible that (iter + __XMALLOC_SIZEOF_SYSTEM_PAGE == 0
+      if (NULL == iter)
+        return NULL;
+      found++;
+      if (found == numberNeeded) {
+        page  = current;
+        if (region->current == current) {
+          region->current = __XMALLOC_NEXT(iter);
+        } else {
+          assert(0 == 1);
   return page;
 }
