@@ -28,7 +28,8 @@ lib_LTLIBRARIES=libxmalloc.la
 endif
 
 
-libxmalloc_debug_la_CPPFLAGS= -g -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer $(INCLUDES)
+libxmalloc_debug_la_CPPFLAGS= -g -Wall -DDEBUG -O0 -fomit-frame-pointer $(INCLUDES)
+libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -g -Wall -DNDEBUG -O3 -fomit-frame-pointer
 
 SOURCES=		\
 	xPage.c		\

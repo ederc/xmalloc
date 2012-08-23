@@ -11,13 +11,14 @@
 #define X_BIN_H
 
 #include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
-#include <xmalloc-config.h>
-#include "xDataStructures.h"
-#include "xGlobals.h"
-#include "xPage.h"
-#include "xRegion.h"
+#include "include/xmalloc-config.h"
+#include "src/xDataStructures.h"
+#include "src/xGlobals.h"
+#include "src/xPage.h"
+#include "src/xRegion.h"
 
 
 xBin xGetSpecBin(size_t size);

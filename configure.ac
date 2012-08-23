@@ -40,6 +40,8 @@ AC_ARG_ENABLE([debug],
 
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
 
+# check assert setting
+AC_HEADER_ASSERT
 
 # Machine characteristics
 
@@ -227,8 +229,8 @@ AM_CONDITIONAL(BUILD_DOCS,[test x$XMLTO != x])
 AM_CONDITIONAL(BUILD_REFS,[test x$DOXYGEN != x])
 
 # this is bogus so far as I can tell.  -bds
-#AM_CXXFLAGS="${CXXFLAGS}"
-AC_SUBST([CXXFLAGS])
+AM_CXXFLAGS="${CXXFLAGS}"
+AC_SUBST([AM_CXXFLAGS])
 
 
 AC_OUTPUT([
