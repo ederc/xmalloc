@@ -63,5 +63,9 @@ xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) { // TOOD
           region->current = __XMALLOC_NEXT(iter);
         } else {
           assert(0 == 1);
+        }
+      }
+    }
+  }
   return page;
 }

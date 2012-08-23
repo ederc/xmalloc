@@ -458,6 +458,7 @@ xBin xSize2Bin[/*254*/] = {
 /************************************************
  * SPEC-BIN STUFF
  ***********************************************/
+/*
 xBin xGetSpecBin(size_t size) {
   xBin bin  = xGetBin(size);
   if (bin == NULL) {
@@ -468,6 +469,7 @@ xBin xGetSpecBin(size_t size) {
   }
   return bin;
 }
+*/
 
 //void xUnGetSpecBin(xBin* bin) {
 //  if (*bin  ==  NULL) {

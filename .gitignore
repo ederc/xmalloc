@@ -29,6 +29,8 @@ missing
 aclocal.m4
 autom4te.cache/
 xmalloc-config
+doc/html/
+doc/latex/
 m4/aclocal-include.m4
 m4/libtool.m4
 m4/lt~obsolete.m4
