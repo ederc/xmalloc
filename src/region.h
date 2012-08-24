@@ -15,8 +15,10 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include "include/xmalloc-config.h"
-#include "src/xDataStructures.h"
-#include "src/xGlobals.h"
+#include "src/data.h"
+#include "src/globals.h"
+#include "src/bin.h"
+#include "src/align.h"
 
 /**
  * @fn xRegion xAllocNewRegion(int minNumberPages)

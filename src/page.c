@@ -7,7 +7,7 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include <xPage.h>
+#include "src/page.h"
 
 /* zero page for initializing static bins */
 struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};

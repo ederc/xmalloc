@@ -7,8 +7,7 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include <xBin.h>
-#include <xRegion.h>
+#include "src/bin.h"
 
 xPage xPageForMalloc  = (xPage)1;
 xRegion baseRegion    = NULL;

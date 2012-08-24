@@ -15,9 +15,10 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include "include/xmalloc-config.h"
-#include "src/xDataStructures.h"
-#include "src/xGlobals.h"
-#include "src/xRegion.h"
+#include "src/data.h"
+#include "src/globals.h"
+#include "src/region.h"
+#include "src/align.h"
 
 
 void xFreeToPageFault(xPage page, void *addr);

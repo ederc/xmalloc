@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <xmalloc.h>
+#include "src/xmalloc.h"
 
 xPage xGetPageFromBlock(void* ptr) {
   unsigned long page  =   (unsigned long) ptr;

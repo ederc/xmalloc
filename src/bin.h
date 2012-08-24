@@ -15,12 +15,25 @@
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include "include/xmalloc-config.h"
-#include "src/xDataStructures.h"
-#include "src/xGlobals.h"
-#include "src/xPage.h"
-#include "src/xRegion.h"
+#include "src/data.h"
+#include "src/globals.h"
+#include "src/page.h"
+#include "src/region.h"
+#include "src/align.h"
 
 
+/************************************************
+ * ALLOCATION AND FREEING OF SPECIAL BINS
+ ***********************************************/
+/**
+ * @fn void xInsertPageToBin(xBin bin, xPage page)
+ *
+ * @brief Inserts the newly allocated \var xPage \var page to \var bin.
+ *
+ * @param bin \var xBin the new page becomes a part of
+ * @param page \var xPage the new page
+ *
+ */
 xBin xGetSpecBin(size_t size);
 void xUnGetSpecBin(xBin *bin);
 

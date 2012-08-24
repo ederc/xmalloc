@@ -105,14 +105,11 @@ struct xBinStruct {
 /**
  * @struct xSpecBinStruct
  *
- * @brief Structure of the intial free list holding pages divided into the same
- * number of blocks, i.e. for the same size class.
+ * @brief Bin structure especially for monomials.
  */
 struct xSpecBinStruct {
-  xSpecBin  next;           /**< Current page in the free list of this
-                              size class */
-  xBin      bin;            /**< Last page of the free list of this size
-                              class */
+  xSpecBin  next;           /**< pointer to next bin */
+  xBin      bin;            /**< pointer to bin itself */
   long      numberBlocks;   /**< Maximum number of blocks per page w.r.t.
                               the size class: If > 0 => #blocks per page
                                               If < 0 => #pages per block */

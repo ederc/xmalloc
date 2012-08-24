@@ -9,16 +9,17 @@ INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
 SUBDIRS=
 
-BASIC_HDRS =				\
-	xDataStructures.h \
-	xGlobals.h 				\
-	xPage.h 					\
-	xBin.h 						\
-	xRegion.h 				\
-	xSystem.h 				\
+BASIC_HDRS =	\
+	algin.h			\
+	data.h 			\
+	globals.h 	\
+	page.h 			\
+	bin.h 			\
+	region.h 		\
+	system.h 		\
 	xmalloc.h
 
-pkginclude_HEADERS =			\
+pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
 if ENABLE_DEBUG
@@ -34,10 +35,10 @@ endif
 libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -g -Wall -DNDEBUG -O3 -fomit-frame-pointer
 
 SOURCES=		\
-	xPage.c		\
-	xBin.c		\
-	xRegion.c	\
-	xSystem.c	\
+	page.c		\
+	bin.c			\
+	region.c	\
+	system.c	\
 	xmalloc.c
 
 libxmalloc_la_SOURCES=	\
