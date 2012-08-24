@@ -5,6 +5,7 @@
 
 SUBDIRS= src m4 tests doc .
 
+OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4
 
 bin_SCRIPTS=xmalloc-config

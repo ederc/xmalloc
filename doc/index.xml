@@ -260,6 +260,11 @@
   <sect1>
     <title>Customized usages of xBins for special purposes</title>
   <sect2>
+    <title>Special xBins for initial memory allocation</title>
+    <para>
+    </para>
+  </sect2>
+  <sect2>
     <title>The idea behind sticky xBins ( a feature which is still omalloc-only )</title>
     <para>
       There is one special kind of <type>omBin</type>s, so-called <emphasis>

@@ -23,12 +23,14 @@ pkginclude_HEADERS =			\
 
 if ENABLE_DEBUG
 lib_LTLIBRARIES=libxmalloc.la libxmalloc_debug.la
+libxmalloc_debug_la_CPPFLAGS= -g -Wall -DDEBUG -O0 -fomit-frame-pointer $(INCLUDES)
+libxmalloc_debug_la_SOURCES=	\
+	$(SOURCES)
+libxmalloc_debug_la_LIBADD=
 else
 lib_LTLIBRARIES=libxmalloc.la
 endif
 
-
-libxmalloc_debug_la_CPPFLAGS= -g -Wall -DDEBUG -O0 -fomit-frame-pointer $(INCLUDES)
 libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -g -Wall -DNDEBUG -O3 -fomit-frame-pointer
 
 SOURCES=		\
@@ -41,9 +43,4 @@ SOURCES=		\
 libxmalloc_la_SOURCES=	\
 	$(SOURCES)
 
-libxmalloc_debug_la_SOURCES=	\
-	$(SOURCES)
-
 libxmalloc_la_LIBADD= 
-
-libxmalloc_debug_la_LIBADD=

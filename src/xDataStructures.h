@@ -57,6 +57,10 @@ struct xBinStruct;
 typedef struct xBinStruct     xBinType;
 typedef xBinType*             xBin;
 
+struct xSpecBinStruct;
+typedef struct xSpecBinStruct xSpecBinType;
+typedef xSpecBinType*         xSpecBin;
+
 struct xBlockStruct;
 typedef struct xBlockStruct   xBlockType;
 typedef xBlockType*           xBlock;
@@ -96,6 +100,23 @@ struct xBinStruct {
   long    numberBlocks; /**< Maximum number of blocks per page w.r.t. the size 
                              class: If > 0 => #blocks per page
                                     If < 0 => #pages per block */
+};
+
+/**
+ * @struct xSpecBinStruct
+ *
+ * @brief Structure of the intial free list holding pages divided into the same
+ * number of blocks, i.e. for the same size class.
+ */
+struct xSpecBinStruct {
+  xSpecBin  next;           /**< Current page in the free list of this
+                              size class */
+  xBin      bin;            /**< Last page of the free list of this size
+                              class */
+  long      numberBlocks;   /**< Maximum number of blocks per page w.r.t.
+                              the size class: If > 0 => #blocks per page
+                                              If < 0 => #pages per block */
+  long      referenceCount; /** reference counter */
 };
 
 /**
