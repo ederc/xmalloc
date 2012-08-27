@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_PAGE_H
-#define X_PAGE_H
+#ifndef XMALLOC_PAGE_H
+#define XMALLOC_PAGE_H
 
 #include <stdlib.h>
 #include <assert.h>
@@ -17,7 +17,7 @@
 #include "include/xmalloc-config.h"
 #include "src/data.h"
 #include "src/globals.h"
-#include "src/region.h"
+//#include "src/region.h"
 #include "src/align.h"
 
 

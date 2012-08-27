@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_REGION_H
-#define X_REGION_H
+#ifndef XMALLOC_REGION_H
+#define XMALLOC_REGION_H
 
 #include <stdlib.h>
 #include <assert.h>

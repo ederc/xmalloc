@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_SYSTEM_H
-#define X_SYSTEM_H
+#ifndef XMALLOC_SYSTEM_H
+#define XMALLOC_SYSTEM_H
 
 #include <stdlib.h>
 #include <string.h>

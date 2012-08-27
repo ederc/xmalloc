@@ -14,29 +14,29 @@ xRegion baseRegion    = NULL;
 
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {
-{xZeroPage, NULL, NULL, 1}, /*0 */
-{xZeroPage, NULL, NULL, 2}, /*1 */
-{xZeroPage, NULL, NULL, 3}, /*2 */
-{xZeroPage, NULL, NULL, 4}, /*3 */
-{xZeroPage, NULL, NULL, 5}, /*4 */
-{xZeroPage, NULL, NULL, 6}, /*5 */
-{xZeroPage, NULL, NULL, 7}, /*6 */
-{xZeroPage, NULL, NULL, 8}, /*7 */
-{xZeroPage, NULL, NULL, 9}, /*8 */
-{xZeroPage, NULL, NULL, 10}, /*9 */
-{xZeroPage, NULL, NULL, 12}, /*10*/
-{xZeroPage, NULL, NULL, 14}, /*11*/
-{xZeroPage, NULL, NULL, 16}, /*12*/
-{xZeroPage, NULL, NULL, 18}, /*13*/
-{xZeroPage, NULL, NULL, 20}, /*14*/
-{xZeroPage, NULL, NULL, 24}, /*15*/
-{xZeroPage, NULL, NULL, 28}, /*16*/
-{xZeroPage, NULL, NULL, 38}, /*17*/
-{xZeroPage, NULL, NULL, 50}, /*18*/
-{xZeroPage, NULL, NULL, 63}, /*19*/
-{xZeroPage, NULL, NULL, 84}, /*20*/
-{xZeroPage, NULL, NULL, 101}, /*21*/
-{xZeroPage, NULL, NULL, 126}  /*22*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 1}, /*0 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 2}, /*1 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 3}, /*2 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 4}, /*3 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 5}, /*4 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 6}, /*5 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 7}, /*6 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 8}, /*7 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 9}, /*8 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 10}, /*9 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 12}, /*10*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 14}, /*11*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 16}, /*12*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 18}, /*13*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 20}, /*14*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 24}, /*15*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 28}, /*16*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 38}, /*17*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 50}, /*18*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 63}, /*19*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 84}, /*20*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 101}, /*21*/
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 126}  /*22*/
 };
 
 xBin xSize2Bin[/*126*/] = {
@@ -168,30 +168,30 @@ xBin xSize2Bin[/*126*/] = {
 &xStaticBin[22] /* 1008 */};
 #else
 struct xBinStruct xStaticBin[/*24*/] = {
-{xZeroPage, NULL, NULL, 2}, /* 0 */
-{xZeroPage, NULL, NULL, 3}, /* 1 */
-{xZeroPage, NULL, NULL, 4}, /* 2 */
-{xZeroPage, NULL, NULL, 5}, /* 3 */
-{xZeroPage, NULL, NULL, 6}, /* 4 */
-{xZeroPage, NULL, NULL, 7}, /* 5 */
-{xZeroPage, NULL, NULL, 8}, /* 6 */
-{xZeroPage, NULL, NULL, 10}, /* 7 */
-{xZeroPage, NULL, NULL, 12}, /* 8 */
-{xZeroPage, NULL, NULL, 14}, /* 9 */
-{xZeroPage, NULL, NULL, 16}, /* 10 */
-{xZeroPage, NULL, NULL, 20}, /* 11 */
-{xZeroPage, NULL, NULL, 24}, /* 12 */
-{xZeroPage, NULL, NULL, 28}, /* 13 */
-{xZeroPage, NULL, NULL, 32}, /* 14 */
-{xZeroPage, NULL, NULL, 40}, /* 15 */
-{xZeroPage, NULL, NULL, 48}, /* 16 */
-{xZeroPage, NULL, NULL, 56}, /* 17 */
-{xZeroPage, NULL, NULL, 78}, /* 18 */
-{xZeroPage, NULL, NULL, 101}, /* 19 */
-{xZeroPage, NULL, NULL, 127}, /* 20 */
-{xZeroPage, NULL, NULL, 169}, /* 21 */
-{xZeroPage, NULL, NULL, 203}, /* 22 */
-{xZeroPage, NULL, NULL, 254} /* 23 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 2}, /* 0 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 3}, /* 1 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 4}, /* 2 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 5}, /* 3 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 6}, /* 4 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 7}, /* 5 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 8}, /* 6 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 10}, /* 7 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 12}, /* 8 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 14}, /* 9 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 16}, /* 10 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 20}, /* 11 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 24}, /* 12 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 28}, /* 13 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 32}, /* 14 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 40}, /* 15 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 48}, /* 16 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 56}, /* 17 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 78}, /* 18 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 101}, /* 19 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 127}, /* 20 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 169}, /* 21 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 203}, /* 22 */
+{__XMALLOC_ZERO_PAGE, NULL, NULL, 254} /* 23 */
 };
 
 xBin xSize2Bin[/*254*/] = {
@@ -454,21 +454,82 @@ xBin xSize2Bin[/*254*/] = {
 #define xSmallSize2Bin(size)                              \
   xSize2Bin[((size)-1) >> __XMALLOC_LOG_SIZEOF_ALIGNMENT]
 
+#define __XMALLOC_LARGE_BIN ((xBin) 1)
+
 /************************************************
  * SPEC-BIN STUFF
  ***********************************************/
-/*
 xBin xGetSpecBin(size_t size) {
-  xBin bin  = xGetBin(size);
-  if (bin == NULL) {
+  xBin newSpecBin;
+  long numberBlocks;
+  long sizeInWords;
+
+  size  = xAlignSize(size);
+
+  if (size > __XMALLOC_SIZEOF_BIN_PAGE) {
+    // large memory chunks
+    // reserve memory for page header
+    numberBlocks  = - (long)
+      ((size + (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_BIN_PAGE)) +
+       __XMALLOC_SIZEOF_SYSTEM_PAGE-1) / __XMALLOC_SIZEOF_SYSTEM_PAGE;
+
+    sizeInWords   = ((-numberBlocks * __XMALLOC_SIZEOF_SYSTEM_PAGE) -
+      (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_BIN_PAGE)) /
+      __XMALLOC_SIZEOF_LONG;
+
+    newSpecBin    = __XMALLOC_LARGE_BIN;
+  } else {
+    // small memory chunks
+    // reserve memory for page header
+    numberBlocks  = __XMALLOC_SIZEOF_BIN_PAGE / size;
+
+    sizeInWords   = (__XMALLOC_SIZEOF_BIN_PAGE % size) / numberBlocks;
+    sizeInWords   = ((size + sizeInWords) &
+      ~(__XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE));
+
+    assert(sizeInWords >= size);
+    assert(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_BIN_PAGE);
+
+    sizeInWords = sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG;
+
+    if (size > __XMALLOC_MAX_SMALL_BLOCK_SIZE)
+      newSpecBin  = __XMALLOC_LARGE_BIN;
+    else
+      newSpecBin  = xSmallSize2Bin(size);
+  }
+
+  if (__XMALLOC_LARGE_BIN == newSpecBin ||
+      numberBlocks > newSpecBin->numberBlocks) {
+    xSpecBin specBin  = xFindInSortedGList(); // TOODOO
+
+    // we get a specBin from the list search in above
+    if (NULL != specBin) {
+      (specBin->ref)++;
+      assert(NULL != specBin->bin &&
+          specBin->bin->numberBlocks  ==  specBin->numberBlocks &&
+          specBin->bin->sizeInWords   ==  sizeInWords);
+      return specBin->bin;
+    }
+    // we do not get a specBin from the above list, thus we have to allocate and
+    // register it by hand
+    specBin               = (xSpecBin) xMalloc(sizeof(xSpecBinType));
+    specBin->ref          = 1;
+    specBin->next         = NULL;
+    specBin->numberBlocks = numberBlocks;
+    specBin->bin          = (xBin) xMalloc(sizeof(xBinType));
+    specBin->bin->currentPage = __XMALLOC_ZERO_PAGE;
+  }
+
+  /*
+  if (NULL == bin) {
     bin = (xBin)malloc(sizeof(*bin));
     memset(bin, 0, sizeof(*bin));
     bin->sizeInWords  = (size + __XMALLOC_SIZEOF_LONG - 1) / __XMALLOC_SIZEOF_LONG;
     bin->currentPage  = xPageForMalloc;
   }
+  */
   return bin;
 }
-*/
 
 //void xUnGetSpecBin(xBin* bin) {
 //  if (*bin  ==  NULL) {
@@ -515,7 +576,7 @@ xBin xGetSpecBin(size_t size) {
 //}
 
 void xInsertPageToBin(xBin bin, xPage page) {
-  if (bin->currentPage == xZeroPage) {
+  if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
     page->prev        = NULL;
     page->next        = NULL;
     bin->currentPage  = page;
@@ -536,7 +597,7 @@ void xInsertPageToBin(xBin bin, xPage page) {
  * ALLOCATING PAGES IN BINS
  ***********************************************/
 void xAllocFromFullPage(void *addr, xBin bin) {
-  if (bin->currentPage != xZeroPage) {
+  if (__XMALLOC_ZERO_PAGE != bin->currentPage) {
     bin->currentPage->numberUsedBlocks  = 0;
   }
   xPage newPage     = xAllocNewPageForBin(bin);

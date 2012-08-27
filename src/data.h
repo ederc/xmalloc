@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_DATA_STRUCTURES_H
-#define X_DATA_STRUCTURES_H
+#ifndef XMALLOC_DATA_H
+#define XMALLOC_DATA_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -105,7 +105,7 @@ struct xBinStruct {
 /**
  * @struct xSpecBinStruct
  *
- * @brief Bin structure especially for monomials.
+ * @brief Bin structure eSPECially for monomials.
  */
 struct xSpecBinStruct {
   xSpecBin  next;           /**< pointer to next bin */
@@ -113,7 +113,7 @@ struct xSpecBinStruct {
   long      numberBlocks;   /**< Maximum number of blocks per page w.r.t.
                               the size class: If > 0 => #blocks per page
                                               If < 0 => #pages per block */
-  long      referenceCount; /** reference counter */
+  long      ref;            /** reference counter */
 };
 
 /**

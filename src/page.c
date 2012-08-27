@@ -10,7 +10,7 @@
 #include "src/page.h"
 
 /* zero page for initializing static bins */
-struct xPageStruct xZeroPage[] = {{0, NULL, NULL, NULL, NULL}};
+struct xPageStruct __XMALLOC_ZERO_PAGE[] = {{0, NULL, NULL, NULL, NULL}};
 
 unsigned long xMinPageIndex = ULLONG_MAX;
 unsigned long xMaxPageIndex = 0;

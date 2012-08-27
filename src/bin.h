@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_BIN_H
-#define X_BIN_H
+#ifndef XMALLOC_BIN_H
+#define XMALLOC_BIN_H
 
 #include <stdlib.h>
 #include <assert.h>
@@ -49,7 +49,6 @@ void xUnGetSpecBin(xBin *bin);
  * @param page \var xPage the new page 
  *
  */
-
 void xInsertPageToBin(xBin bin, xPage page);
 
 /**
@@ -111,7 +110,7 @@ void xAllocFromFullPage(void *addr, xBin bin);
  */
 static inline void xFreeBin(void *addr) {
     register void *__addr = (void*) addr;
-    register xPage __page = xGetPageOfAddr(__addr);
+    register xPage __page = (xPage) xGetPageOfAddr(__addr);
     xFreeToPage(__addr, __page);
 }
 

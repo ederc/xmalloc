@@ -7,8 +7,8 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef XMEMORY_H
-#define XMEMORY_H
+#ifndef XMALLOC_XMALLOC_H
+#define XMALLOC_XMALLOC_H
 
 #include <stdlib.h>
 #include <assert.h>

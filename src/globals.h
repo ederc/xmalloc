@@ -7,15 +7,15 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef X_GLOBALS_H
-#define X_GLOBALS_H
+#ifndef XMALLOC_GLOBALS_H
+#define XMALLOC_GLOBALS_H
 
 #define X_XMALLOC
 
 extern xPage xPageForMalloc;
 extern xRegion baseRegion;
 /* zero page for initializing static bins */
-extern struct xPageStruct xZeroPage[];
+extern struct xPageStruct __XMALLOC_ZERO_PAGE[];
 
 extern unsigned long xMinPageIndex;
 extern unsigned long xMaxPageIndex;
