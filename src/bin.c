@@ -1,5 +1,5 @@
 /**
- * @file   xBin.c 
+ * @file   xBin.c
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  General source file for non-inline bin handling functions.
@@ -10,8 +10,8 @@
 #include "src/bin.h"
 
 xPage xPageForMalloc  = (xPage)1;
-xRegion baseRegion    = NULL;
-xSpecBin baseSpecBin  = NULL;
+xRegion xxBaseRegion    = NULL;
+xSpecBin xBaseSpecBin  = NULL;
 
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {
@@ -501,7 +501,7 @@ xBin xGetSpecBin(size_t size) {
 
   if (__XMALLOC_LARGE_BIN == newSpecBin ||
       numberBlocks > newSpecBin->numberBlocks) {
-    xSpecBin specBin  = xFindInSortedGList(); // TOODOO
+    xSpecBin specBin  = xFindInSortedList(newSpecBin, numberBlocks);
 
     // we get a specBin from the list search in above
     if (NULL != specBin) {
@@ -553,11 +553,11 @@ xBin xGetSpecBin(size_t size) {
 //      return bin->currentPage;
 //    else {
 //      xPage page  = bin->lastPage;
-//      while ((page != NULL) && (page->free == NULL)) 
+//      while ((page != NULL) && (page->free == NULL))
 //        page  = page->prev;
-//      if ((page != NULL) && (page->free != NULL)) { 
-//        bin->currentPage  = page; 
-//        return page; 
+//      if ((page != NULL) && (page->free != NULL)) {
+//        bin->currentPage  = page;
+//        return page;
 //      }
 //    }
 //  }
@@ -567,7 +567,7 @@ xBin xGetSpecBin(size_t size) {
 //  xMakePage(page, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
 //  page->prev  = bin->lastPage;
 //  page->next  = NULL;
-//  if (bin->lastPage !=  NULL) 
+//  if (bin->lastPage !=  NULL)
 //    bin->lastPage->next = page;
 //  bin->lastPage         = page;
 //  bin->currentPage      = page;
@@ -603,7 +603,7 @@ void xAllocFromFullPage(void *addr, xBin bin) {
   }
   xPage newPage     = xAllocNewPageForBin(bin);
   xInsertPageToBin(bin, newPage);
-  bin->currentPage  = newPage; 
+  bin->currentPage  = newPage;
   xAllocFromNonEmptyPage(addr, newPage);
 }
 
@@ -623,7 +623,7 @@ xPage xAllocNewPageForBin(xBin bin) {
     newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks); // TOODOO
 
   newPage->numberUsedBlocks = -1;
-  newPage->current  = (void*) (((char*) newPage) + 
+  newPage->current  = (void*) (((char*) newPage) +
                         __XMALLOC_SIZEOF_PAGE_HEADER);
   tmp               = newPage->current;
   while (i < bin->numberBlocks) {
@@ -637,52 +637,52 @@ xPage xAllocNewPageForBin(xBin bin) {
 xPage xAllocSmallBlockPageForBin() {
   xPage newPage;
 
-  if (NULL == baseRegion)
-    baseRegion  = xAllocNewRegion(1); // TOODOO
-  
+  if (NULL == xBaseRegion)
+    xBaseRegion  = xAllocNewRegion(1); // TOODOO
+
   while (1) {
     // current page in region can be used
-    if (NULL != baseRegion->current) {
-      newPage             = baseRegion->current;
-      baseRegion->current = __XMALLOC_NEXT(newPage);
+    if (NULL != xBaseRegion->current) {
+      newPage             = xBaseRegion->current;
+      xBaseRegion->current = __XMALLOC_NEXT(newPage);
       goto Found;
     }
     // there exist pages in this region we can use
-    if (baseRegion->numberInitPages > 0) {
-      newPage = (xPage) baseRegion->initAddr;
-      baseRegion->numberInitPages--;
-      if (baseRegion->numberInitPages > 0)
-        baseRegion->initAddr  +=  __XMALLOC_SIZEOF_SYSTEM_PAGE;
+    if (xBaseRegion->numberInitPages > 0) {
+      newPage = (xPage) xBaseRegion->initAddr;
+      xBaseRegion->numberInitPages--;
+      if (xBaseRegion->numberInitPages > 0)
+        xBaseRegion->initAddr  +=  __XMALLOC_SIZEOF_SYSTEM_PAGE;
       else
-        baseRegion->initAddr  =   NULL;
+        xBaseRegion->initAddr  =   NULL;
       goto Found;
     }
     // there exists already a next region we can allocate from
-    if (NULL != baseRegion->next) {
-      baseRegion  = baseRegion->next;
+    if (NULL != xBaseRegion->next) {
+      xBaseRegion  = xBaseRegion->next;
     } else {
       xRegion region  = xAllocNewRegion(1);
-      region->prev    = baseRegion;
-      baseRegion      = baseRegion->next  = region;
+      region->prev    = xBaseRegion;
+      xBaseRegion      = xBaseRegion->next  = region;
     }
   }
 
   Found:
-  newPage->region = baseRegion;
-  baseRegion->numberUsedPages++;
+  newPage->region = xBaseRegion;
+  xBaseRegion->numberUsedPages++;
   return newPage;
 }
 
 xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   register xPage page;
   xRegion region;
-  
+
   // take care that there is at least 1 region active, if
   // not then we allocate a big enough region for the memory chunk
-  if (NULL == baseRegion)
-    baseRegion  = xAllocNewRegion(numberNeeded);
-  
-  region  = baseRegion;
+  if (NULL == xBaseRegion)
+    xBaseRegion  = xAllocNewRegion(numberNeeded);
+
+  region  = xBaseRegion;
   while (1) {
     // memory chunk fits in this region
     if (region->numberInitPages >= numberNeeded) {
@@ -713,10 +713,10 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   Found:
   page->region            =   region;
   region->numberUsedPages +=  numberNeeded;
-  
-  if (baseRegion != region) {
+
+  if (xBaseRegion != region) {
     xTakeOutRegion(region);
-    xInsertRegionBefore(region, baseRegion);
+    xInsertRegionBefore(region, xBaseRegion);
   }
   return page;
 }

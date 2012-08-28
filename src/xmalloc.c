@@ -22,7 +22,7 @@ xPage xGetPageFromBlock(void* ptr) {
 
 /*
 void* xGetNewPage() {
-  xRegion reg = baseRegion;
+  xRegion reg = xBaseRegion;
   int i;
   while (1) {
     if (reg == NULL)
@@ -64,7 +64,7 @@ void* xmalloc(size_t size) {
 
 /*
 xRegion xIsSmallBlock(void *ptr) {
-  xRegion reg           = baseRegion;
+  xRegion reg           = xBaseRegion;
   unsigned long longPtr = (unsigned long)ptr;
   while (reg != NULL) {
     if ((reg->start > longPtr) || (reg->end <= longPtr)) 
@@ -76,7 +76,7 @@ xRegion xIsSmallBlock(void *ptr) {
 }
 
 xRegion xIsBinBlock(unsigned long unsignedLongPtr) {
-  xRegion reg = baseRegion;
+  xRegion reg = xBaseRegion;
   while (reg != NULL) {
     unsigned long regStart  = reg->start;
     if ((regStart <= unsignedLongPtr) && (unsignedLongPtr < reg->end)) {
@@ -142,7 +142,7 @@ void xInfo() {
   int i       = 0;
   int kb      = 0;
   int kb2     = 0;
-  xRegion reg = baseRegion;
+  xRegion reg = xBaseRegion;
   while (reg != NULL) {
     int j;
     printf("region %d (%lx - %lx), free pages %d\n", i, reg->start, reg->end, reg->numberUsedBlocks);

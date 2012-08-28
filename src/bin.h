@@ -21,20 +21,103 @@
 #include "src/region.h"
 #include "src/align.h"
 
+/************************************************
+ * LIST HANDLING FOR SPECIAL BINS
+ ***********************************************/
+/**
+ * @fn static inline xOffsetToNextSpecBin(xSpecBin specBin)
+ *
+ * @brief Returns the offset in the list of special bins w.r.t. to next
+ *
+ * @param specBin @var xSpecBin the offset is computed of.
+ *
+ */
+
+/*
+static inline xOffsetToNextSpecBin(xSpecBin specBin) {
+  return (NULL != specBin ? ((char *)&(specBin->next)) - ((char *)specBin) : 0);
+}
+*/
+
+/**
+ * @fn static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin)
+ *
+ * @brief Returns the offset in the list of special bins w.r.t. to numberBlocks
+ *
+ * @param specBin @var xSpecBin the offset is computed of.
+ *
+ */
+
+/*
+static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin) {
+  return (NULL != specBin ?
+      ((char *)&(specBin->numberBlocks)) - ((char *)specBin) : 0);
+}
+*/
+
+/**
+ * @fn static inline void* xFindInSortedList(xSpecBin xBaseSpecBin, long numberBlocks)
+ *
+ * @brief Tries to find a special bin for the size class given by
+ * @var numberBlocks . If there does not exist such a special bin, then
+ * it returns NULL. Here the list searched through is already sorted by
+ * increasing size classes.
+ *
+ * @param bin @var xBin usually base of special bins, but can be any
+ * @var xSpecBin .
+ *
+ * @param numberBlocks @var long number of blocks in bin, i.e. size class
+ * needed for special bin.
+ */
+static inline void* xFindInSortedList(xBin bin, long numberBlocks) {
+  while (NULL != bin) {
+    if (bin->numberBlocks >= numberBlocks) {
+      if (bin->numberBlocks == numberBlocks)
+        return bin;
+      // list is sorted, thus we know that there does not exist
+      // such a special bin we need in this list
+      return NULL;
+    }
+    bin = bin->next;
+  }
+  return NULL;
+}
+
+/**
+ * @fn static inline void* xFindInList(xSpecBin xBaseSpecBin, long numberBlocks)
+ *
+ * @brief Tries to find a special bin for the size class given by
+ * @var numberBlocks . If there does not exist such a special bin, then
+ * it returns NULL. Here the list searched through is possibly not sorted.
+ *
+ * @param bin @var xBin usually base of special bins, but can be any
+ * @var xSpecBin .
+ *
+ * @param numberBlocks @var long number of blocks in bin, i.e. size class
+ * needed for special bin.
+ */
+static inline void* xFindInList(xBin bin, long numberBlocks) {
+  while (NULL != bin) {
+    if (bin->numberBlocks == numberBlocks)
+      return bin;
+    bin = bin->next;
+  }
+  return NULL;
+}
 
 /************************************************
  * ALLOCATION AND FREEING OF SPECIAL BINS
  ***********************************************/
 /**
- * @fn void xInsertPageToBin(xBin bin, xPage page)
+ * @fn xBin xGetSpecBin(size_t size);
  *
- * @brief Inserts the newly allocated \var xPage \var page to \var bin.
+ * @brief Returns a special bin for monomial handling
  *
- * @param bin \var xBin the new page becomes a part of
- * @param page \var xPage the new page
+ * @param size @var size_t size class of the monomials
  *
  */
 xBin xGetSpecBin(size_t size);
+
 void xUnGetSpecBin(xBin *bin);
 
 /************************************************
@@ -45,18 +128,18 @@ void xUnGetSpecBin(xBin *bin);
  *
  * @brief Inserts the newly allocated \var xPage \var page to \var bin.
  *
- * @param bin \var xBin the new page becomes a part of 
- * @param page \var xPage the new page 
+ * @param bin \var xBin the new page becomes a part of
+ * @param page \var xPage the new page
  *
  */
 void xInsertPageToBin(xBin bin, xPage page);
 
 /**
- * @fn xPage xAllocNewPageForBin(xBin bin) 
+ * @fn xPage xAllocNewPageForBin(xBin bin)
  *
  * @brief Allocates a new \var xPage to \var bin.
  *
- * @param bin \var xBin the new page becomes a part of 
+ * @param bin \var xBin the new page becomes a part of
  *
  */
 xPage xAllocNewPageForBin(xBin bin);
@@ -91,7 +174,7 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * @brief Sets \var addr to memory address from a newly allocated page.
  *
  * @param addr pointer to the corresponding address.
- * @param bin \var xBin the new page becomes a part of 
+ * @param bin \var xBin the new page becomes a part of
  *
  */
 void xAllocFromFullPage(void *addr, xBin bin);

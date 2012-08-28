@@ -13,8 +13,8 @@
 #define X_XMALLOC
 
 extern xPage xPageForMalloc;
-extern xSpecBin baseSpecBin;
-extern xRegion baseRegion;
+extern xSpecBin xBaseSpecBin;
+extern xRegion xBaseRegion;
 /* zero page for initializing static bins */
 extern struct xPageStruct __XMALLOC_ZERO_PAGE[];
 
