@@ -11,8 +11,6 @@
 #include <xmalloc-config.h>
 #include "src/xmalloc.h"
 
-extern xPage  xPageForMalloc; 
-
 int main()
 {
   int i;

@@ -10,7 +10,7 @@ BENCHMARK_CXXFLAGS = -O2 -pthread
 
 SUBDIRS = data
 
-LDADD = $(top_builddir)/src/libxmalloc_debug.la
+LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
 
 malloc_test_LDFLAGS = -pthread
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  
@@ -20,11 +20,12 @@ malloc_test_LDFLAGS = -pthread
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 BASIC_TESTS =  \
-				t1			\
-				t2			\
-				t3			\
-				t4			\
-				malloc_test
+				t1
+#\
+#				t2			\
+#				t3			\
+#				t4			\
+#				malloc_test
 
 # a benchmarker, not to be included in check.
 BENCHMARKS =            
@@ -41,16 +42,16 @@ CLEANFILES = $(TESTS)
 t1_SOURCES =                \
         t1.c           
 
-t2_SOURCES =                \
-        t2.c           
+#t2_SOURCES =                \
+#        t2.c           
 
-t3_SOURCES =                \
-        t3.c           
+#t3_SOURCES =                \
+#        t3.c           
 
-t4_SOURCES =                \
-        t4.c           
+#t4_SOURCES =                \
+#        t4.c           
 
-malloc_test_SOURCES =                \
-        malloc_test.c           
+#malloc_test_SOURCES =                \
+#        malloc_test.c           
 
 noinst_HEADERS =	

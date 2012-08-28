@@ -3,7 +3,7 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-SUBDIRS= . src m4 tests doc
+SUBDIRS= . m4 src doc tests
 
 OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4

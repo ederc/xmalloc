@@ -19,6 +19,13 @@ BASIC_HDRS =	\
 	system.h 		\
 	xmalloc.h
 
+SOURCES=		\
+	page.c		\
+	bin.c			\
+	region.c	\
+	system.c	\
+	xmalloc.c
+
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
@@ -33,13 +40,6 @@ lib_LTLIBRARIES=libxmalloc.la
 endif
 
 libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -g -Wall -pthread -DNDEBUG -D__XMALLOC_NDEBUG -O3 -fomit-frame-pointer
-
-SOURCES=		\
-	page.c		\
-	bin.c			\
-	region.c	\
-	system.c	\
-	xmalloc.c
 
 libxmalloc_la_SOURCES=	\
 	$(SOURCES)

@@ -9,6 +9,11 @@
 
 #include "src/bin.h"
 
+// extern declaration in globals.h
+xPage xPageForMalloc  = (xPage)1;
+xRegion xBaseRegion    = NULL;
+
+
 //void xUnGetSpecBin(xBin* bin) {
 //  if (*bin  ==  NULL) {
 //    printf("xUnGetSpecBin(NULL\n");
