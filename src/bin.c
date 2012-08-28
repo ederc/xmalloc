@@ -467,29 +467,29 @@ xBin xGetSpecBin(size_t size) {
 
   size  = xAlignSize(size);
 
-  if (size > __XMALLOC_SIZEOF_BIN_PAGE) {
+  if (size > __XMALLOC_SIZEOF_PAGE) {
     // large memory chunks
     // reserve memory for page header
     numberBlocks  = - (long)
-      ((size + (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_BIN_PAGE)) +
+      ((size + (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_PAGE)) +
        __XMALLOC_SIZEOF_SYSTEM_PAGE-1) / __XMALLOC_SIZEOF_SYSTEM_PAGE;
 
     sizeInWords   = ((-numberBlocks * __XMALLOC_SIZEOF_SYSTEM_PAGE) -
-      (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_BIN_PAGE)) /
+      (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_PAGE)) /
       __XMALLOC_SIZEOF_LONG;
 
     newSpecBin    = __XMALLOC_LARGE_BIN;
   } else {
     // small memory chunks
     // reserve memory for page header
-    numberBlocks  = __XMALLOC_SIZEOF_BIN_PAGE / size;
+    numberBlocks  = __XMALLOC_SIZEOF_PAGE / size;
 
-    sizeInWords   = (__XMALLOC_SIZEOF_BIN_PAGE % size) / numberBlocks;
+    sizeInWords   = (__XMALLOC_SIZEOF_PAGE % size) / numberBlocks;
     sizeInWords   = ((size + sizeInWords) &
       ~(__XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE));
 
     assert(sizeInWords >= size);
-    assert(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_BIN_PAGE);
+    assert(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_PAGE);
 
     sizeInWords = sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG;
 
