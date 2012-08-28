@@ -168,27 +168,6 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
   }
 }
 */
-void xFree(void *ptr) {
-  if (ptr == NULL) {
-    printf("xFree(NULL)\n");
-  } else {
-    /*assume (ptr!=NULL);*/
-    xRegion reg = xIsBinBlock((unsigned long)ptr);
-    if (reg != NULL) {
-      xFreeBinRegion(reg, ptr);
-    } else {  
-      long *longPtr = (long*)ptr; 
-      longPtr--; 
-      free(longPtr);
-    }
-  }
-}
-
-void xfree(void *ptr) {
-  if (ptr != NULL) 
-    xFree(ptr);
-}
-
 void xFreeSizeFunc(void *ptr, size_t size) { 
   xFree(ptr); 
 }

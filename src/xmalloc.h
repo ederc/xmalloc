@@ -566,12 +566,13 @@ static inline size_t xSizeOfAddr(const void *addr) {
  * GENERAL MALLOC AND FREE STUFF
  ********************************************************/
 /**
- * @fn static inline void* xMalloc(const size_t size);
+ * @fn static inline void* xMalloc(const size_t size)
  *
  * @brief Allocates memory of size class @var size .
  *
- * @param size Const @var size_t giving size class. It is assumed that @var size
- * > 0.
+ * @param size Const @var size_t giving size class. 
+ *
+ * @note It is assumed that @var size > 0.
  *
  */
 static inline void* xMalloc(const size_t size) {
@@ -589,22 +590,51 @@ static inline void* xMalloc(const size_t size) {
 }
 
 /**
- * @fn static inline void* xmalloc(const size_t size);
+ * @fn static inline void* xmalloc(const size_t size)
  *
  * @brief Allocates memory of size class @var size .
  *
  * @param size Const @var size_t giving size class. @var size can be 0.
  *
  */
-void* xmalloc(const size_t size) {
+static inline void* xmalloc(const size_t size) {
   if (size > 0)
     return xMalloc(size);
   else
     return NULL;
 }
 
-void xFree(void *ptr);
-void xfree(void *ptr);
+/**
+ * @fn static inline void xFree(void *addr)
+ *
+ * @brief Frees memory stored at address @var addr .
+ *
+ * @param addr address of memory to be deleted. 
+ *
+ * @note It is assumed that @var addr != NULL.
+ *
+ */
+static inline void xFree(void *addr) {
+  if (xIsPageAddr(addr))
+    xFreePageAddr(addr); // TOODOO
+  else
+    xFreeLargeAddr(addr); // TOODOO
+}
+
+/**
+ * @fn static inline void xfree(void *addr)
+ *
+ * @brief Frees memory stored at address @var addr .
+ *
+ * @param addr address of memory to be deleted. 
+ *
+ * @note If @var addr == NULL, then freeing does not take place.
+ *
+ */
+static inline void xfree(void *addr) {
+  if(NULL != addr)
+    xFree(addr);
+}
 
 void xFreeSizeFunc(void *ptr, size_t size);
 
