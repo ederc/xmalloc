@@ -56,6 +56,23 @@ static inline void* xMalloc0(size_t size) {
   return ptr; 
 }
 
+/************************************************
+ * ALLOCATION AND FREEING OF SPECIAL BINS
+ * NOTE: This needs to be located here since
+ *       it depends on xMalloc()
+ ***********************************************/
+/**
+ * @fn xBin xGetSpecBin(size_t size);
+ *
+ * @brief Returns a special bin for monomial handling
+ *
+ * @param size @var size_t size class of the monomials
+ *
+ */
+xBin xGetSpecBin(size_t size);
+
+void xUnGetSpecBin(xBin *bin);
+
 
 static inline void* xRealloc0(void *oldPtr, size_t newSize) {
   void *newPtr = xMalloc0(newSize);

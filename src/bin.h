@@ -22,6 +22,14 @@
 #include "src/align.h"
 
 /************************************************
+ * NOTE: The functionality of getting and freeing
+ *       xSpecBins must be located in xmalloc.*
+ *       since it depends on xMalloc(), etc.
+ ***********************************************/
+// xBin xGetSpecBin(size_t size); => see xmalloc.h
+// void xUnGetSpecBin(xBin *bin); => see xmalloc.h
+
+/************************************************
  * LIST HANDLING FOR SPECIAL BINS
  ***********************************************/
 /**
@@ -104,21 +112,6 @@ static inline void* xFindInList(xBin bin, long numberBlocks) {
   }
   return NULL;
 }
-
-/************************************************
- * ALLOCATION AND FREEING OF SPECIAL BINS
- ***********************************************/
-/**
- * @fn xBin xGetSpecBin(size_t size);
- *
- * @brief Returns a special bin for monomial handling
- *
- * @param size @var size_t size class of the monomials
- *
- */
-xBin xGetSpecBin(size_t size);
-
-void xUnGetSpecBin(xBin *bin);
 
 /************************************************
  * GET BIN INFORMATION FOR PAGES/ADDRESSES

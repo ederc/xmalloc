@@ -14,6 +14,18 @@
 #include <limits.h>
 #include "src/xmalloc.h"
 
+/************************************************
+ * NOTE: These definitions need to be here since
+ *       the functionality of getting and freeing
+ *       xSpecBins need to be allocated here
+ ***********************************************/
+#define xSmallSize2Bin(size)                              \
+  xSize2Bin[((size)-1) >> __XMALLOC_LOG_SIZEOF_ALIGNMENT]
+
+#define __XMALLOC_LARGE_BIN ((xBin) 1)
+
+
+
 xPage xGetPageFromBlock(void* ptr) {
   unsigned long page  =   (unsigned long) ptr;
   page                &=  ~4095;
@@ -60,6 +72,81 @@ void* xmalloc(size_t size) {
     return xMalloc(size);
   else
     return NULL;
+}
+
+/************************************************
+ * SPEC-BIN STUFF
+ ***********************************************/
+xBin xGetSpecBin(size_t size) {
+  xBin newSpecBin;
+  long numberBlocks;
+  long sizeInWords;
+
+  size  = xAlignSize(size);
+
+  if (size > __XMALLOC_SIZEOF_PAGE) {
+    // large memory chunks
+    // reserve memory for page header
+    numberBlocks  = - (long)
+      ((size + (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_PAGE)) +
+       __XMALLOC_SIZEOF_SYSTEM_PAGE-1) / __XMALLOC_SIZEOF_SYSTEM_PAGE;
+
+    sizeInWords   = ((-numberBlocks * __XMALLOC_SIZEOF_SYSTEM_PAGE) -
+      (__XMALLOC_SIZEOF_SYSTEM_PAGE - __XMALLOC_SIZEOF_PAGE)) /
+      __XMALLOC_SIZEOF_LONG;
+
+    newSpecBin    = __XMALLOC_LARGE_BIN;
+  } else {
+    // small memory chunks
+    // reserve memory for page header
+    numberBlocks  = __XMALLOC_SIZEOF_PAGE / size;
+
+    sizeInWords   = (__XMALLOC_SIZEOF_PAGE % size) / numberBlocks;
+    sizeInWords   = ((size + sizeInWords) &
+      ~(__XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE));
+
+    assert(sizeInWords >= size);
+    assert(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_PAGE);
+
+    sizeInWords = sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG;
+
+    if (size > __XMALLOC_MAX_SMALL_BLOCK_SIZE)
+      newSpecBin  = __XMALLOC_LARGE_BIN;
+    else
+      newSpecBin  = xSmallSize2Bin(size);
+  }
+
+  if (__XMALLOC_LARGE_BIN == newSpecBin ||
+      numberBlocks > newSpecBin->numberBlocks) {
+    xSpecBin specBin  = xFindInSortedList(newSpecBin, numberBlocks);
+
+    // we get a specBin from the list search in above
+    if (NULL != specBin) {
+      (specBin->ref)++;
+      assert(NULL != specBin->bin &&
+          specBin->bin->numberBlocks  ==  specBin->numberBlocks &&
+          specBin->bin->sizeInWords   ==  sizeInWords);
+      return specBin->bin;
+    }
+    // we do not get a specBin from the above list, thus we have to allocate and
+    // register it by hand
+    specBin               = (xSpecBin) xMalloc(sizeof(xSpecBinType));
+    specBin->ref          = 1;
+    specBin->next         = NULL;
+    specBin->numberBlocks = numberBlocks;
+    specBin->bin          = (xBin) xMalloc(sizeof(xBinType));
+    specBin->bin->currentPage   = __XMALLOC_ZERO_PAGE;
+    specBin->bin->lastPage      = NULL;
+    specBin->bin->sizeInWords   = sizeInWords;
+    specBin->bin->numberBlocks  = numberBlocks;
+    // OMALLOC FUNCTIONALITY MISSING
+    // until now we have no concept of a sticky bin in xmalloc
+    // do we really need this?
+    //specBin->bin->sticky        = 0;
+    return specBin->bin;
+  } else {
+    return newSpecBin;
+  }
 }
 
 /*
