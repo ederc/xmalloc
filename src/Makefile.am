@@ -10,7 +10,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 SUBDIRS=
 
 BASIC_HDRS =	\
-	algin.h			\
+	align.h			\
 	data.h 			\
 	globals.h 	\
 	page.h 			\
