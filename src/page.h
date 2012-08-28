@@ -60,9 +60,11 @@ void xPageIndexFault(unsigned long startIndex, unsigned long endIndex);
 /**
  * @fn static inline unsigned long xGetPageShiftOfAddr(const void *addr)
  *
- * @brief Computes the page shift for address \var addr .
+ * @brief Computes the page shift for address @var addr .
  *
  * @param addr Const pointer to the corresponding address
+ *
+ * @return page shift of @var addr
  *
  */
 static inline unsigned long xGetPageShiftOfAddr(const void *addr) {
@@ -73,9 +75,11 @@ static inline unsigned long xGetPageShiftOfAddr(const void *addr) {
 /**
  * @fn static inline unsigned long xGetPageIndexOfAddr(const void *addr)
  *
- * @brief Computes the page index for address \var addr .
+ * @brief Computes the page index for address @var addr .
  *
  * @param addr Const pointer to the corresponding address
+ *
+ * @return page index of @var addr
  *
  */
 static inline unsigned long xGetPageIndexOfAddr(const void *addr) {
@@ -85,9 +89,11 @@ static inline unsigned long xGetPageIndexOfAddr(const void *addr) {
 /**
  * @fn static inline xBin xGetHeadOfBinAddr(const void *addr) {
  *
- * @brief Get head of bin the memory chunk at address \var addr is stored in.
+ * @brief Get head of bin the memory chunk at address @var addr is stored in.
  *
  * @param addr Const pointer to the corresponding address.
+ *
+ * @return @var xPage @var addr is in
  *
  */
 static inline xPage xGetPageOfBinAddr(const void *addr) {
@@ -97,9 +103,11 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
 /**
  * @fn static inline bool xIsPageAddr(const void *addr)
  *
- * @brief Checks if \var addr is an address in the xPages or not.
+ * @brief Checks if @var addr is an address in the xPages or not.
  *
  * @param addr Const pointer to the corresponding address
+ *
+ * @return true if @var addr is handled by xmalloc, false else
  *
  */
 static inline bool xIsPageAddr(const void *addr) {
@@ -113,11 +121,12 @@ static inline bool xIsPageAddr(const void *addr) {
 /**
  * @fn static inline void xAllocFromNonEmptyPage(void *addr, xPage page)
  *
- * @brief Sets \var addr to memory address from the non empty \var xPage \var
+ * @brief Sets @var addr to memory address from the non empty @var xPage @var
  * page.
  *
  * @param addr pointer to the corresponding address.
- * @param page \var xPage the memory should be allocated in.
+ *
+ * @param page @var xPage the memory should be allocated in.
  *
  */
 static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
@@ -129,11 +138,12 @@ static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
 /**
  * @fn void xRegisterPages(void *startAddr, int numberPages)
  *
- * @brief Uses memory chunk of \var numberPages system pages and registers them
- * as \var xPages.
+ * @brief Uses memory chunk of @var numberPages system pages and registers them
+ * as @var xPages.
  *
  * @param startAddr address if the beginning of the memory chunk of continuous
  * system pages.
+ *
  * @param numberPages number of pages in the memory chunk to be registered
  *
  */
@@ -143,24 +153,27 @@ void xRegisterPages(void *startAddr, int numberPages);
  * INLINED PAGE TESTS / ADDRESS HANDLINGS
  ***********************************************/
 /**
- * @fn static inline long xIsAddrPageAligned(void *addr)
+ * @fn static inline bool xIsAddrPageAligned(void *addr)
  *
- * @brief Tests if \var addr is page aligned or not.
+ * @brief Tests if @var addr is page aligned or not.
  *
  * @param addr memory address to be checked
  *
+ * @return true if @var addr is aligned, false else
+ *
  */
-static inline long xIsAddrPageAligned(void *addr) {
+static inline bool xIsAddrPageAligned(void *addr) {
   return (((long) addr & (__XMALLOC_SIZEOF_SYSTEM_PAGE - 1)) == 0);
 }
 
 /**
  * @fn static inline xPage xGetPageOfAddr(void *addr)
  *
- * @brief Returns \var xPage \var addr is included in.
+ * @brief Returns @var xPage @var addr is included in.
  *
  * @param addr memory address to be checked
  *
+ * @return address of @var xPage @var addr is in
  */
 static inline void* xGetPageOfAddr(void *addr) {
   return (void *) ((long) addr & ~(__XMALLOC_SIZEOF_SYSTEM_PAGE - 1));
@@ -169,11 +182,13 @@ static inline void* xGetPageOfAddr(void *addr) {
 /**
  * @fn static inline bool xIsAddrOnPage(void *addr, xPage page)
  *
- * @brief Checks if \var addr is on \var page .
+ * @brief Checks if @var addr is on @var page .
  *
  * @param addr memory address to be checked
- * @param page \var xPage to be checked
  *
+ * @param page @var xPage to be checked
+ *
+ * @return true if @var addr is on @var page , false else
  */
 static inline bool xIsAddrOnPage(void *addr, xPage page) {
   return(xGetPageOfAddr(addr) == page);
@@ -182,11 +197,13 @@ static inline bool xIsAddrOnPage(void *addr, xPage page) {
 /**
  * @fn static inline bool xAreAddressesOnSamePage(void *addr1, void *addr2)
  *
- * @brief Checks if \var addr1 and \var addr2 lie on the same page.
+ * @brief Checks if @var addr1 and @var addr2 lie on the same page.
  *
  * @param addr1 memory address to be checked
+ *
  * @param addr2 memory address to be checked
  *
+ * @return true if @var addr1 and @var addr2 are on the same page, false else
  */
 static inline bool xAreAddressesOnSamePage(void *addr1, void *addr2) {
   return(xGetPageOfAddr(addr1) == xGetPageOfAddr(addr2));

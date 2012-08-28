@@ -24,6 +24,8 @@
  *
  * @param size ñvar size_t aligned for xmalloc
  *
+ * @return aligned size
+ *
  */
 static inline size_t xAlignSize(size_t size) {
   return ((((unsigned long) size) + __XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE) &
@@ -37,6 +39,8 @@ static inline size_t xAlignSize(size_t size) {
  * @brief Checks if @var addr is aligned or not.
  *
  * @param addr address to be checked
+ *
+ * @return true if @var addr is aligned, false else
  *
  */
 static inline bool xAddressIsAligned(void *addr) {

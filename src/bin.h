@@ -76,6 +76,8 @@ static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin) {
  *
  * @param numberBlocks @var long number of blocks in bin, i.e. size class
  * needed for special bin.
+ *
+ * @return address of found xSpecBin, NULL if none is found
  */
 static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
   while (NULL != bin) {
@@ -103,6 +105,8 @@ static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
  *
  * @param numberBlocks @var long number of blocks in bin, i.e. size class
  * needed for special bin.
+ *
+ * @return address of found xSpecBin, NULL if none is found
  */
 static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
   while (NULL != bin) {
@@ -119,10 +123,11 @@ static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
 /**
  * @fn void xInsertPageToBin(xBin bin, xPage page)
  *
- * @brief Inserts the newly allocated \var xPage \var page to \var bin.
+ * @brief Inserts the newly allocated @var xPage @var page to @var bin.
  *
- * @param bin \var xBin the new page becomes a part of
- * @param page \var xPage the new page
+ * @param bin @var xBin the new page becomes a part of
+ *
+ * @param page @var xPage the new page
  *
  */
 void xInsertPageToBin(xBin bin, xPage page);
@@ -130,20 +135,23 @@ void xInsertPageToBin(xBin bin, xPage page);
 /**
  * @fn xPage xAllocNewPageForBin(xBin bin)
  *
- * @brief Allocates a new \var xPage to \var bin.
+ * @brief Allocates a new @var xPage to @var bin.
  *
- * @param bin \var xBin the new page becomes a part of
+ * @param bin @var xBin the new page becomes a part of
  *
+ * @return @var xPage allocated
  */
 xPage xAllocNewPageForBin(xBin bin);
 
 /**
  * @fn xPage xAllocSmallBlockPageForBin()
  *
- * @brief Allocates a new \var xPage for small block free lists.
+ * @brief Allocates a new @var xPage for small block free lists.
  *
  * @note This function does NEITHER subdivide NOR structure the allocated page.
- * This must be done afterwards.
+ * This must be done afterwards
+ *
+ * @return @var xPage allocated.
  *
  */
 xPage xAllocSmallBlockPageForBin();
@@ -151,12 +159,15 @@ xPage xAllocSmallBlockPageForBin();
 /**
  * @fn xPage xAllocBigBlockPagesForBin(int numberNeeded)
  *
- * @brief Allocates new \var xPages for big block memory.
+ * @brief Allocates new @var xPages for big block memory.
  *
  * @param numberNeeded is the number of pages to be allocated.
  *
  * @note This function does NEITHER subdivide NOR structure the allocated pages.
  * This must be done afterwards.
+ *
+ * @return @var xPage representing the first one of @var numberNeeded @var
+ * xPages needed for this allocation
  *
  */
 xPage xAllocBigBlockPagesForBin(int numberNeeded);
@@ -164,10 +175,10 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
 /**
  * @fn void xAllocFromFullPage(void *addr, xBin bin)
  *
- * @brief Sets \var addr to memory address from a newly allocated page.
+ * @brief Sets @var addr to memory address from a newly allocated page.
  *
  * @param addr pointer to the corresponding address.
- * @param bin \var xBin the new page becomes a part of
+ * @param bin @var xBin the new page becomes a part of
  *
  */
 void xAllocFromFullPage(void *addr, xBin bin);
@@ -227,6 +238,8 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
  *
  * @param page Const @var xPage .
  *
+ * @return top @var xBin of @var xPage @var page
+ *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
   return((xBin) ((unsigned long) page->bin)); // TOODOO
@@ -235,9 +248,11 @@ static inline xBin xGetTopBinOfPage(const xPage page) {
 /**
  * @fn xPage xGetPageFromBin(xBin bin)
  *
- * @brief Gets a currently free page from \var bin.
+ * @brief Gets a currently free page from @var bin.
  *
- * @param bin \var xBin the bin the page should be part of
+ * @param bin @var xBin the bin the page should be part of
+ *
+ * @return „current free @var xPage from @var bin
  *
  */
 xPage xGetPageFromBin(xBin bin);
@@ -245,11 +260,11 @@ xPage xGetPageFromBin(xBin bin);
 /**
  * @fn void xInsertPageToBin(xBin bin, xPage page)
  *
- * @brief Inserts the newly allocated \var xPage \var page to \var bin.
+ * @brief Inserts the newly allocated @var xPage @var page to @var bin.
  *
- * @param bin \var xBin the new page becomes a part of
+ * @param bin @var xBin the new page becomes a part of
  *
- * @param page \var xPage the new page
+ * @param page @var xPage the new page
  *
  */
 void xInsertPageToBin(xBin bin, xPage page);

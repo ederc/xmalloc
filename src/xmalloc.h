@@ -503,10 +503,11 @@ static inline size_t xSizeOfAddr(const void *addr);
 /**
  * @fn static inline xBin xGetHeadOfBinAddr(const void *addr)
  *
- * @brief Get head of bin the memory chunk at address \var addr is stored in.
+ * @brief Get head of bin the memory chunk at address @var addr is stored in.
  *
  * @param addr Const pointer to the corresponding address.
  *
+ * @return head of @var xBin @var addr is in
  */
 static inline xBin xGetHeadOfBinAddr(const void *addr) {
   return xGetTopBinOfPage((xPage) xGetPageOfBinAddr(addr));
@@ -515,9 +516,11 @@ static inline xBin xGetHeadOfBinAddr(const void *addr) {
 /**
  * @fn static inline size_t xWordSizeOfBinAddr(const void *addr)
  *
- * @brief Get the word size of the memory chunk stored at address \var addr .
+ * @brief Get the word size of the memory chunk stored at address @var addr .
  *
  * @param addr Const pointer to the corresponding address.
+ *
+ * @return size in words of address @var addr
  *
  */
 static inline size_t xWordSizeOfBinAddr(const void *addr) {
@@ -527,9 +530,11 @@ static inline size_t xWordSizeOfBinAddr(const void *addr) {
 /**
  * @fn static inline size_t xSizeOfBinAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address \var addr .
+ * @brief Get the size of the memory chunk stored at address @var addr .
  *
  * @param addr Const pointer to the corresponding address.
+ *
+ * @return size of address @var addr
  *
  */
 static inline size_t xSizeOfBinAddr(const void *addr) {
@@ -539,10 +544,11 @@ static inline size_t xSizeOfBinAddr(const void *addr) {
 /**
  * @fn static inline size_t xSizeOfLargeAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address \var addr .
+ * @brief Get the size of the memory chunk stored at address @var addr .
  *
  * @param addr Const pointer to the corresponding address.
  *
+ * @return size of address @var addr
  */
 static inline size_t xSizeOfLargeAddr(const void *addr) {
   return *((size_t *) ((char *) addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT));
@@ -551,10 +557,11 @@ static inline size_t xSizeOfLargeAddr(const void *addr) {
 /**
  * @fn static inline size_t xSizeOfAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address \var addr .
+ * @brief Get the size of the memory chunk stored at address @var addr .
  *
  * @param addr Const pointer to the corresponding address.
  *
+ * @return size of address @var addr
  */
 static inline size_t xSizeOfAddr(const void *addr) {
   return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
@@ -571,6 +578,8 @@ static inline size_t xSizeOfAddr(const void *addr) {
  * @brief Allocates memory of size class @var size .
  *
  * @param size Const @var size_t giving size class. 
+ *
+ * @return address of memory allocated
  *
  * @note It is assumed that @var size > 0.
  *
@@ -593,6 +602,8 @@ static inline void* xMalloc(const size_t size) {
  * @fn static inline void* xmalloc(const size_t size)
  *
  * @brief Allocates memory of size class @var size .
+ *
+ * @return address of memory allocated
  *
  * @param size Const @var size_t giving size class. @var size can be 0.
  *
@@ -658,6 +669,7 @@ static inline void* xMalloc0(size_t size) {
  *
  * @param size @var size_t size class of the monomials
  *
+ * @return @var xBin of the @var xSpecBin of size class @var size
  */
 xBin xGetSpecBin(size_t size);
 

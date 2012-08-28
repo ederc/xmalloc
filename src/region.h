@@ -23,10 +23,12 @@
 /**
  * @fn xRegion xAllocNewRegion(int minNumberPages)
  *
- * @brief Allocates a new region with at least \var minNumberPages pages.
+ * @brief Allocates a new region with at least @var minNumberPages pages.
  *
- * @param minNumberPages \var int giving the minimal number of pages the newly
+ * @param minNumberPages @var int giving the minimal number of pages the newly
  * allocated region should consist of
+ *
+ * @return new @var xRegion
  *
  */
 xRegion xAllocNewRegion(int minNumberPages);
@@ -36,7 +38,7 @@ xRegion xAllocNewRegion(int minNumberPages);
  *
  * @brief Removes a region from the list of regions.
  *
- * @param region \var xRegion removed from the list of regions
+ * @param region @var xRegion removed from the list of regions
  *
  */
 static inline void xTakeOutRegion(xRegion region) {
@@ -52,9 +54,9 @@ static inline void xTakeOutRegion(xRegion region) {
  *
  * @brief Inserts a region before another one.
  *
- * @param insert \var xRegion to be inserted
+ * @param insert @var xRegion to be inserted
  *
- * @param before \var xRegion before which a new region has to be inserted
+ * @param before @var xRegion before which a new region has to be inserted
  *
  */
 static inline void xInsertRegionBefore(xRegion insert, xRegion before) {
@@ -71,9 +73,9 @@ static inline void xInsertRegionBefore(xRegion insert, xRegion before) {
  *
  * @brief Inserts a region after another one.
  *
- * @param insert \var xRegion to be inserted
+ * @param insert @var xRegion to be inserted
  *
- * @param after \var xRegion after which a new region has to be inserted
+ * @param after @var xRegion after which a new region has to be inserted
  *
  */
 static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
@@ -88,12 +90,14 @@ static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
 /**
  * @fn xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded)
  *
- * @brief Gets a consecutive memory chunk of \var numberNeeded \var
- * xPages out of \var region.
+ * @brief Gets a consecutive memory chunk of @var numberNeeded @var
+ * xPages out of @var region.
  *
  * @param region is the region the pages are allocated from.
+ *
  * @param numberNeeded is the number of pages to be allocated.
  *
+ * @return first page of the consecutive bunch of @var numberNeeded @var xPages
  */
 xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
 #endif
