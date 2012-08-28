@@ -392,4 +392,32 @@
     </para>
   </sect2>
   </sect1>
+  <sect1>
+    <title>Guidelines for source code documentation for ongoing implementational tasks</title>
+    <sect2>
+      <title>Functionality to be implemented</title>
+      <para>
+        Implementations that need to be migrated from omalloc, but haven't been
+        until now. They are already used in the current code of xmalloc, mostly the
+        line the function appears for the first time is the one highlighted with a trailed
+        <varname>TOODOO</varname> comment. For example,
+        <programlisting>
+        int k = functionStillToBeImplementedInXmalloc(para1, para2); // TOODOO</programlisting>
+      </para>
+    </sect2>
+    <sect2>
+      <title>Functionality from omalloc possibly not used in xmalloc</title>
+      <para>
+        There is functionality in omalloc that will possibly not be part of xmalloc.
+        For a lot of such stuff we need to discuss and think about if we keep them,
+        modify them or remove them completely. Clearly, in the process of creating
+        xmalloc we copy functions from omalloc at some point that include such
+        functionality. This functionality should be commented out in the following
+        way:
+        <programlisting>
+        // OMALLOC FUNCTIONALITY MISSING
+        // functionalityStillMissing = 2;</programlisting>
+      </para>
+    </sect2>
+  </sect1>
 </article>

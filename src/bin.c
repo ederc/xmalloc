@@ -518,9 +518,15 @@ xBin xGetSpecBin(size_t size) {
     specBin->next         = NULL;
     specBin->numberBlocks = numberBlocks;
     specBin->bin          = (xBin) xMalloc(sizeof(xBinType));
-    specBin->bin->currentPage = __XMALLOC_ZERO_PAGE;
+    specBin->bin->currentPage   = __XMALLOC_ZERO_PAGE;
+    specBin->bin->lastPage      = NULL;
+    specBin->bin->sizeInWords   = sizeInWords;
+    specBin->bin->numberBlocks  = numberBlocks;
+    // OMALLOC FUNCTIONALITY MISSING
+    // until now we have no concept of a sticky bin in xmalloc
+    // do we really need this?
+    //specBin->bin->sticky        = 0;
   }
-
   /*
   if (NULL == bin) {
     bin = (xBin)malloc(sizeof(*bin));
