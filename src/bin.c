@@ -11,6 +11,7 @@
 
 xPage xPageForMalloc  = (xPage)1;
 xRegion baseRegion    = NULL;
+xSpecBin baseSpecBin  = NULL;
 
 #if __XMALLOC_SIZEOF_LONG == 8
 struct xBinStruct xStaticBin[] = {
