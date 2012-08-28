@@ -496,7 +496,7 @@ void* xGetNewPage() {
 */
 
 void* xMalloc(const size_t size) {
-  void *addr;
+  void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin bin  = xSmallSize2Bin(size); 
     xAllocFromBin(addr, bin);
