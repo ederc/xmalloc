@@ -71,13 +71,13 @@ static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin) {
  * it returns NULL. Here the list searched through is already sorted by
  * increasing size classes.
  *
- * @param bin @var xBin usually base of special bins, but can be any
+ * @param bin @var xSpecBin usually base of special bins, but can be any
  * @var xSpecBin .
  *
  * @param numberBlocks @var long number of blocks in bin, i.e. size class
  * needed for special bin.
  */
-static inline void* xFindInSortedList(xBin bin, long numberBlocks) {
+static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
   while (NULL != bin) {
     if (bin->numberBlocks >= numberBlocks) {
       if (bin->numberBlocks == numberBlocks)
@@ -98,13 +98,13 @@ static inline void* xFindInSortedList(xBin bin, long numberBlocks) {
  * @var numberBlocks . If there does not exist such a special bin, then
  * it returns NULL. Here the list searched through is possibly not sorted.
  *
- * @param bin @var xBin usually base of special bins, but can be any
+ * @param bin @var xSpecBin usually base of special bins, but can be any
  * @var xSpecBin .
  *
  * @param numberBlocks @var long number of blocks in bin, i.e. size class
  * needed for special bin.
  */
-static inline void* xFindInList(xBin bin, long numberBlocks) {
+static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
   while (NULL != bin) {
     if (bin->numberBlocks == numberBlocks)
       return bin;
@@ -219,7 +219,7 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
 /************************************************
  * DEBUGGING INFORMATION
  ***********************************************/
-#ifdef __XMALLOC_DEBUG
+//#ifdef __XMALLOC_DEBUG
 /**
  * @fn static inline xBin xGetTopBinOfPage(const xPage page) {
  *
@@ -229,7 +229,7 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
-  return((xBin) ((unsigned long) page->debugBin)); // TOODOO
+  return((xBin) ((unsigned long) page->bin)); // TOODOO
 }
 
 /**
@@ -253,5 +253,5 @@ xPage xGetPageFromBin(xBin bin);
  *
  */
 void xInsertPageToBin(xBin bin, xPage page);
-#endif
+//#endif
 #endif

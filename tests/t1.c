@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <xmalloc-config.h>
-#include "src/xmalloc.h"
+#include "../src/xmalloc.h"
 
 int main()
 {
@@ -19,7 +19,7 @@ int main()
     xBin b=xGetSpecBin(i);
     void *p=xMalloc(i);
     if ((i>b->sizeInWords*4)
-    || (b->sizeInWords*4!=xSizeOfAddr(p)))
+    || (b->sizeInWords*4 != (long) xSizeOfAddr(p)))
       printf(" %d (%d vs %d)\n",i,((int) b->sizeInWords)*4,(int) xSizeOfAddr(p));
     xFree(p);
   }

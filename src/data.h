@@ -81,9 +81,7 @@ struct xPageStruct {
    xPage    prev;             /**< previous page in the free list */
    xPage    next;             /**< next page in the free list */
    xRegion  region;           /**< region this page comes from */
-#ifdef __XMALLOC_DEBUG
-   void*    debugBin;         /**< sticky bin of this page */
-#endif
+   void*    bin;              /**< bin of this page */
 };
 
 /**

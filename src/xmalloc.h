@@ -41,6 +41,72 @@ static inline size_t xSizeOfBinAddr(const void *addr);
 static inline size_t xSizeOfAddr(const void *addr);
 #endif
 */
+
+/*********************************************************
+ * DEBUGGING INFORMATION
+ ********************************************************/
+//#ifdef __XMALLOC_DEBUG
+/**
+ * @fn static inline xBin xGetHeadOfBinAddr(const void *addr)
+ *
+ * @brief Get head of bin the memory chunk at address \var addr is stored in.
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline xBin xGetHeadOfBinAddr(const void *addr) {
+  return xGetTopBinOfPage((xPage) xGetPageOfBinAddr(addr));
+}
+
+/**
+ * @fn static inline size_t xWordSizeOfBinAddr(const void *addr)
+ *
+ * @brief Get the word size of the memory chunk stored at address \var addr .
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline size_t xWordSizeOfBinAddr(const void *addr) {
+  return xGetHeadOfBinAddr(addr)->sizeInWords;
+}
+
+/**
+ * @fn static inline size_t xSizeOfBinAddr(const void *addr)
+ *
+ * @brief Get the size of the memory chunk stored at address \var addr .
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline size_t xSizeOfBinAddr(const void *addr) {
+  return(xWordSizeOfBinAddr(addr) << __XMALLOC_LOG_SIZEOF_LONG);
+}
+
+/**
+ * @fn static inline size_t xSizeOfLargeAddr(const void *addr)
+ *
+ * @brief Get the size of the memory chunk stored at address \var addr .
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline size_t xSizeOfLargeAddr(const void *addr) {
+  return *((size_t *) ((char *) addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT));
+}
+
+/**
+ * @fn static inline size_t xSizeOfAddr(const void *addr)
+ *
+ * @brief Get the size of the memory chunk stored at address \var addr .
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ */
+static inline size_t xSizeOfAddr(const void *addr) {
+  return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
+}
+//#endif
+
 void* xMalloc(size_t size);
 void* xmalloc(size_t size);
 void xFree(void *ptr);
@@ -116,71 +182,6 @@ static inline void* xMemDup(void *str) {
   memcpy(newPtr, str, oldSize);
   return newPtr;
 }
-
-/*********************************************************
- * DEBUGGING INFORMATION
- ********************************************************/
-#ifdef __XMALLOC_DEBUG
-/**
- * @fn static inline xBin xGetHeadOfBinAddr(const void *addr)
- *
- * @brief Get head of bin the memory chunk at address \var addr is stored in.
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline xBin xGetHeadOfBinAddr(const void *addr) {
-  return xGetTopBinOfPage((xPage) xGetPageOfBinAddr(addr));
-}
-
-/**
- * @fn static inline size_t xWordSizeOfBinAddr(const void *addr)
- *
- * @brief Get the word size of the memory chunk stored at address \var addr .
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline size_t xWordSizeOfBinAddr(const void *addr) {
-  return xGetHeadOfBinAddr(addr)->sizeInWords;
-}
-
-/**
- * @fn static inline size_t xSizeOfBinAddr(const void *addr)
- *
- * @brief Get the size of the memory chunk stored at address \var addr .
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline size_t xSizeOfBinAddr(const void *addr) {
-  return(xWordSizeOfBinAddr(addr) << __XMALLOC_LOG_SIZEOF_LONG);
-}
-
-/**
- * @fn static inline size_t xSizeOfLargeAddr(const void *addr)
- *
- * @brief Get the size of the memory chunk stored at address \var addr .
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline size_t xSizeOfLargeAddr(const void *addr) {
-  return *((size_t *) ((char *) addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT));
-}
-
-/**
- * @fn static inline size_t xSizeOfAddr(const void *addr)
- *
- * @brief Get the size of the memory chunk stored at address \var addr .
- *
- * @param addr Const pointer to the corresponding address.
- *
- */
-static inline size_t xSizeOfAddr(const void *addr) {
-  return(xIsPageAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
-}
-#endif
 
 //void xInfo();
 
