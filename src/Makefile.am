@@ -20,6 +20,7 @@ BASIC_HDRS =	\
 	xmalloc.h
 
 SOURCES=		\
+	globals.c	\
 	page.c		\
 	bin.c			\
 	region.c	\

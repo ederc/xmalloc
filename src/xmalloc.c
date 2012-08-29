@@ -14,6 +14,7 @@
 #include <limits.h>
 #include "src/xmalloc.h"
 
+extern xBin __XMALLOC_LARGE_BIN;
 
 xPage xGetPageFromBlock(void* ptr) {
   unsigned long page  =   (unsigned long) ptr;

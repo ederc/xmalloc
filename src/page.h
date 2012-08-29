@@ -101,7 +101,7 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline bool xIsPageAddr(const void *addr)
+ * @fn static inline bool xIsBinAddr(const void *addr)
  *
  * @brief Checks if @var addr is an address in the xPages or not.
  *
@@ -110,7 +110,7 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
  * @return true if @var addr is handled by xmalloc, false else
  *
  */
-static inline bool xIsPageAddr(const void *addr) {
+static inline bool xIsBinAddr(const void *addr) {
   register unsigned long testAddr = xGetPageIndexOfAddr(addr);
   return((testAddr >= xMinPageIndex) &&
          (testAddr <= xMaxPageIndex) && 
