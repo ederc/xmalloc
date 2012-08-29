@@ -658,12 +658,13 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  =  ../src/xDataStructures.h  \
-                          ../src/xSystem.h          \
-                          ../src/xGlobals.h         \
-                          ../src/xPage.h            \
-                          ../src/xBin.h             \
-                          ../src/xRegion.h          \
+INPUT                  =  ../src/data.h           \
+                          ../src/align.h          \
+                          ../src/system.h         \
+                          ../src/globals.h        \
+                          ../src/page.h           \
+                          ../src/bin.h            \
+                          ../src/region.h         \
                           ../src/xmalloc.h
 
 # This tag can be used to specify the character encoding of the source files

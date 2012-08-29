@@ -37,8 +37,11 @@ install-data-local:
 uninstall-hook:
 	rm -rf $(DESTDIR)$(refdocdir)
 
+clean-local:
+	rm -rf $(builddir)/html $(builddir)/latex
+
 maintainer-clean-local:
-	rm -rf $(builddir)/html
+	rm -rf $(builddir)/html $(builddir)/latex
 
 dist-hook:
 	mkdir -p $(distdir)/html
