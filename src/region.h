@@ -1,5 +1,5 @@
 /**
- * @file   xRegion.h
+ * @file   region.h
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   August 2012
  * @brief  Region handlers for xmalloc.

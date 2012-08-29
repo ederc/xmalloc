@@ -1,5 +1,5 @@
 /**
- * @file   xRegion.c 
+ * @file   region.c 
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   August 2012
  * @brief  General source file for non-inline region handling functions.

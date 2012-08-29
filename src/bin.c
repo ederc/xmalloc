@@ -1,5 +1,5 @@
 /**
- * @file   xBin.c
+ * @file   bin.c
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  General source file for non-inline bin handling functions.
@@ -201,4 +201,29 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
     xInsertRegionBefore(region, xBaseRegion);
   }
   return page;
+
+/**********************************************
+ * PAGE FREEING
+ *********************************************/
+void xFreeToPageFault(xPage page, void *addr) {
+  assert(page->numberUsedBlocks <= 0L);
+  xBin bin  = xGetBinOfPage(page); // TOODOO
+  if ((NULL != page->current) || (bin->numberBlocks <= 1)) {
+    // collect all blocks of page
+    xTakeOutPage(page, bin); // TOODOO
+    // page can be freed
+    if (bin->numberBlocks > 0)
+      xFreePage(page); // TOODOO
+    else
+      xFreePages(page, - bin->numberBlocks); // TOODOO
+  } else {
+    // page was full
+    page->current           = addr;
+    page->numberUsedBlocks  = bin->numberBlocks - 2;
+    *((void **) addr)       = NULL;
+    xTakeOutPage(page, bin); // TOODOO
+    xInsertPageToBin(bin->lastPage, page, bin);
+  }
+}
+
 }

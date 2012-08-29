@@ -1,5 +1,5 @@
 /**
- * @file   xDataStructures.h
+ * @file   data.h
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  Basic data structures needed for xmalloc.
@@ -98,6 +98,7 @@ struct xBinStruct {
   long    numberBlocks; /**< Maximum number of blocks per page w.r.t. the size 
                              class: If > 0 => #blocks per page
                                     If < 0 => #pages per block */
+  unsigned long sticky; /**< sticky tag of bin */
 };
 
 /**

@@ -1,5 +1,5 @@
 /**
- * @file   xPage.c 
+ * @file   page.c 
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  General source file for non-inline page handling functions.
@@ -15,6 +15,7 @@ struct xPageStruct __XMALLOC_ZERO_PAGE[] = {{0, NULL, NULL, NULL, NULL}};
 unsigned long xMinPageIndex = ULLONG_MAX;
 unsigned long xMaxPageIndex = 0;
 unsigned long *xPageShifts = NULL;
+
 
 /**********************************************
  * PAGE REGISTRATION

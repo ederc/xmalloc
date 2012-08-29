@@ -1,5 +1,5 @@
 /**
- * @file   xGlobals.h
+ * @file   globals.h
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  Global variables needed for xmalloc.

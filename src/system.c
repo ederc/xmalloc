@@ -1,5 +1,5 @@
 /**
- * @file   xSystem.c
+ * @file   system.c
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   August 2012
  * @brief  Source file for system allocations in xmalloc.

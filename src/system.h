@@ -1,5 +1,5 @@
 /**
- * @file   xSystem.h
+ * @file   system.h
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   August 2012
  * @brief  System allocation calls for xmalloc.

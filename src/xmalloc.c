@@ -109,10 +109,7 @@ xBin xGetSpecBin(size_t size) {
     specBin->bin->lastPage      = NULL;
     specBin->bin->sizeInWords   = sizeInWords;
     specBin->bin->numberBlocks  = numberBlocks;
-    // OMALLOC FUNCTIONALITY MISSING
-    // until now we have no concept of a sticky bin in xmalloc
-    // do we really need this?
-    //specBin->bin->sticky        = 0;
+    specBin->bin->sticky        = 0;
     return specBin->bin;
   } else {
     return newSpecBin;

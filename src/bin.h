@@ -1,10 +1,13 @@
 /**
- * @file   xBin.h
+ * @file   bin.h
  * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * @date   August 2012
  * @brief  Bin handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
+ * @note   There are some page based functions implemented in the bin.* 
+ *         files since they depend internally on the strong page <-> bin
+ *         connection.
  */
 
 #ifndef XMALLOC_BIN_H
@@ -28,6 +31,68 @@
  ***********************************************/
 // xBin xGetSpecBin(size_t size); => see xmalloc.h
 // void xUnGetSpecBin(xBin *bin); => see xmalloc.h
+
+/************************************************
+ * FREEING OPERATIONS CONCERNING PAGES: THOSE 
+ * DEPEND ON BINS => THEY ARE IMPLEMENTED HERE
+ ***********************************************/
+/**
+ * @fn void xFreeToPageFault(xPage page, void *addr)
+ *
+ * @brief If there was a problem in @var xFreeToPage() this function has to
+ * take care of the freeing: At the point this function is called we already
+ * know that @var page->numberUsedBlocks <= 0.
+ * There are 3 different strategies on what to do with pages which were full and
+ * have a free block now:
+ * 1. Insert at the end ( default ).
+ * 2. Insert after @var current_page
+ *    => #define __XMALLOC_PAGE_AFTER_CURRENT
+ * 3. Insert before @var current_page , i.e. let it be the new current page
+ *    => #define __XMALLOC_PAGE_BEFORE_CURRENT
+ *
+ * @param page \c xPage the freed memory should be given to
+ *
+ * @param addr memory address to be checked
+ *
+ */
+void xFreeToPageFault(xPage page, void *addr); // TOODOO
+
+/**
+ * @fn static inline void xFreeToPage(xPage page, void *addr)
+ *
+ * @brief Frees memory at @var addr to @c xPage @var page .
+ *
+ * @param page @c xPage the freed memory should be given to
+ *
+ * @param addr memory address to be checked
+ *
+ */
+static inline void xFreeToPage(xPage page, void *addr) {
+  if (page->numberUsedBlocks > 0L) {
+    *((void **) addr) = page->current;
+    page->current     = addr;
+  } else {
+    xFreeToPageFault(page, addr);
+  }
+}
+
+/************************************************
+ * STICKY BUSINESS OF BINS
+ ***********************************************/
+/**
+ * @fn static inline bool xIsStickyBin(xBin bin)
+ *
+ * @brief Tests if @var bin is sticky or not.
+ *
+ * @param bin @var xBin to be tested
+ *
+ * @return true if @var bin is sticky, false else
+ *
+ */
+static inline bool xIsStickyBin(xBin bin) {
+  return (bin->sticky >= __XMALLOC_SIZEOF_VOIDP);
+}
+
 
 /************************************************
  * LIST HANDLING FOR SPECIAL BINS
@@ -232,7 +297,7 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
  ***********************************************/
 //#ifdef __XMALLOC_DEBUG
 /**
- * @fn static inline xBin xGetTopBinOfPage(const xPage page) {
+ * @fn static inline xBin xGetTopBinOfPage(const xPage page)
  *
  * @brief Get top bin the page @var page .
  *
@@ -242,7 +307,28 @@ static inline void xAlloc0FromBin(void *addr, xBin bin) {
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
-  return((xBin) ((unsigned long) page->bin)); // TOODOO
+  return((xBin) ((unsigned long) page->bin));
+}
+
+/**
+ * @fn static inline xBin xGetBinOfPage(const xPage page)
+ *
+ * @brief Get top bin the page @var page .
+ *
+ * @param page Const @var xPage .
+ *
+ * @return top @var xBin of @var xPage @var page
+ *
+ */
+static inline xBin xGetBinOfPage(const xPage page) {
+  unsigned long sticky  = xGetStickyOfPage(page);
+  xBin bin              = xGetTopBinOfPage(page);
+
+  if (!xIsStickyBin(bin)) // TOODOO
+    while ((bin->sticky != sticky) && (NULL != bin->next))
+      bin = bin->next;
+
+  return bin;
 }
 
 /**
