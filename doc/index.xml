@@ -56,11 +56,17 @@
     </caution>
   </sect1>
   <sect1>
+    <title>General structure of xmalloc</title>
+    <para>
+      xmalloc consists of a quite special structure due to the strong interlocking
+      of its basic data structures.
+    </para>
+  <sect2>
     <title>Basic data structures in xmalloc</title>
     <para>
       xmalloc is mainly based on 3 data structures.
     </para>
-  <sect2>
+  <sect3>
     <title>xRegions, pools of system pages</title>
     <para>
       <type>xRegion</type>s are the largest objects of continuous
@@ -72,8 +78,8 @@
       represent pools of memory for xmalloc from which it can get memory quite
       fast.
     </para>
-  </sect2>
-  <sect2>
+  </sect3>
+  <sect3>
     <title>xBins, free lists of same sized memory chunks</title>
     <para>
       Since the emphasis of xmalloc lies in allocating and freeing lots of
@@ -100,8 +106,8 @@
       calculated beforehand without any bigger overhead, making later checks of
       available free memory faster.
     </para>
-  </sect2>
-  <sect2>
+  </sect3>
+  <sect3>
     <title>xPages, system pages with special headers</title>
     <para>
       For handling the pages in xmalloc a so-called <type>xPage</type>
@@ -112,6 +118,76 @@
       xPage</type> corresponds to an entry in a free list of an <type>
       xBin</type>.
     </para>
+  </sect3>
+  </sect2>
+  <sect2>
+    <title>Folder structure of xmalloc</title>
+    <orderedlist>
+    <listitem>
+    <para>
+      In the <filename>include/</filename> folder <filename>
+      xmalloc-config.h</filename> is located. This header file consists
+      of macros defined by <function>./configure</function>. Here system
+      resp. architecture-dependent data is defined.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The main files of xmalloc are located in <filename>src/</filename>.
+      There one finds all functionality of xmalloc. The files <filename>
+      page.*</filename>, <filename>bin.*</filename> and <filename>region.*
+      </filename> implement all functions depending on the above mentioned
+      3 data types. Note that due to the strong interlocking, especially
+      between <type>xPage</type> and <type>xBin</type> some functions
+      concerning <type>xPage</type>s are located in <filename>bin.*
+      </filename> since they highly depend on <type>xBin</type>s, too.
+    </para>
+    <para>
+      The above mentioned data types and corresponding relatives are
+      defined in <filename>data.h</filename>. In <filename>globals.*
+      </filename> most of the global variables that could not be pre-
+      defined by <function>./configure</function> in <filename>
+      include/xmalloc-config.h</filename> are located. General functionality
+      for system calls and alignments are found in <filename>system.*</filename>
+      resp. <filename>align.*</filename>
+    </para>
+    <para>
+      Here is a simplified graph of the interconnections in the <filename>
+      src/</filename> folder:
+      <programlisting>
+                            data.h
+                              |
+                              |
+                system.h  globals.h  align.h
+                        \     |     /
+                         \    |    /
+                           region.h
+                            /    \
+                           /      \
+                        bin.h --- page.h
+                           \      /
+                            \    /
+                           xmalloc.h</programlisting>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The <filename>tests/</filename> folder consists of unit tests and bigger
+      tests for xmalloc functionality. Those tests are performed and rated
+      during a <function>make check</function>. For tests depending or
+      generating huge amounts of data, the subfolder <filename>
+      tests/data/</filename> is used.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The complete documentation is found in the <filename>doc/</filename> folder.
+      This includes not only this html-only overview of xmalloc, but also a
+      complete <ulink url="http://www.stack.nl/~dimitri/doxygen/">Doxygen</ulink>-generated
+      reference in html as well as in tex format.
+    </para>
+    </listitem>
+    </orderedlist>
   </sect2>
   </sect1>
   <sect1>
@@ -171,7 +247,7 @@
     <para>
       The boundaries of the memory allocated and handled by xmalloc are given by
       <varname>xMinPageIndex</varname> and <varname>xMaxPageIndex</varname>,
-      initially defined in <filename>include/xGlobals.h</filename> by
+      initially defined in <filename>include/globals.h</filename> by
       <programlisting>
         xMinPageIndex = ULLONG_MAX   // max. unsigned long value
         xMinPageIndex = 0</programlisting>
