@@ -101,12 +101,10 @@ xBin xGetSpecBin(size_t size) {
     // we do not get a specBin from the above list, thus we have to allocate and
     // register it by hand
     specBin               = (xSpecBin) xMalloc(sizeof(xSpecBinType));
-    printf("%p -- %ld\n",specBin, sizeof(xSpecBinType));
     specBin->ref          = 1;
     specBin->next         = NULL;
     specBin->numberBlocks = numberBlocks;
     specBin->bin          = (xBin) xMalloc(sizeof(xBinType));
-    printf("%p -- %ld\n",specBin->bin, sizeof(xBinType));
     specBin->bin->currentPage   = __XMALLOC_ZERO_PAGE;
     specBin->bin->lastPage      = NULL;
     specBin->bin->sizeInWords   = sizeInWords;

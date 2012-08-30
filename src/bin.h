@@ -230,21 +230,21 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
  * @param bin @var xBin* the new page becomes a part of
  *
  */
-static inline void xInsertPageToBin(xPage page, xBin* bin) {
-  if (__XMALLOC_ZERO_PAGE == (*bin)->currentPage) {
+static inline void xInsertPageToBin(xPage page, xBin bin) {
+  if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
     page->prev          = NULL;
     page->next          = NULL;
-    (*bin)->currentPage = page;
-    (*bin)->lastPage    = page;
+    bin->currentPage = page;
+    bin->lastPage    = page;
   } else {
-    if ((*bin)->currentPage == (*bin)->lastPage) {
-      (*bin)->lastPage = page;
+    if (bin->currentPage == bin->lastPage) {
+      bin->lastPage = page;
     } else {
-      (*bin)->currentPage->next->prev  = page;
+      bin->currentPage->next->prev  = page;
     }
-    page->next                = (*bin)->currentPage->next;
-    (*bin)->currentPage->next = page;
-    page->prev                = (*bin)->currentPage;
+    page->next                = bin->currentPage->next;
+    bin->currentPage->next = page;
+    page->prev                = bin->currentPage;
   }
 }
 
@@ -301,25 +301,24 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * @return address of allocated memory
  *
  */
-static inline void* xAllocFromFullPage(xBin* bin) {
+static inline void* xAllocFromFullPage(xBin bin) {
   xPage newPage;
-  if (__XMALLOC_ZERO_PAGE != (*bin)->currentPage) {
-    (*bin)->currentPage->numberUsedBlocks  = 0;
+  if (__XMALLOC_ZERO_PAGE != bin->currentPage) {
+    bin->currentPage->numberUsedBlocks  = 0;
   }
 
-  if(!(*bin)->sticky && (NULL != (*bin)->currentPage->next)) {
-    assert(NULL != (*bin)->currentPage->next->current);
-    newPage = (*bin)->currentPage->next;
+  if(!bin->sticky && (NULL != bin->currentPage->next)) {
+    assert(NULL != bin->currentPage->next->current);
+    newPage = bin->currentPage->next;
   } else {
-    newPage = xAllocNewPageForBin(*bin);
+    newPage = xAllocNewPageForBin(bin);
     assert((NULL != newPage) && (newPage != __XMALLOC_ZERO_PAGE) &&
            (NULL != newPage->current));
-    printf("new page %p\n",newPage);
     assert(NULL != newPage);
     xInsertPageToBin(newPage, bin);
   }
 
-  (*bin)->currentPage  = newPage;
+  bin->currentPage  = newPage;
   return xAllocFromNonEmptyPage(newPage);
 }
 
@@ -353,9 +352,8 @@ static inline void xFreeBin(void *addr) {
  * @return address of allocated memory
  *
  */
-static inline void* xAllocFromBin(xBin* bin) {
-  register xPage page = (*bin)->currentPage;
-  printf("current %p\n",page->current);
+static inline void* xAllocFromBin(xBin bin) {
+  register xPage page = bin->currentPage;
   if (page->current != NULL)
     return xAllocFromNonEmptyPage(page);
   else
