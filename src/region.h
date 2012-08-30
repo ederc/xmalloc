@@ -19,6 +19,21 @@
 #include "src/globals.h"
 #include "src/bin.h"
 #include "src/align.h"
+#include "src/system.h"
+
+/**
+ * @fn static inline bool xIsRegionEmpty(xRegion region)
+ *
+ * @brief Tests if @var region is empty or not
+ *
+ * @param region @var xRegion to be checked
+ *
+ * @return true if @var region is empty, false else
+ *
+ */
+static inline bool xIsRegionEmpty(xRegion region) {
+  return ((NULL == region->current) && (NULL == region->initAddr));
+}
 
 /**
  * @fn xRegion xAllocNewRegion(int minNumberPages)
@@ -100,4 +115,35 @@ static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
  * @return first page of the consecutive bunch of @var numberNeeded @var xPages
  */
 xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
+
+/**
+ * @fn static inline void xFreeRegion(xRegion region)
+ *
+ * @brief Frees @var region
+ *
+ * @param region to be freed.
+ *
+ */
+static inline void xFreeRegion(xRegion region) {
+  assert((NULL != region) && (0 == region->numberUsedPages));
+  xUnregisterPagesFromRegion(region->addr, region->totalNumberPages);
+  xVfreeToSystem(region->addr, region->totalNumberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
+  xFreeSizeToSystem(region);
+}
+
+/************************************************
+ * FREEING OPERATIONS CONCERNING PAGES
+ ***********************************************/
+/**
+ * @fn void xFreePagesFromBin(xPage page, int quantity)
+ *
+ * @brief Frees @var quantity @var xPages from region starting at @var page .
+ *
+ * @param page @var xPage starting point of freeing
+ *
+ * @param quantity @var int number of pages to be freed
+ *
+ */
+void xFreePagesFromRegion(xPage page, int quantity);
+
 #endif

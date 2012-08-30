@@ -58,37 +58,6 @@ xRegion xBaseRegion    = NULL;
 //  //return b->currentPage;
 //}
 
-void xInsertPageToBin(xBin bin, xPage page) {
-  if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
-    page->prev        = NULL;
-    page->next        = NULL;
-    bin->currentPage  = page;
-    bin->lastPage     = page;
-  } else {
-    if (bin->currentPage == bin->lastPage) {
-      bin->lastPage = page;
-    } else {
-      bin->currentPage->next->prev  = page;
-    }
-    page->next              = bin->currentPage->next;
-    bin->currentPage->next  = page;
-    page->prev              = bin->currentPage;
-  }
-}
-
-/************************************************
- * ALLOCATING PAGES IN BINS
- ***********************************************/
-void xAllocFromFullPage(void *addr, xBin bin) {
-  if (__XMALLOC_ZERO_PAGE != bin->currentPage) {
-    bin->currentPage->numberUsedBlocks  = 0;
-  }
-  xPage newPage     = xAllocNewPageForBin(bin);
-  xInsertPageToBin(bin, newPage);
-  bin->currentPage  = newPage;
-  xAllocFromNonEmptyPage(addr, newPage);
-}
-
 /************************************************
  * ALLOCATING PAGES FOR BINS
  ***********************************************/
@@ -201,29 +170,29 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
     xInsertRegionBefore(region, xBaseRegion);
   }
   return page;
+}
 
 /**********************************************
  * PAGE FREEING
  *********************************************/
 void xFreeToPageFault(xPage page, void *addr) {
   assert(page->numberUsedBlocks <= 0L);
-  xBin bin  = xGetBinOfPage(page); // TOODOO
+  xBin bin  = xGetBinOfPage(page);
   if ((NULL != page->current) || (bin->numberBlocks <= 1)) {
     // collect all blocks of page
-    xTakeOutPage(page, bin); // TOODOO
+    xTakeOutPageFromBin(page, bin);
     // page can be freed
     if (bin->numberBlocks > 0)
-      xFreePage(page); // TOODOO
+      xFreePagesFromRegion(page,1);
     else
-      xFreePages(page, - bin->numberBlocks); // TOODOO
+      xFreePagesFromRegion(page, - bin->numberBlocks);
   } else {
     // page was full
     page->current           = addr;
     page->numberUsedBlocks  = bin->numberBlocks - 2;
     *((void **) addr)       = NULL;
-    xTakeOutPage(page, bin); // TOODOO
-    xInsertPageToBin(bin->lastPage, page, bin);
+    xTakeOutPageFromBin(page, bin);
+    xInsertPageToBin(page, bin);
   }
 }
 
-}

@@ -183,10 +183,45 @@ static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
 }
 
 /************************************************
- * GET BIN INFORMATION FOR PAGES/ADDRESSES
+ * HANDLING LISTS OF PAGES / PAGE INFORAMTION
+ * IN BINS
  ***********************************************/
 /**
- * @fn void xInsertPageToBin(xBin bin, xPage page)
+ * @fn void xTakeOutPageFromBin(xPage page, xBin bin)
+ *
+ * @brief Takes @var page out of @var bin.
+ *
+ * @param bin @var xBin the new page is a part of
+ *
+ * @param page @var xPage taken out of @var bin
+ *
+ */
+static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
+  if (bin->currentPage == page) {
+    if (NULL == page->next) {
+      if (NULL == page->prev) {
+        bin->lastPage = NULL;
+        bin->currentPage  = __XMALLOC_ZERO_PAGE;
+        return;
+      }
+      bin->currentPage  = page->prev;
+    } else {
+      bin->currentPage  = page->next;
+    }
+  }
+  if (bin->lastPage == page) {
+    assert((NULL != page->prev) && (NULL == page->next));
+    bin->lastPage = page->prev;
+  } else {
+    assert(NULL != page->next);
+    page->next->prev  = page->prev;
+  }
+  if (NULL != page->prev)
+    page->prev->next  = page->next;
+}
+
+/**
+ * @fn void xInsertPageToBin(xPage page, xBin bin)
  *
  * @brief Inserts the newly allocated @var xPage @var page to @var bin.
  *
@@ -195,7 +230,23 @@ static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
  * @param page @var xPage the new page
  *
  */
-void xInsertPageToBin(xBin bin, xPage page);
+static inline void xInsertPageToBin(xPage page, xBin bin) {
+  if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
+    page->prev        = NULL;
+    page->next        = NULL;
+    bin->currentPage  = page;
+    bin->lastPage     = page;
+  } else {
+    if (bin->currentPage == bin->lastPage) {
+      bin->lastPage = page;
+    } else {
+      bin->currentPage->next->prev  = page;
+    }
+    page->next              = bin->currentPage->next;
+    bin->currentPage->next  = page;
+    page->prev              = bin->currentPage;
+  }
+}
 
 /**
  * @fn xPage xAllocNewPageForBin(xBin bin)
@@ -237,6 +288,9 @@ xPage xAllocSmallBlockPageForBin();
  */
 xPage xAllocBigBlockPagesForBin(int numberNeeded);
 
+/************************************************
+ * ALLOCATING PAGES IN BINS
+ ***********************************************/
 /**
  * @fn void xAllocFromFullPage(void *addr, xBin bin)
  *
@@ -246,8 +300,15 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * @param bin @var xBin the new page becomes a part of
  *
  */
-void xAllocFromFullPage(void *addr, xBin bin);
-
+static inline void xAllocFromFullPage(void *addr, xBin bin) {
+  if (__XMALLOC_ZERO_PAGE != bin->currentPage) {
+    bin->currentPage->numberUsedBlocks  = 0;
+  }
+  xPage newPage     = xAllocNewPageForBin(bin);
+  xInsertPageToBin(newPage, bin);
+  bin->currentPage  = newPage;
+  xAllocFromNonEmptyPage(addr, newPage);
+}
 
 /************************************************
  * FREEING BINS
@@ -342,17 +403,5 @@ static inline xBin xGetBinOfPage(const xPage page) {
  *
  */
 xPage xGetPageFromBin(xBin bin);
-
-/**
- * @fn void xInsertPageToBin(xBin bin, xPage page)
- *
- * @brief Inserts the newly allocated @var xPage @var page to @var bin.
- *
- * @param bin @var xBin the new page becomes a part of
- *
- * @param page @var xPage the new page
- *
- */
-void xInsertPageToBin(xBin bin, xPage page);
 //#endif
 #endif

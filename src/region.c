@@ -27,7 +27,7 @@ xRegion xAllocNewRegion(int minNumberPages) {
   }
 
   // register and initialize the region
-  xRegisterPages(addr, numberPages); // TOODOO
+  xRegisterPagesInRegion(addr, numberPages);
   region->current           = NULL;
   region->prev              = NULL;
   region->next              = NULL;
@@ -73,4 +73,42 @@ xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) { // TOOD
     current = __XMALLOC_NEXT(iter);
   }
   return NULL;
+}
+
+/**********************************************
+ * FREEING OPERATIONS CONCERNING PAGES
+ *********************************************/
+void xFreePagesFromRegion(xPage page, int quantity) {
+  xRegion region          =   page->region;
+  region->numberUsedPages -=  quantity;
+  if (0 == region->numberUsedPages) {
+    if (xBaseRegion == region) {
+      if (NULL != region->next) {
+        xBaseRegion = region->next;
+      } else {
+        xBaseRegion = region->prev;
+      }
+    }
+    xTakeOutRegion(region);
+    xFreeRegion(region);
+  } else {
+    if ((xBaseRegion != region) && xIsRegionEmpty(region)) {
+      xTakeOutRegion(region);
+      xInsertRegionAfter(region, xBaseRegion);
+    }
+    if (quantity > 1) {
+      int i = quantity;
+      char *iterPage = (char *)page;
+
+      while (i > 1) {
+        __XMALLOC_NEXT(iterPage)  = iterPage + __XMALLOC_SIZEOF_SYSTEM_PAGE;
+        iterPage  = __XMALLOC_NEXT(iterPage);
+        i--;
+      }
+      __XMALLOC_NEXT(iterPage)  = region->current;
+    } else {
+      __XMALLOC_NEXT(page)  = region->current;
+    }
+    region->current = (void *)page;
+  }
 }

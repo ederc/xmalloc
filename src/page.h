@@ -22,10 +22,8 @@
 #include "src/data.h"
 #include "src/globals.h"
 #include "src/align.h"
+#include "src/system.h"
 
-
-void xFreeToPageFault(xPage page, void *addr);
-void xPageIndexFault(unsigned long startIndex, unsigned long endIndex);
 
 /***********************************************************************
  *
@@ -138,8 +136,23 @@ static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
   page->current = __XMALLOC_NEXT(page->current);
 }
 
+/************************************************
+ * PAGE REGISTRATION
+ ***********************************************/
 /**
- * @fn void xRegisterPages(void *startAddr, int numberPages)
+ * @fn void xPageIndexFault(unsigned long startIndex, unsigned long endIndex)
+ *
+ * @brief Fixes page indices problems occured during page registrations.
+ *
+ * @param startIndex lower index of region
+ *
+ * @param endIndex higher index of region
+ *
+ */
+void xPageIndexFault(unsigned long startIndex, unsigned long endIndex);
+
+/**
+ * @fn void xRegisterPagesInRegion(void *startAddr, int numberPages)
  *
  * @brief Uses memory chunk of @var numberPages system pages and registers them
  * as @var xPages.
@@ -150,7 +163,21 @@ static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
  * @param numberPages number of pages in the memory chunk to be registered
  *
  */
-void xRegisterPages(void *startAddr, int numberPages);
+void xRegisterPagesInRegion(void *startAddr, int numberPages);
+
+/**
+ * @fn void xUnregisterPagesInRegion(void *startAddr, int numberPages)
+ *
+ * @brief Uses memory chunk of @var numberPages system pages and unregisters
+ * them.
+ *
+ * @param startAddr address if the beginning of the memory chunk of continuous
+ * system pages.
+ *
+ * @param numberPages number of pages in the memory chunk to be unregistered
+ *
+ */
+void xUnregisterPagesFromRegion(void *startAddr, int numberPages);
 
 /************************************************
  * STICKY BIN PAGE BUSINESS
