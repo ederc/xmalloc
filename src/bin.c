@@ -67,11 +67,12 @@ xPage xAllocNewPageForBin(xBin bin) {
   int i = 1;
 
   // block size < page size
+  printf("binNumberBlocks %ld\n",bin->numberBlocks);
   if (bin->numberBlocks > 0)
-    newPage = xAllocSmallBlockPageForBin(); // TOODOO
+    newPage = xAllocSmallBlockPageForBin();
   // block size > page size
   else
-    newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks); // TOODOO
+    newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks);
 
   newPage->numberUsedBlocks = -1;
   newPage->current  = (void*) (((char*) newPage) +
@@ -86,10 +87,11 @@ xPage xAllocNewPageForBin(xBin bin) {
 }
 
 xPage xAllocSmallBlockPageForBin() {
+  printf("drin?\n");
   xPage newPage;
 
   if (NULL == xBaseRegion)
-    xBaseRegion  = xAllocNewRegion(1); // TOODOO
+    xBaseRegion  = xAllocNewRegion(1);
 
   while (1) {
     // current page in region can be used

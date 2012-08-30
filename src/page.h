@@ -120,9 +120,9 @@ static inline bool xIsBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline void xAllocFromNonEmptyPage(void *addr, xPage page)
+ * @fn static inline void xAllocFromNonEmptyPage(xPage page)
  *
- * @brief Sets @var addr to memory address from the non empty @var xPage @var
+ * @brief Sets memory address from the non empty @var xPage @var
  * page.
  *
  * @param page @var xPage the memory should be allocated in.

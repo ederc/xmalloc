@@ -106,6 +106,7 @@ xBin xGetSpecBin(size_t size) {
     specBin->next         = NULL;
     specBin->numberBlocks = numberBlocks;
     specBin->bin          = (xBin) xMalloc(sizeof(xBinType));
+    printf("%p -- %ld\n",specBin->bin, sizeof(xBinType));
     specBin->bin->currentPage   = __XMALLOC_ZERO_PAGE;
     specBin->bin->lastPage      = NULL;
     specBin->bin->sizeInWords   = sizeInWords;
