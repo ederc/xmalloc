@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
-AM_CXXFLAGS = -g -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
+AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
