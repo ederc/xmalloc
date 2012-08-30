@@ -139,7 +139,9 @@ static inline void* xMalloc(const size_t size) {
   void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin bin  = xSmallSize2Bin(size); 
-    xAllocFromBin(addr, bin);
+    assert(NULL != bin);
+    addr  = xAllocFromBin(bin);
+    assert(NULL != addr);
     return addr;
   } else {
      long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);

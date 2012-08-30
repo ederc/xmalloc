@@ -292,22 +292,24 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * ALLOCATING PAGES IN BINS
  ***********************************************/
 /**
- * @fn void xAllocFromFullPage(void *addr, xBin bin)
+ * @fn void xAllocFromFullPage(xBin bin)
  *
- * @brief Sets @var addr to memory address from a newly allocated page.
+ * @brief Returns memory address from a newly allocated page.
  *
- * @param addr pointer to the corresponding address.
  * @param bin @var xBin the new page becomes a part of
  *
+ * @return address of allocated memory
+ *
  */
-static inline void xAllocFromFullPage(void *addr, xBin bin) {
+static inline void* xAllocFromFullPage(xBin bin) {
   if (__XMALLOC_ZERO_PAGE != bin->currentPage) {
     bin->currentPage->numberUsedBlocks  = 0;
   }
-  xPage newPage     = xAllocNewPageForBin(bin);
+  xPage newPage = xAllocNewPageForBin(bin);
+  assert(NULL != newPage);
   xInsertPageToBin(newPage, bin);
   bin->currentPage  = newPage;
-  xAllocFromNonEmptyPage(addr, newPage);
+  return xAllocFromNonEmptyPage(newPage);
 }
 
 /************************************************
@@ -331,26 +333,37 @@ static inline void xFreeBin(void *addr) {
  * ALLOCATING MEMORY FROM BINS
  ***********************************************/
 /**
- * @fn static inline void xAllocFromBin(void *addr, xBin bin)
+ * @fn static inline void xAllocFromBin(xBin bin)
  *
  * @brief Generic memory allocation from @var bin.
  *
- * @param addr memory address the allocated memory is stored in
+ * @param bin @var xBin the bin memory should be allocated from
+ *
+ * @return address of allocated memory
+ *
+ */
+static inline void* xAllocFromBin(xBin bin) {
+  register xPage page = bin->currentPage;
+  if (page->current != NULL)
+    return xAllocFromNonEmptyPage(page);
+  else
+    return xAllocFromFullPage(bin);
+}
+
+/**
+ * @fn static inline void xAlloc0FromBin(xBin bin)
+ *
+ * @brief Generic memory allocation from @var bin , sets to zero.
  *
  * @param bin @var xBin the bin memory should be allocated from
  *
+ * @return address of allocated memory
+ *
  */
-static inline void xAllocFromBin(void *addr, xBin bin) {
-  register xPage page = bin->currentPage;
-  if (page->current != NULL)
-    xAllocFromNonEmptyPage(addr, page);
-  else
-    xAllocFromFullPage(addr, bin);
-}
-
-static inline void xAlloc0FromBin(void *addr, xBin bin) {
-  xAllocFromBin(addr, bin);
+static inline void* xAlloc0FromBin(xBin bin) {
+  void *addr  = xAllocFromBin(bin);
   memset(addr, 0, bin->sizeInWords * __XMALLOC_SIZEOF_LONG);
+  return addr;
 }
 
 /************************************************

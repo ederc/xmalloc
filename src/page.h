@@ -125,15 +125,18 @@ static inline bool xIsBinAddr(const void *addr) {
  * @brief Sets @var addr to memory address from the non empty @var xPage @var
  * page.
  *
- * @param addr pointer to the corresponding address.
- *
  * @param page @var xPage the memory should be allocated in.
  *
+ * @return address of allocated memory
+ *
  */
-static inline void xAllocFromNonEmptyPage(void *addr, xPage page) {
+static inline void* xAllocFromNonEmptyPage(xPage page) {
   page->numberUsedBlocks++;
-  addr          = (void*) page->current;
+  printf("page %p -- page->current %p\n", page, page->current);
+  void *addr  = (void*) page->current;
+  assert(NULL != addr);
   page->current = __XMALLOC_NEXT(page->current);
+  return addr;
 }
 
 /************************************************
