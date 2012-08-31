@@ -61,6 +61,7 @@ static inline size_t xSizeOfAddr(const void *addr);
  * @return head of @var xBin @var addr is in
  */
 static inline xBin xGetHeadOfBinAddr(const void *addr) {
+  printf("gpoba %p\n", xGetPageOfBinAddr(addr));
   return xGetTopBinOfPage((xPage) xGetPageOfBinAddr(addr));
 }
 

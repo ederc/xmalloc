@@ -74,6 +74,7 @@ xPage xAllocNewPageForBin(xBin bin) {
   else
     newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks);
 
+  xSetTopBinAndStickyOfPage(newPage, bin);
   newPage->numberUsedBlocks = -1;
   newPage->current  = (void*) (((char*) newPage) +
                         __XMALLOC_SIZEOF_PAGE_HEADER);

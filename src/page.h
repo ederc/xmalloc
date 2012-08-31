@@ -183,24 +183,6 @@ void xRegisterPagesInRegion(void *startAddr, int numberPages);
 void xUnregisterPagesFromRegion(void *startAddr, int numberPages);
 
 /************************************************
- * STICKY BIN PAGE BUSINESS
- ***********************************************/
-/**
- * @fn static inline unsigned long xGetStickyOfPage(xPage page)
- *
- * @brief Gets sticky of @var xBin of @var page .
- *
- * @param page @var xPage
- *
- * @return sticky of @var page
- *
- */
-static inline unsigned long xGetStickyOfPage(xPage page) {
-  return (((unsigned long) page->bin) &
-      (unsigned long) __XMALLOC_SIZEOF_VOIDP_MINUS_ONE);
-}
-
-/************************************************
  * INLINED PAGE TESTS / ADDRESS HANDLINGS
  ***********************************************/
 /**

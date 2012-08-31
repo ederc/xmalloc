@@ -232,19 +232,20 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
  */
 static inline void xInsertPageToBin(xPage page, xBin bin) {
   if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
-    page->prev          = NULL;
-    page->next          = NULL;
-    bin->currentPage = page;
-    bin->lastPage    = page;
+    assert(NULL == bin->lastPage);
+    page->prev        = NULL;
+    page->next        = NULL;
+    bin->currentPage  = page;
+    bin->lastPage     = page;
   } else {
     if (bin->currentPage == bin->lastPage) {
       bin->lastPage = page;
     } else {
       bin->currentPage->next->prev  = page;
     }
-    page->next                = bin->currentPage->next;
-    bin->currentPage->next = page;
-    page->prev                = bin->currentPage;
+    page->next              = bin->currentPage->next;
+    bin->currentPage->next  = page;
+    page->prev              = bin->currentPage;
   }
 }
 
@@ -380,6 +381,54 @@ static inline void* xAlloc0FromBin(xBin bin) {
  * DEBUGGING INFORMATION
  ***********************************************/
 //#ifdef __XMALLOC_DEBUG
+
+/************************************************
+ * STICKY BIN PAGE BUSINESS
+ ***********************************************/
+/**
+ * @fn static inline unsigned long xGetStickyOfPage(xPage page)
+ *
+ * @brief Gets sticky of @var xBin of @var page .
+ *
+ * @param page @var xPage
+ *
+ * @return sticky of @var page
+ *
+ */
+static inline unsigned long xGetStickyOfPage(xPage page) {
+  return (((unsigned long) page->bin) &
+      (unsigned long) __XMALLOC_SIZEOF_VOIDP_MINUS_ONE);
+}
+
+/**
+ * @fn static inline xBin xSetTopBinAndStickyOfPage(xPage page)
+ *
+ * @brief Set top bin and sticky bin of the page @var page .
+ *
+ * @param page @var xPage .
+ *
+ * @param bin @var xBin .
+ *
+ */
+static inline void xSetTopBinAndStickyOfPage(xPage page, xBin bin) {
+  page->bin = (void *)(((unsigned long)bin->sticky & (__XMALLOC_SIZEOF_VOIDP - 1))
+                  + (unsigned long)bin);
+}
+
+/**
+ * @fn static inline xBin xSetTopBinOfPage(xPage page)
+ *
+ * @brief Set top bin of the page @var page .
+ *
+ * @param page @var xPage .
+ *
+ * @param bin @var xBin .
+ *
+ */
+static inline void xSetTopBinOfPage(xPage page, xBin bin) {
+  page->bin = (void *)((unsigned long)bin + xGetStickyOfPage(page));
+}
+
 /**
  * @fn static inline xBin xGetTopBinOfPage(const xPage page)
  *
@@ -391,7 +440,24 @@ static inline void* xAlloc0FromBin(xBin bin) {
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
+  printf("gtpoba %p\n", page->bin);
   return((xBin) ((unsigned long) page->bin));
+}
+
+/**
+ * @fn static inline void xSetStickyOfPage(xPage page, xBin sBin)
+ *
+ * @brief Sets sticky bin of @var page .
+ *
+ * @param page @var xPage
+ *
+ * @param Bin @var xBin sticky
+ *
+ */
+static inline void xSetStickyOfPage(xPage page, xBin bin) {
+  page->bin = (void *)(((unsigned long)bin->sticky 
+                          & (unsigned long)__XMALLOC_SIZEOF_VOIDP - 1) +
+                        (unsigned long)xGetTopBinOfPage(page));
 }
 
 /**
@@ -413,6 +479,20 @@ static inline xBin xGetBinOfPage(const xPage page) {
       bin = bin->next;
 
   return bin;
+}
+
+/**
+ * @fn static inline void xSetBinOfPage(xPage page, xBin bin)
+ *
+ * @brief Set top bin the page @var page to sticky of @var bin .
+ *
+ * @param page @var xPage .
+ *
+ * @param bin @var xbin .
+ *
+ */
+static inline void xSetBinOfPage(xPage page, xBin bin) {
+  page->bin = (void *)((unsigned long)bin + xGetStickyOfPage(page));
 }
 
 /**
