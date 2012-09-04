@@ -182,7 +182,8 @@ static inline void* xmalloc(const size_t size) {
 static inline void xFreeBinAddr(void *addr) {
   register void *__addr = addr;
   register xPage __page = xGetPageOfAddr(__addr);
-  xFreeToPage(__addr, __page);
+  printf("page1111 %p\n",__page);
+  xFreeToPage(__page, __addr);
 }
 
 /**
