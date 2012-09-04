@@ -9,6 +9,7 @@
 *.orig
 *.swp
 *.lo
+*.res
 .libs
 _configs.sed
 config.h
