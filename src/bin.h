@@ -458,7 +458,7 @@ static inline xBin xGetTopBinOfPage(const xPage page) {
  */
 static inline void xSetStickyOfPage(xPage page, xBin bin) {
   page->bin = (void *)(((unsigned long)bin->sticky 
-                          & (unsigned long)__XMALLOC_SIZEOF_VOIDP - 1) +
+                          & ((unsigned long)__XMALLOC_SIZEOF_VOIDP - 1)) +
                         (unsigned long)xGetTopBinOfPage(page));
 }
 
