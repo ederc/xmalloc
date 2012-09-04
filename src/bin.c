@@ -84,11 +84,11 @@ xPage xAllocNewPageForBin(xBin bin) {
     i++;
   }
   __XMALLOC_NEXT(tmp) = NULL;
+  printf("PAGEUSEDBLOCKS %ld\n", newPage->numberUsedBlocks);
   return newPage;
 }
 
 xPage xAllocSmallBlockPageForBin() {
-  printf("drin?\n");
   xPage newPage;
 
   if (NULL == xBaseRegion)

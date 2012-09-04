@@ -68,6 +68,7 @@ void xFreeToPageFault(xPage page, void *addr); // TOODOO
  *
  */
 static inline void xFreeToPage(xPage page, void *addr) {
+  printf("page %p  :  NrBlocks %ld\n" , page, page->numberUsedBlocks);
   if (page->numberUsedBlocks > 0L) {
     *((void **) addr) = page->current;
     page->current     = addr;
@@ -90,6 +91,7 @@ static inline void xFreeToPage(xPage page, void *addr) {
  *
  */
 static inline bool xIsStickyBin(xBin bin) {
+  printf("bin %p -- sticky %p\n", bin, bin->sticky);
   return (bin->sticky >= __XMALLOC_SIZEOF_VOIDP);
 }
 
@@ -440,7 +442,7 @@ static inline void xSetTopBinOfPage(xPage page, xBin bin) {
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
-  printf("gtpoba %p\n", page->bin);
+  printf("page %p -- gtpoba %p\n", page, page->bin);
   return((xBin) ((unsigned long) page->bin));
 }
 
@@ -473,10 +475,13 @@ static inline void xSetStickyOfPage(xPage page, xBin bin) {
 static inline xBin xGetBinOfPage(const xPage page) {
   unsigned long sticky  = xGetStickyOfPage(page);
   xBin bin              = xGetTopBinOfPage(page);
-
+  printf("bin 1 %p\n", bin);
+  assert(NULL != bin);
   if (!xIsStickyBin(bin)) // TOODOO
     while ((bin->sticky != sticky) && (NULL != bin->next))
       bin = bin->next;
+
+  printf("bin 2 %p\n", bin);
 
   return bin;
 }

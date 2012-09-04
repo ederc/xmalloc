@@ -80,8 +80,8 @@ struct xPageStruct {
    void*    current;          /**< pointer to free list this page is in */  
    xPage    prev;             /**< previous page in the free list */
    xPage    next;             /**< next page in the free list */
-   xRegion  region;           /**< region this page comes from */
    void*    bin;              /**< bin of this page */
+   xRegion  region;           /**< region this page comes from */
 };
 
 /**

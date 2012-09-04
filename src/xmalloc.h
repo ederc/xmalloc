@@ -140,7 +140,6 @@ static inline void* xMalloc(const size_t size) {
   void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin bin  = xSmallSize2Bin(size); 
-    printf("Bin blocks %ld\n", bin->numberBlocks);
     assert(NULL != bin);
     addr  = xAllocFromBin(bin);
     assert(NULL != addr);
@@ -183,7 +182,7 @@ static inline void* xmalloc(const size_t size) {
 static inline void xFreeBinAddr(void *addr) {
   register void *__addr = addr;
   register xPage __page = xGetPageOfAddr(__addr);
-  xFreeToPage(__addr, __page); // TOODOO
+  xFreeToPage(__addr, __page);
 }
 
 /**

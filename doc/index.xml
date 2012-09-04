@@ -191,6 +191,151 @@
   </sect2>
   </sect1>
   <sect1>
+    <title>An overview on how xmalloc allocates and frees memory in general</title>
+    <para>
+      In this section we try to give a general description of how allocates respectively
+      frees memory step-by-step. This is by no means a comprehensive explanation of all
+      subprocesses going on, but it should provide the reader with an overall feeling
+      for the ideas behind xmalloc.
+    </para>
+  <note>
+    <para>
+      Memory of size > 1024 kB is handled by the operating system's memory manager. Of course
+      at some point, e.g. when freeing the memory again, xmalloc needs to decide whether
+      the memory was allocated by xmalloc itself or by the system-wide malloc. We do not
+      consider these distinctions, but focus on memory chunks &le; 1024 kB. There xmalloc's
+      main functionality lies in.
+    </para>
+  </note>
+  <sect2>
+    <title>Memory allocation</title>
+    <para>
+      As in ever memory allocator one has to distinguish between initial memory allocations
+      which consists of lots of steps in order to structure and manage bigger blocks of memory
+      and the general memory allocation which is done rather fast due to the administrative
+      preparations in the beginning.
+    </para>
+    <para>
+      We start with an description of the very first allocations of xmalloc. This we are doing
+      in 3 different parts.
+    </para>
+  <sect3>
+    <title>Allocating memory in the beginning</title>
+    <para>
+      In the following let us assume that an application using xmalloc for its memory
+      management needs to allocate memory of size <varname>m</varname>.
+    </para>
+    <para>
+      On the very first allocations of xmalloc there are no <type>xBin</type>s ready the
+      chunk of memory to be stored can be saved in. There exist predefined arrays of initial
+      <type>xBin</type>s called <varname>xStaticBin</varname>. Those have no initial pages, but are
+      specialised such that xmalloc knows that there need some <type>xPage</type>s to be
+      allocated for the corresponding size class memory of size <varname>m</varname> fits in.
+    </para>
+    <para>
+      Free system pages are stored in the <type>xRegion</type>s. Of course, in the
+      beginning the <type>xRegion</type>s do not have any such page allocated, thus on the first
+      run xmalloc allocates a large chunk of memory consisting of a multiple of the systems
+      page size to such an <type>xRegion</type>.
+    </para>
+    <para>
+      Once this is done the <type>xBin</type> suitable for memory of size <varname>m</varname>
+      can grab a system page from the <type>xRegion</type>, give it a header specialised for
+      xmalloc.
+    </para>
+  </sect3>
+  <sect3 id="initxpages">
+    <title id="initxpages.title">Initializing new xPages</title>
+    <para>
+      It is important to understand how xmalloc initializes <type>xPage</type>s, not only for
+      the allocation process itself, but also for the freeing of memory later on:
+    </para>
+    <para>
+      Each memory of an <type>xPage</type> has a given block size due to the <type>xBin</type>
+      it is allocated to. Each such block can be thought of as described in the following:
+      <programlisting>
+      tmp = page-&gt;current // special situation where tmp points at the current free entry in the xPage
+                          // but one can think of tmp to point at any memory block in the xPage
+               ----------------------------------          ----------------------------------
+      tmp-----&gt;|  *  |  real data of the block  |   /-----&gt;|  *  |  real data of the block  |
+               ---|------------------------------  /       ---|------------------------------
+                  |                               /           |
+               next element----------------------/         next element</programlisting>
+      This initialization is done in function <function>xAllocNewPageForBin()</function> in
+      file <filename>src/bin.c</filename>
+    </para>
+    <para>
+      With this structure it is very easy to achieve the next element in the <type>xPage</type>:
+      Let <varname>tmp</varname> be of type <type>void *</type> and point to any memory block of
+      the <type>xPage</type> as presented in the picture above. If we want to get the address of
+      the next memory block in this page we just need to dereference <varname>tmp</varname>:
+      <programlisting>
+      *(void **)tmp = next element in xPage</programlisting>
+    </para>
+    </sect3>
+    <sect3>
+    <title>Finally, getting the memory address</title>
+    <para>
+      Furthermore, the pointer to the current page to
+      allocate from in this <type>xBin</type> is set to this newly allocated page ( more
+      specific to the first free block behind the header of the <type>xPage</type> ).
+    </para>
+    <para>
+      Next xmalloc can allocate memory of size <varname>m</varname> from this <type>xPage</type>
+      and updates some page data like the number of used blocks, etc.
+    </para>
+    <para>
+      This leads to a description of the general memory allocation procedure taking place.
+    </para>
+  </sect3>
+  <sect3>
+    <title>A usual memory allocation in xmalloc</title>
+    <para>
+      Clearly, the differnt allocations mentioned in the above section are costly
+      computational steps and should be averted as much as possible. The nice fact is that in
+      general xmalloc does not do all these steps when a new block of memory needs to be
+      allocated.
+    </para>
+    <para>
+      In general, the situation is the following: For any size class xmalloc supports the
+      corresponding <type>xBin</type> has already allocated <type>xPage</type>s from the
+      current <type>xRegion</type>. Those <type>xPages</type> might be partially free. Then all
+      xmalloc has to do is to decide via a fast lookup in which size class the memory of size
+      <varname>m</varname>fits in, gets the corresponding <type>xBin</type>. This <type>xBin</type>
+      already knows the address of the current free block in the current <type>xPage</type> of its
+      free list.
+    </para>
+    <para>
+      Furthermore, in some special cases one even knows the corresponding <type>xBin</type> ( e.g. in
+      the case of allocating memory for several monomials in a polynomial ). Then allocating
+      memory in xmalloc can be done in very few cpu cycles.
+    </para>
+  </sect3>
+  </sect2>
+  <sect2>
+    <title>Memory freeing</title>
+    <para>
+      When freeing memory, located at say <varname>addr</varname>, xmalloc needs to find out on
+      which <type>xPage</type> the memory lies.
+      This can be done by a bitmask check. After that we can use the special structure of <type>
+      xPage</type>s described in Section <link linkend="initxpages" endterm="initxpages.title" />:
+    </para>
+    <para>
+      In function <function>xFreeToPage()</function> in <filename>src/bin.h</filename> the pointer to
+      the current free memory block in the page is set via the following instructions:
+      <programlisting>
+      *(void **)addr = page-&gt;current; // set pointer of next element after addr to page-&gt;current
+      page-&gt;current  = addr;</programlisting>
+    </para>
+    <para>
+      So the idea is to use <varname>addr</varname> as new current element in the page. To achieve this we need
+      to set the next element in the page, i.e. the old <varname>page->current</varname>, to be the successor of
+      addr, i.e. <varname>*(void **)addr</varname>. Afterwards it is left to set <varname>page-&gt;current</varname>
+      to <varname>addr</varname>.
+    </para>
+  </sect2>
+  </sect1>
+  <sect1>
     <title>
       How to find out if a chunk of memory is allocated to xmalloc or not?
     </title>

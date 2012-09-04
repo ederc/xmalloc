@@ -82,3 +82,23 @@ body {
   color: #dddd33;
   text-decoration: none;
 }
+
+.link {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.link:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.link:visited {
+  color: #dddd33;
+  text-decoration: none;
+}
