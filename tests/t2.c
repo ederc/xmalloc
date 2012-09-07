@@ -8,7 +8,8 @@
  */
 
 #include <stdio.h>
-#include <xmalloc.h>
+#include <xmalloc-config.h>
+#include "../src/xmalloc.h"
 
 #define X_MAX_SMALL_BLOCK 1012
 
