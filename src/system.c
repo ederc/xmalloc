@@ -32,10 +32,10 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize) {
 }
 
 void* xVallocFromSystem(size_t size) {
-  void *addr  = valloc(size);
+  void *addr  = xValloc(size);
   if (NULL == addr)
     // try it once more
-    addr = valloc(size);
+    addr = xValloc(size);
   return addr; // possibly addr == NULL
 }
 
@@ -47,3 +47,16 @@ void xVfreeToSystem(void *addr, size_t size) {
 void xFreeSizeToSystem(void *addr) {
   free(addr);
 }
+
+void* xValloc(size_t size) {
+#ifdef __XMALLOC_HAVE_MMAP
+  void *addr;
+  addr  = mmap(0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+  if ((void *)-1 == addr)
+    return NULL;
+  return addr;
+#else
+  return __libc_valloc(size);
+#endif
+}
+

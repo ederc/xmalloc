@@ -31,6 +31,9 @@ AC_PROG_CXX
 AC_STDC_HEADERS
 LT_INIT([disable-shared])
 
+# check for mmap, ...
+AC_FUNC_MMAP
+
 AC_ARG_ENABLE([debug],
               [AC_HELP_STRING([--disable-debug],
                               [Disable debug version])],
