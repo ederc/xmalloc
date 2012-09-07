@@ -65,7 +65,9 @@ void xRegisterPagesInRegion(void *startAddr, int numberPages) {
   unsigned long startIndex  = xGetPageIndexOfAddr(startAddr);
   unsigned long endIndex    = xGetPageIndexOfAddr(endAddr);
   unsigned long shift;
-
+#ifdef __XMALLOC_DEBUG
+  printf("registering pages: %ld -- %ld\n",startIndex,endIndex);
+#endif
   // check indices & correct them if necessary
   if (startIndex < xMinPageIndex || endIndex > xMaxPageIndex)
     xPageIndexFault(startIndex, endIndex); // TOODOO

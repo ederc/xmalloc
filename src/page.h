@@ -113,10 +113,18 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
  */
 static inline bool xIsBinAddr(const void *addr) {
   register unsigned long testAddr = xGetPageIndexOfAddr(addr);
+#ifdef __XMALLOC_DEBUG
+  printf("------!---------\n");
+  printf("%ld\n",testAddr);
+  printf("%ld\n",xMinPageIndex);
+  printf("%ld\n",xMaxPageIndex);
+  printf("------!---------\n");
+  printf("%ld\n",xGetPageShiftOfAddr(addr));
+#endif
   return((testAddr >= xMinPageIndex) &&
          (testAddr <= xMaxPageIndex) && 
          ((xPageShifts[testAddr - xMinPageIndex] & 
-          ((unsigned long) 1) << xGetPageShiftOfAddr(addr)) != 0));
+          (((unsigned long) 1) << xGetPageShiftOfAddr(addr))) != 0));
 }
 
 /**
@@ -132,7 +140,7 @@ static inline bool xIsBinAddr(const void *addr) {
  */
 static inline void* xAllocFromNonEmptyPage(xPage page) {
   page->numberUsedBlocks++;
-  printf("page %p -- page->current %p\n", page, page->current);
+  //printf("page %p -- page->current %p\n", page, page->current);
   void *addr  = (void*) page->current;
   assert(NULL != addr);
   page->current = __XMALLOC_NEXT(page->current);

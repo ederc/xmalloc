@@ -61,7 +61,9 @@ static inline size_t xSizeOfAddr(const void *addr);
  * @return head of @var xBin @var addr is in
  */
 static inline xBin xGetHeadOfBinAddr(const void *addr) {
+#ifdef __XMALLOC_DEBUG
   printf("gpoba %p\n", xGetPageOfBinAddr(addr));
+#endif
   return xGetTopBinOfPage((xPage) xGetPageOfBinAddr(addr));
 }
 
@@ -182,7 +184,6 @@ static inline void* xmalloc(const size_t size) {
 static inline void xFreeBinAddr(void *addr) {
   register void *__addr = addr;
   register xPage __page = xGetPageOfAddr(__addr);
-  printf("page1111 %p\n",__page);
   xFreeToPage(__page, __addr);
 }
 
@@ -197,6 +198,7 @@ static inline void xFreeBinAddr(void *addr) {
  *
  */
 static inline void xFreeLargeAddr(void *addr) {
+  assert(NULL != addr);
   free(addr);
 }
 
