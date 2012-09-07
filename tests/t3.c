@@ -11,8 +11,6 @@
 #include <xmalloc-config.h>
 #include "../src/xmalloc.h"
 
-#define X_MAX_SMALL_BLOCK 1012
-
 #define X_TEST_BLOCKS 10000
 char *B[X_TEST_BLOCKS];
 int main()

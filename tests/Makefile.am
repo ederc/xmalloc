@@ -21,9 +21,9 @@ malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 BASIC_TESTS =  	\
 				t1  		\
-				t2
+				t2			\
+				t3
 #				\
-#				t3			\
 #				t4			\
 #				malloc_test
 
@@ -42,11 +42,11 @@ CLEANFILES = $(TESTS)
 t1_SOURCES =                \
         t1.c           
 
-#t2_SOURCES =                \
-#        t2.c           
+t2_SOURCES =                \
+        t2.c
 
-#t3_SOURCES =                \
-#        t3.c           
+t3_SOURCES =                \
+        t3.c
 
 #t4_SOURCES =                \
 #        t4.c           
