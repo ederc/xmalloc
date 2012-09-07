@@ -170,7 +170,6 @@ void xFreeSizeFunc(void *ptr, size_t size) {
   xFree(ptr); 
 }
 
-/*
 void xInfo() {
   int i       = 0;
   int kb      = 0;
@@ -203,4 +202,3 @@ void xInfo() {
             (unsigned long)x_StaticBin[i].currentPage, kb, kb2);
   }
 }
-*/
