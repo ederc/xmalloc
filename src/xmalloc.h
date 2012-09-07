@@ -306,7 +306,7 @@ static inline void* xMemDup(void *str) {
   return newPtr;
 }
 
-void xInfo();
+void xPrintInfo();
 
 #define xTypeAllocBin(T, P, B)  P=(T)xAllocBin(B)
 #define xTypeAlloc(T, P, S)     P=(T)xMalloc(S)
@@ -320,7 +320,7 @@ void xInfo();
 #define xInitGetBackTrace()
 #define xUpdateInfo()             
 #define xPrintStats(F)
-#define xPrintInfo(F)
+//#define xPrintInfo(F)
 #define xPrintBinStats(F)
 #define xMarkMemoryAsStatic()
 #define xFreeSize(P, S)           xFree(P)

@@ -166,7 +166,7 @@ struct xInfoStruct {
   long CurrentRegionsAlloc;     /**< current number of regions allocated */
 };
 
-extern struct xInfoStruct xInfo;
+typedef struct xInfoStruct xInfo;
 
 struct xOptsStruct;
 extern struct xOpts_s {

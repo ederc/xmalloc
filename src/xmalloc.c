@@ -170,7 +170,7 @@ void xFreeSizeFunc(void *ptr, size_t size) {
   xFree(ptr); 
 }
 
-void xInfo() {
+void xPrintInfo() {
   int i       = 0;
   int kb      = 0;
   int kb2     = 0;
