@@ -67,7 +67,7 @@ xPage xAllocNewPageForBin(xBin bin) {
   int i = 1;
 
   // block size < page size
-#ifdef __XMALLOC_DEBUG
+#if __XMALLOC_DEBUG > 1
   printf("binNumberBlocks %ld in %p\n",bin->numberBlocks,bin);
 #endif
   if (bin->numberBlocks > 0)
@@ -86,7 +86,7 @@ xPage xAllocNewPageForBin(xBin bin) {
     i++;
   }
   __XMALLOC_NEXT(tmp) = NULL;
-#ifdef __XMALLOC_DEBUG
+#if __XMALLOC_DEBUG > 1
   printf("PAGEUSEDBLOCKS %ld\n", newPage->numberUsedBlocks);
 #endif
   return newPage;

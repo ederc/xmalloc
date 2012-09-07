@@ -90,7 +90,7 @@ static inline void xFreeToPage(xPage page, void *addr) {
  *
  */
 static inline bool xIsStickyBin(xBin bin) {
-#ifdef __XMALLOC_DEBUG
+#if __XMALLOC_DEBUG > 1
   printf("bin %p -- sticky %p\n", bin, bin->sticky);
 #endif
   return (bin->sticky >= __XMALLOC_SIZEOF_VOIDP);
@@ -443,7 +443,7 @@ static inline void xSetTopBinOfPage(xPage page, xBin bin) {
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
-#ifdef __XMALLOC_DEBUG
+#if __XMALLOC_DEBUG > 1
   printf("page %p -- gtpoba %p\n", page, page->bin);
 #endif
   return((xBin) ((unsigned long) page->bin));
