@@ -11,12 +11,10 @@
 #include <xmalloc-config.h>
 #include "../src/xmalloc.h"
 
-#define X_MAX_SMALL_BLOCK 1012
-
 int main()
 {
   int i;
-  for (i=1;i<X_MAX_SMALL_BLOCK;i++)
+  for (i=1;i<__XMALLOC_MAX_SMALL_BLOCK_SIZE;i++)
   {
     xBin b=xGetSpecBin(i);
     void *p=xMalloc(i);
