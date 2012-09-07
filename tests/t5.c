@@ -8,7 +8,8 @@
  */
 
 #include <stdio.h>
-#include <xmalloc.h>
+#include <xmalloc-config.h>
+#include "../src/xmalloc.h"
 
 int main()
 {
