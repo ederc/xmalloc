@@ -180,7 +180,28 @@ xBin xSize2Bin[/*126*/] = {
 xInfo info  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 unsigned long xSbrkInit = 0;
 
+void xUpdateInfo() {
+  if (info.currentBytesFromMalloc < 0)
+    info.currentBytesFromMalloc = 0;
+
+  info.usedBytesFromValloc  = 1;
+}
+
 void xPrintInfo() {
+  xUpdateInfo();
+  printf("                  Current:       Max:\n");
+  printf("BytesSystem:     %8ldk  %8ldk\n", info.currentBytesSystem/1024, info.maxBytesSystem/1024);
+  printf("BytesSbrk:       %8ldk  %8ldk\n", info.currentBytesSbrk/1024, info.maxBytesSbrk/1024);
+  printf("BytesMmap:       %8ldk  %8ldk\n", info.currentBytesMmap/1024, info.maxBytesMmap/1024);
+  printf("BytesFromMalloc: %8ldk  %8ldk\n", info.currentBytesFromMalloc/1024, info.maxBytesFromMalloc/1024);
+  printf("BytesFromValloc: %8ldk  %8ldk\n", info.currentBytesFromValloc/1024, info.maxBytesFromValloc/1024);
+  printf("PagesAlloc:      %8ld   %8ld \n", info.usedPages, info.maxPages);
+  printf("RegionsAlloc:    %8ld   %8ld \n", info.currentRegionsAlloc, info.maxRegionsAlloc);
+  printf("                     Used:     Avail:\n");
+  printf("BytesAppl:       %8ldk  %8ldk\n", info.usedBytes/1024, info.availableBytes/1024);
+  printf("BytesMalloc:     %8ldk  %8ldk\n", info.usedBytesMalloc/1024, info.availableBytesMalloc/1024);
+  printf("BytesValloc:     %8ldk  %8ldk\n", info.usedBytesFromValloc/1024, info.availableBytesFromValloc/1024);
+  printf("Pages:           %8ld   %8ld\n", info.usedPages, info.availablePages);
 }
 /************************************************
  * NOTE: These definitions need to be here since

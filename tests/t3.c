@@ -31,6 +31,6 @@ int main()
   {
     xFree(B[i]);
   }
-  xInfo();
+  xPrintInfo();
   return 0;
 }

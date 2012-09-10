@@ -92,16 +92,17 @@ void* xVallocFromSystem(size_t size) {
     if (info.maxBytesFromValloc > info.maxBytesSystem)
       info.maxBytesSystem = info.maxBytesFromValloc;
 #endif
-#ifdef __XMALLOC_HAVE_SBRK
+#if defined(__XMALLOC_HAVE_SBRK) && !defined(__XMALLOC_HAVE_MMAP)
     if (0 == xSbrkInit)
       xSbrkInit = (unsigned long) sbrk(0) - size;
-#ifndef __XMALLOC_HAVE_MMAP
-    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk)
-#else
-    if (info.maxBytesFromMalloc > info.maxBytesSbrk)
-#endif
-    {
+    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk) {
       info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
+#if __XMALLOC_DEBUG > 1      
+      printf("xsbrkinit       %ld\n", xSbrkInit);
+      printf("maxbytessbrk    %ld\n", info.maxBytesSbrk);
+      printf("currbytesmalloc %ld\n", info.currentBytesFromMalloc);
+      printf("currbytesvalloc %ld\n", info.currentBytesFromValloc);
+#endif
       assert(info.maxBytesSbrk >= info.currentBytesFromMalloc 
               + info.currentBytesFromValloc);
     }
