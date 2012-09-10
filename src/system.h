@@ -62,17 +62,33 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize);
 void* xVallocFromSystem(size_t size);
 
 /*
- * @fn void* xValloc(size_t size)
+ * @fn void* xVallocMmap(size_t size)
  *
  * @brief Allocates memory chunk of size @var size from the system. This memory
- * is pre-aligned to the page boundary.
+ * is pre-aligned to the page boundary. Mmap is used.
  *
  * @param size size of the memory chunk
  *
  * @return address of allocated memory
  *
  */
-void* xValloc(size_t size);
+void* xVallocMmap(size_t size);
+
+/*
+ * @fn void* xVallocMmap(size_t size)
+ *
+ * @brief Allocates memory chunk of size @var size from the system. This memory
+ * is pre-aligned to the page boundary. Mmap is NOT used.
+ *
+ * @param size size of the memory chunk
+ *
+ * @return address of allocated memory
+ *
+ * @note xmalloc's configure decides which valloc function is used for
+ * __XMALLOC_VALLOC. This decision is done on whether mmap is available or not.
+ *
+ */
+void* xVallocNoMmap(size_t size);
 
 /*
  * @fn void* xFreeToSystem(void *page, size_t size)

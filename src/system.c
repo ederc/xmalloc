@@ -74,10 +74,10 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize) {
 }
 
 void* xVallocFromSystem(size_t size) {
-  void *addr  = xValloc(size);
+  void *addr  = __XMALLOC_VALLOC(size);
   if (NULL == addr)
     // try it once more
-    addr = xValloc(size);
+    addr = __XMALLOC_VALLOC(size);
 
 #ifndef __XMALLOC_NDEBUG
   assert(xIsAddrPageAligned(addr));
@@ -124,15 +124,14 @@ void xFreeSizeToSystem(void *addr, size_t size) {
 #endif
 }
 
-void* xValloc(size_t size) {
-#ifdef __XMALLOC_HAVE_MMAP
+void* xVallocMmap(size_t size) {
   void *addr;
   addr  = mmap(0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
   if ((void *)-1 == addr)
     return NULL;
   return addr;
-#else
-  return __libc_valloc(size);
-#endif
 }
 
+void* xVallocNoMmap(size_t size) {
+  return __libc_valloc(size);
+}

@@ -169,36 +169,3 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
 void xFreeSizeFunc(void *ptr, size_t size) { 
   xFree(ptr); 
 }
-
-void xPrintInfo() {
-  int i       = 0;
-  int kb      = 0;
-  int kb2     = 0;
-  xRegion reg = xBaseRegion;
-  while (reg != NULL) {
-    int j;
-    printf("region %d (%lx - %lx), free pages %d\n", i, reg->start, reg->end, reg->numberUsedBlocks);
-    kb2 +=  (__XMALLOC_PAGES_PER_REGION - reg->numberUsedBlocks) * 4;
-    i++;
-    reg =   reg->next;
-    kb  +=  (4 * __XMALLOC_PAGES_PER_REGION) + 4;
-  }
-  printf("allocated kB: %d, used kb: %d\n", kb, kb2);
-  for (i = 0; i < 23; i++) {
-    xPage page  = x_StaticBin[i].currentPage;
-    kb          = 0;
-    while (page != NULL) { 
-      kb++; 
-      page  = page->prev; 
-    }
-    page  = x_StaticBin[i].currentPage;
-    kb2   = (page != NULL) - 1;
-    while (page!=NULL) { 
-      kb2++; 
-      page=page->next; 
-    }
-    printf("bin %d, sizeInWords=%ld, curr=%lx, pages: %d + %d\n", 
-            i, x_StaticBin[i].sizeInWords, 
-            (unsigned long)x_StaticBin[i].currentPage, kb, kb2);
-  }
-}

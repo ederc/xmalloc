@@ -15,10 +15,6 @@
 #include "src/data.h"
 #include "src/globals.h"
 
-// statistics
-xInfo info  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-unsigned long xSbrkInit = 0;
-
 // extern declaration in globals.h --- start
 xSpecBin xBaseSpecBin     = NULL;
 xBin __XMALLOC_LARGE_BIN  = (xBin) 1;
@@ -178,6 +174,14 @@ xBin xSize2Bin[/*126*/] = {
 &xStaticBin[22]   /* 1008 */};
 // extern declaration in globals.h --- end
 
+/************************************
+ * STATISTICS / XINFO STUFF
+ ***********************************/
+xInfo info  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+unsigned long xSbrkInit = 0;
+
+void xPrintInfo() {
+}
 /************************************************
  * NOTE: These definitions need to be here since
  *       the functionality of getting and freeing

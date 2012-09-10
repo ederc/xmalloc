@@ -34,6 +34,12 @@ LT_INIT([disable-shared])
 # check for mmap, ...
 AC_FUNC_MMAP
 
+if test "$ac_cv_func_mmap_fixed_mapped"  = "yes"; then
+  AC_DEFINE([VALLOC],[xVallocMmap],[valloc uses mmap])
+else
+  AC_DEFINE([VALLOC],[xVallocNoMmap],[valloc does not use mmap])
+fi
+
 AC_ARG_ENABLE([debug],
               [AC_HELP_STRING([--disable-debug],
                               [Disable debug version])],
