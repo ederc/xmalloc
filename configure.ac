@@ -43,6 +43,49 @@ AC_ARG_ENABLE([debug],
 
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
 
+ Do not enable allocation from DSS by default.
+AC_ARG_ENABLE([dss],
+  [AS_HELP_STRING([--enable-dss], [Enable allocation from DSS])],
+[if test "x$enable_dss" = "xno" ; then
+  enable_dss="0"
+else
+  enable_dss="1"
+fi
+],
+[enable_dss="0"]
+)
+
+# Check whether the BSD/SUSv1 sbrk() exists.  If not, disable DSS support.
+AC_CHECK_FUNC([sbrk], [have_sbrk="1"], [have_sbrk="0"])
+if test "x$have_sbrk" = "x1" ; then
+  AC_DEFINE([HAVE_SBRK], [1],[sbrk availabled])
+else
+  enable_dss="0"
+fi
+
+if test "x$enable_dss" = "x1" ; then
+  AC_DEFINE([DSS], [1], [dss available])
+fi
+AC_SUBST([enable_dss])
+
+# Support the junk/zero filling option by default.
+AC_ARG_ENABLE([fill],
+  [AS_HELP_STRING([--disable-fill],
+                  [Disable support for junk/zero filling, quarantine, and redzones])],
+[if test "x$enable_fill" = "xno" ; then
+  enable_fill="0"
+else
+  enable_fill="1"
+fi
+],
+[enable_fill="1"]
+)
+if test "x$enable_fill" = "x1" ; then
+  AC_DEFINE([FILL], [1],[junk / zero filling enabled])
+fi
+AC_SUBST([enable_fill])
+
+
 # check assert setting
 AC_HEADER_ASSERT
 

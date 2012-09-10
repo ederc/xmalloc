@@ -143,27 +143,27 @@ struct xRegionStruct {
  * freeing processes in xmalloc.
  */
 struct xInfoStruct {
-  long MaxBytesSystem;          /**< maximal number of bytes allocated by the system allocator */
-  long CurrentBytesSystem;      /**< current number of bytes allocated by the system allocator */
-  long MaxBytesSbrk;            /**< maximal number of bytes allocated via sbrk() */
-  long CurrentBytesSbrk;        /**< current number of bytes allocated via sbrk()*/
-  long MaxBytesMmap;            /**< maximal number of bytes allocated via mmap() */
-  long CurrentBytesMmap;        /**< current number of bytes allocated via mmap() */
-  long UsedBytes;               /**< number of bytes used by the application */
-  long AvailBytes;              /**< number of bytes available for the application */
-  long UsedBytesMalloc;         /**< number of bytes used by malloc */
-  long AvailBytesMalloc;        /**< number of bytes available for malloc */
-  long MaxBytesFromMalloc;      /**< maximal number of bytes from malloc */
-  long CurrentBytesFromMalloc;  /**< current number of bytes from malloc */
-  long MaxBytesFromValloc;      /**< maximal number of bytes from valloc */
-  long CurrentBytesFromValloc;  /**< current number of bytes from valloc */
-  long UsedBytesFromValloc;     /**< number of used bytes from valloc */
-  long AvailBytesFromValloc;    /**< number of available bytes from valloc */
-  long MaxPages;                /**< maximal number of pages */
-  long UsedPages;               /**< number of used pages */
-  long AvailPages;              /**< number of available pages */
-  long MaxRegionsAlloc;         /**< maximal number of regions allocated */
-  long CurrentRegionsAlloc;     /**< current number of regions allocated */
+  long maxBytesSystem;          /**< maximal number of bytes allocated by the system allocator */
+  long currentBytesSystem;      /**< current number of bytes allocated by the system allocator */
+  long maxBytesSbrk;            /**< maximal number of bytes allocated via sbrk() */
+  long currentBytesSbrk;        /**< current number of bytes allocated via sbrk()*/
+  long maxBytesMmap;            /**< maximal number of bytes allocated via mmap() */
+  long currentBytesMmap;        /**< current number of bytes allocated via mmap() */
+  long usedBytes;               /**< number of bytes used by the application */
+  long availBytes;              /**< number of bytes available for the application */
+  long usedBytesMalloc;         /**< number of bytes used by malloc */
+  long availBytesMalloc;        /**< number of bytes available for malloc */
+  long maxBytesFromMalloc;      /**< maximal number of bytes from malloc */
+  long currentBytesFromMalloc;  /**< current number of bytes from malloc */
+  long maxBytesFromValloc;      /**< maximal number of bytes from valloc */
+  long currentBytesFromValloc;  /**< current number of bytes from valloc */
+  long usedBytesFromValloc;     /**< number of used bytes from valloc */
+  long availBytesFromValloc;    /**< number of available bytes from valloc */
+  long maxPages;                /**< maximal number of pages */
+  long usedPages;               /**< number of used pages */
+  long availPages;              /**< number of available pages */
+  long maxRegionsAlloc;         /**< maximal number of regions allocated */
+  long currentRegionsAlloc;     /**< current number of regions allocated */
 };
 
 typedef struct xInfoStruct xInfo;
