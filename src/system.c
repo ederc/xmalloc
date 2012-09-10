@@ -8,6 +8,7 @@
  */
 
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "src/page.h" // for xIsAddrPageAligned
@@ -69,6 +70,7 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize) {
     if (info.maxBytesFromMalloc > info.maxBytesSbrk)
 #endif
       info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
+  }
 #endif
   return newAddr;
 }
@@ -94,10 +96,11 @@ void* xVallocFromSystem(size_t size) {
     if (0 == xSbrkInit)
       xSbrkInit = (unsigned long) sbrk(0) - size;
 #ifndef __XMALLOC_HAVE_MMAP
-    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk) {
+    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk)
 #else
-    if (info.maxBytesFromMalloc > info.maxBytesSbrk) {
+    if (info.maxBytesFromMalloc > info.maxBytesSbrk)
 #endif
+    {
       info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
       assert(info.maxBytesSbrk >= info.currentBytesFromMalloc 
               + info.currentBytesFromValloc);
@@ -133,5 +136,5 @@ void* xVallocMmap(size_t size) {
 }
 
 void* xVallocNoMmap(size_t size) {
-  return __libc_valloc(size);
+  return valloc(size);
 }
