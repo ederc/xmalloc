@@ -15,12 +15,13 @@
 #include "src/data.h"
 #include "src/globals.h"
 
+// statistics
+xInfo info  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+unsigned long xSbrkInit = 0;
 
 // extern declaration in globals.h --- start
 xSpecBin xBaseSpecBin     = NULL;
 xBin __XMALLOC_LARGE_BIN  = (xBin) 1;
-
-xInfo info  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 struct xBinStruct xStaticBin[/*23*/] = {
 {__XMALLOC_ZERO_PAGE, NULL, NULL, 1,    506,  0}, /* 0*/

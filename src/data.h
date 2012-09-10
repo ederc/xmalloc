@@ -150,18 +150,18 @@ struct xInfoStruct {
   long maxBytesMmap;            /**< maximal number of bytes allocated via mmap() */
   long currentBytesMmap;        /**< current number of bytes allocated via mmap() */
   long usedBytes;               /**< number of bytes used by the application */
-  long availBytes;              /**< number of bytes available for the application */
+  long availableBytes;          /**< number of bytes available for the application */
   long usedBytesMalloc;         /**< number of bytes used by malloc */
-  long availBytesMalloc;        /**< number of bytes available for malloc */
+  long availableBytesMalloc;    /**< number of bytes available for malloc */
   long maxBytesFromMalloc;      /**< maximal number of bytes from malloc */
   long currentBytesFromMalloc;  /**< current number of bytes from malloc */
   long maxBytesFromValloc;      /**< maximal number of bytes from valloc */
   long currentBytesFromValloc;  /**< current number of bytes from valloc */
   long usedBytesFromValloc;     /**< number of used bytes from valloc */
-  long availBytesFromValloc;    /**< number of available bytes from valloc */
+  long availableBytesFromValloc;/**< number of available bytes from valloc */
   long maxPages;                /**< maximal number of pages */
   long usedPages;               /**< number of used pages */
-  long availPages;              /**< number of available pages */
+  long availablePages;          /**< number of available pages */
   long maxRegionsAlloc;         /**< maximal number of regions allocated */
   long currentRegionsAlloc;     /**< current number of regions allocated */
 };

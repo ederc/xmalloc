@@ -15,9 +15,34 @@
 
 void* xAllocFromSystem(size_t size) {
   void *addr  = malloc(size);
-  if (NULL == addr)
+  if (NULL == addr) {
     // try it once more
     addr  = malloc(size);
+    if (NULL == addr)
+      exit(1);
+  }
+
+#ifndef __XMALLOC_NDEBUG
+  // track some statistics if in debugging mode
+  info.currentBytesFromMalloc +=  size;
+  if (info.currentBytesFromMalloc > info.maxBytesFromMalloc) {
+    info.maxBytesFromMalloc = info.currentBytesFromMalloc;
+#ifdef __XMALLOC_HAVE_MMAP
+    if (info.currentBytesFromValloc > info.maxBytesSystem)
+      info.maxBytesSystem = info.currentBytesFromValloc;
+#endif
+#ifdef __XMALLOC_HAVE_SBRK
+    if (0 == xSbrkInit)
+      xSbrkInit = (unsigned long) sbrk(0) - size;
+#ifndef __XMALLOC_HAVE_MMAP
+    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk)
+#else
+    if (info.maxBytesFromMalloc > info.maxBytesSbrk)
+#endif
+      info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
+#endif
+  }
+#endif
   return addr; // possibly addr == NULL
 }
 
@@ -28,6 +53,23 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize) {
     if (NULL == newAddr)
       exit(1);
   }
+
+#ifndef __XMALLOC_NDEBUG
+  info.currentBytesFromMalloc +=  (long) newSize - (long) oldSize;
+
+  if (info.currentBytesFromMalloc > info.maxBytesFromMalloc) {
+    info.maxBytesFromMalloc = info.currentBytesFromMalloc;
+#ifdef __XMALLOC_HAVE_MMAP
+    if (info.currentBytesFromValloc > info.maxBytesSystem)
+      info.maxBytesSystem = info.currentBytesFromValloc;
+#endif
+#if defined(__XMALLOC_HAVE_SBRK) && !defined(__XMALLOC_HAVE_MMAP)
+    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk)
+#else
+    if (info.maxBytesFromMalloc > info.maxBytesSbrk)
+#endif
+      info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
+#endif
   return newAddr;
 }
 
@@ -36,16 +78,50 @@ void* xVallocFromSystem(size_t size) {
   if (NULL == addr)
     // try it once more
     addr = xValloc(size);
+
+#ifndef __XMALLOC_NDEBUG
+  assert(xIsAddrPageAligned(addr));
+
+  // track some statistics if in debugging mode
+  info.currentBytesFromMalloc +=  size;
+  if (info.currentBytesFromMalloc > info.maxBytesFromMalloc) {
+    info.maxBytesFromMalloc = info.currentBytesFromMalloc;
+#ifdef __XMALLOC_HAVE_MMAP
+    if (info.maxBytesFromValloc > info.maxBytesSystem)
+      info.maxBytesSystem = info.maxBytesFromValloc;
+#endif
+#ifdef __XMALLOC_HAVE_SBRK
+    if (0 == xSbrkInit)
+      xSbrkInit = (unsigned long) sbrk(0) - size;
+#ifndef __XMALLOC_HAVE_MMAP
+    if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk) {
+#else
+    if (info.maxBytesFromMalloc > info.maxBytesSbrk) {
+#endif
+      info.maxBytesSbrk = (unsigned long) sbrk(0) - xSbrkInit;
+      assert(info.maxBytesSbrk >= info.currentBytesFromMalloc 
+              + info.currentBytesFromValloc);
+    }
+#endif
+  }
+#endif
+      
   return addr; // possibly addr == NULL
 }
 
 void xVfreeToSystem(void *addr, size_t size) {
   assert(xIsAddrPageAligned(addr));
   munmap(addr, size);
+#ifndef __XMALLOC_NDEBUG
+  info.currentBytesFromMalloc -=  size;
+#endif
 }
 
-void xFreeSizeToSystem(void *addr) {
+void xFreeSizeToSystem(void *addr, size_t size) {
   free(addr);
+#ifndef __XMALLOC_NDEBUG
+  info.currentBytesFromMalloc -=  size;
+#endif
 }
 
 void* xValloc(size_t size) {

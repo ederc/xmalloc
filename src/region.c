@@ -111,4 +111,8 @@ void xFreePagesFromRegion(xPage page, int quantity) {
     }
     region->current = (void *)page;
   }
+#ifndef __XMALLOC_NDEBUG
+  info.availablePages +=  quantity;
+  info.usedPages      -=  quantity;
+#endif
 }

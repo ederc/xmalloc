@@ -126,9 +126,14 @@ xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
  */
 static inline void xFreeRegion(xRegion region) {
   assert((NULL != region) && (0 == region->numberUsedPages));
+
+#ifndef __XMALLOC_NDEBUG
+  info.availablePages -=  region->totalNumberPages;
+  info.currentRegionsAlloc--;
+#endif
   xUnregisterPagesFromRegion(region->addr, region->totalNumberPages);
   xVfreeToSystem(region->addr, region->totalNumberPages * __XMALLOC_SIZEOF_SYSTEM_PAGE);
-  xFreeSizeToSystem(region);
+  xFreeSizeToSystem(region, sizeof(xRegionType));
 }
 
 /************************************************

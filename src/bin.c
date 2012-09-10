@@ -128,6 +128,13 @@ xPage xAllocSmallBlockPageForBin() {
   Found:
   newPage->region = xBaseRegion;
   xBaseRegion->numberUsedPages++;
+
+#ifndef __XMALLOC_NDEBUG
+  info.usedPages++;
+  info.availablePages--;
+  if (info.usedPages > info.maxPages)
+    info.maxPages = info.usedPages;
+#endif
   return newPage;
 }
 
@@ -176,6 +183,13 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
     xTakeOutRegion(region);
     xInsertRegionBefore(region, xBaseRegion);
   }
+
+#ifndef __XMALLOC_NDEBUG
+  info.usedPages      +=  numberNeeded;
+  info.availablePages -=  numberNeeded;
+  if (info.usedPages > info.maxPages)
+    info.maxPages = info.usedPages;
+#endif
   return page;
 }
 

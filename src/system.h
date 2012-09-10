@@ -94,7 +94,7 @@ void xVfreeToSystem(void *addr, size_t size);
  * @param addr address to be freed
  *
  */
-void xFreeSizeToSystem(void *addr);
+void xFreeSizeToSystem(void *addr, size_t size);
 
 
 #endif
