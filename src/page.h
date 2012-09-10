@@ -113,7 +113,7 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
  */
 static inline bool xIsBinAddr(const void *addr) {
   register unsigned long testAddr = xGetPageIndexOfAddr(addr);
-#if __XMALLOC_DEBUG > 1
+#if __XMALLOC_DEBUG 
   printf("------!---------\n");
   printf("%ld\n",testAddr);
   printf("%ld\n",xMinPageIndex);

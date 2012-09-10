@@ -141,16 +141,18 @@ static inline size_t xSizeOfAddr(const void *addr) {
 static inline void* xMalloc(const size_t size) {
   void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+    printf("klein <- %ld\n",size);
     xBin bin  = xSmallSize2Bin(size); 
     assert(NULL != bin);
     addr  = xAllocFromBin(bin);
     assert(NULL != addr);
     return addr;
   } else {
-     long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
-     *ptr       = size;
-     ptr++;
-     return ptr;
+    //printf("gross <- %ld\n",size);
+    long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
+    *ptr       = size;
+    ptr++;
+    return ptr;
   }
 }
 
@@ -199,7 +201,8 @@ static inline void xFreeBinAddr(void *addr) {
  */
 static inline void xFreeLargeAddr(void *addr) {
   assert(NULL != addr);
-  free(addr);
+  char *_addr  = (char *)addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT;
+  xFreeSizeToSystem(_addr,*((size_t*) _addr) + __XMALLOC_SIZEOF_STRICT_ALIGNMENT);
 }
 
 /**
