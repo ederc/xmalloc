@@ -45,6 +45,7 @@ include/xmalloc-config.h.in
 include/stamp-h1
 doc/index.html
 tests/t1
+tests/t1-large-blocks
 tests/t2
 tests/t3
 tests/t4
