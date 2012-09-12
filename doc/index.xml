@@ -567,6 +567,21 @@
     <para>
       Size classes do not stop at a given point as it does for usual <type>xBin</type>s.
     </para>
+    <para>
+      Clearly, other applications using xmalloc may not benefit from this special type resp.
+      have advantages using it in other situations. Still the main idea behind it comes from
+      omalloc's specialized implementation for SINGULAR, thus we stick with the above explanation
+      of its usefulness
+    </para>
+    <note>
+    <para>
+      Only for <type>xSpecBin</type>s the size class of the memory blocks stored can exceed
+      the constant <varname>__XMALLOC_MAX_SMALL_BLOCK_SIZE</varname>. For memory chunks not
+      fitting in the small block size it does not make sense to handle them by xmalloc, in
+      general. Monomials are special: They are used a lot of times in SINGULAR and should be
+      kept in the <type>xSpecBin</type> structure for a faster freeing.
+    </para>
+    </note>
   </sect2>
   <sect2>
     <title>The idea behind sticky xBins ( a feature which is still omalloc-only )</title>
