@@ -21,6 +21,7 @@ unsigned long *xPageShifts = NULL;
  * PAGE (UN-)REGISTRATION
  *********************************************/
 void xPageIndexFault(unsigned long startIndex, unsigned long endIndex) {
+  printf("--- PAGE INDEX FAULT ---\n");
   unsigned long indexDiff = endIndex - startIndex;
   long i;
   assert((startIndex <= endIndex) &&
@@ -73,13 +74,17 @@ void xRegisterPagesInRegion(void *startAddr, int numberPages) {
     xPageIndexFault(startIndex, endIndex); // TOODOO
 
   shift = xGetPageShiftOfAddr(startAddr);
+#if __XMALLOC_DEBUG
+  printf("registering pages -- page shift: %ld\n", xGetPageShiftOfAddr(startAddr));
+  printf("indices: %ld -- %ld\n", startIndex, endIndex);
+#endif
   if (startIndex < endIndex) {
     if (0 == shift)
       xPageShifts[startIndex - xMinPageIndex]  = ULLONG_MAX;
     else
       xPageShifts[startIndex - xMinPageIndex]  |= ~((((unsigned long) 1) << shift) - 1);
     for (shift = startIndex + 1; shift < endIndex; shift++)
-      xPageShifts[startIndex - xMinPageIndex]  = ULLONG_MAX;
+      xPageShifts[shift - xMinPageIndex]  = ULLONG_MAX;
     shift = xGetPageShiftOfAddr(endAddr);
     if ((__XMALLOC_BIT_SIZEOF_LONG - 1) == shift)
       xPageShifts[endIndex - xMinPageIndex]  = ULLONG_MAX;
