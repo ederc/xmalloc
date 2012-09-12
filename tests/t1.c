@@ -1,5 +1,5 @@
 /**
- * @file   t2.c
+ * @file   t1.c
  * @Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  Test file for xmalloc.
@@ -14,18 +14,20 @@
 int main()
 {
   int i;
-  for (i=1;i<__XMALLOC_MAX_SMALL_BLOCK_SIZE;i++)
+  for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++)
   {
-    xBin b=xGetSpecBin(i);
+    xBin b  = xGetSpecBin(i);
     printf("BIN DETECTION %p -- %ld\n", b, b->numberBlocks);
     printf(" - - - start allocation - - - \n");
-    void *p=xMalloc(i);
+    void *p = xMalloc(i);
     printf(" - - - end allocation: %p- - - \n",p);
-    if ((i>b->sizeInWords*4)
-    || (b->sizeInWords*4 != (long) xSizeOfAddr(p)))
-      printf(" %d (%d vs %d)\n",i,((int) b->sizeInWords)*4,(int) xSizeOfAddr(p));
-    printf("pageindex %p -- pageshifts %p\n",xGetPageIndexOfAddr(p),xPageShifts[xGetPageIndexOfAddr(p) - xMinPageIndex]);
-    printf("%p in %p ? nrBL %ld\n",p,xGetPageOfAddr(p),((xPage)xGetPageOfAddr(p))->numberUsedBlocks);
+    if ((i > (b->sizeInWords * 4))
+    || ((b->sizeInWords * 4) != (long) xSizeOfAddr(p)))
+      printf(" %d (%d vs %d)\n", i, (((int) b->sizeInWords) * 4), (int) xSizeOfAddr(p));
+    printf("pageindex %p -- pageshifts %p\n", xGetPageIndexOfAddr(p),
+        xPageShifts[xGetPageIndexOfAddr(p) - xMinPageIndex]);
+    printf("%p in %p ? nrBL %ld\n", p, xGetPageOfAddr(p),
+        ((xPage)xGetPageOfAddr(p))->numberUsedBlocks);
     printf(" - - - start freeing - - - \n");
     xFree(p);
     printf(" - - - end freeing - - - \n");
