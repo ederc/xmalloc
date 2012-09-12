@@ -37,6 +37,13 @@ xRegion xAllocNewRegion(int minNumberPages) {
   region->numberUsedPages   = 0;
   region->totalNumberPages  = numberPages;
 
+#ifdef __XMALLOC_DEBUG
+  info.availablePages +=  numberPages;
+  info.currentRegionsAlloc++;
+  if (info.currentRegionsAlloc > info.maxRegionsAlloc)
+    info.maxRegionsAlloc  = info.currentRegionsAlloc;
+#endif
+
   return region;
 }
 

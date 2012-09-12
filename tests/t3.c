@@ -29,9 +29,15 @@ int main() {
         printf("i = %d, j = %d, expected %d, found %d\n", i, j, B[i][j], (i % 256));
   }
   xPrintInfo();
-  for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {
+  for (i = __XMALLOC_TEST_BLOCKS - 1; i > 251; i--) {
+    printf("free size i: %ld -- %p\n",i, B[i]);
+    xFree(B[i]);
+    xPrintInfo();
+  }
+  for (i = 0; i < 252; i++) {
     printf("free size i: %ld -- %p\n",i, B[i]);
     xFree(B[i]);
   }
+  xPrintInfo();
   return 0;
 }
