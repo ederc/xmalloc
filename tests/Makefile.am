@@ -22,9 +22,9 @@ malloc_test_LDFLAGS = -pthread
 BASIC_TESTS =  	\
 				t1  		\
 				t2			\
-				t3
+				t3			\
+				t4
 #				\
-#				t4			\
 #				malloc_test
 
 # a benchmarker, not to be included in check.
@@ -48,8 +48,8 @@ t2_SOURCES =                \
 t3_SOURCES =                \
         t3.c
 
-#t4_SOURCES =                \
-#        t4.c           
+t4_SOURCES =                \
+        t4.c
 
 #malloc_test_SOURCES =                \
 #        malloc_test.c           
