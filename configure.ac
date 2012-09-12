@@ -49,7 +49,7 @@ AC_ARG_ENABLE([debug],
 
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
 
- Do not enable allocation from DSS by default.
+# Do not enable allocation from DSS by default.
 AC_ARG_ENABLE([dss],
   [AS_HELP_STRING([--enable-dss], [Enable allocation from DSS])],
 [if test "x$enable_dss" = "xno" ; then
@@ -64,7 +64,7 @@ fi
 # Check whether the BSD/SUSv1 sbrk() exists.  If not, disable DSS support.
 AC_CHECK_FUNC([sbrk], [have_sbrk="1"], [have_sbrk="0"])
 if test "x$have_sbrk" = "x1" ; then
-  AC_DEFINE([HAVE_SBRK], [1],[sbrk availabled])
+  AC_DEFINE([HAVE_SBRK], [1],[sbrk available ?])
 else
   enable_dss="0"
 fi
