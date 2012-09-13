@@ -14,6 +14,13 @@
 #include <assert.h>
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
+
+#define X_XMALLOC
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "xmalloc-config.h"
 #include "data.h"
 #include "globals.h"
@@ -21,12 +28,6 @@
 #include "bin.h"
 #include "region.h"
 #include "align.h"
-
-#define X_XMALLOC
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // needed exactly here
 extern xBin xSize2Bin[];

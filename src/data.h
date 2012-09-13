@@ -202,4 +202,8 @@ struct xBlockStruct {
 };
 extern int x_sing_opt_show_mem;
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif
