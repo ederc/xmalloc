@@ -10,6 +10,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 SUBDIRS=
 
 BASIC_HDRS =	\
+	../include/xmalloc-config.h \
 	align.h			\
 	data.h 			\
 	globals.h 	\

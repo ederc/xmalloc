@@ -29,6 +29,7 @@ AC_SUBST([MKDIR_P])
 AC_PROG_CC
 AC_PROG_CXX
 AC_STDC_HEADERS
+#LT_INIT()
 LT_INIT([disable-shared])
 
 # check for mmap, ...
