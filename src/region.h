@@ -14,12 +14,12 @@
 #include <assert.h>
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
-#include "include/xmalloc-config.h"
-#include "src/data.h"
-#include "src/globals.h"
-#include "src/bin.h"
-#include "src/align.h"
-#include "src/system.h"
+#include "xmalloc-config.h"
+#include "data.h"
+#include "globals.h"
+#include "bin.h"
+#include "align.h"
+#include "system.h"
 
 /**
  * @fn static inline bool xIsRegionEmpty(xRegion region)

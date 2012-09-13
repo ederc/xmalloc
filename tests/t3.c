@@ -8,8 +8,8 @@
  */
 
 #include <stdio.h>
-#include <xmalloc-config.h>
-#include "../src/xmalloc.h"
+#include "xmalloc-config.h"
+#include "xmalloc.h"
 
 #define __XMALLOC_TEST_BLOCKS 10000
 char *B[__XMALLOC_TEST_BLOCKS];

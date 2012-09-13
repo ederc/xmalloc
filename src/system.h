@@ -15,8 +15,8 @@
 #include <limits.h> // for ULLONG_MAX etc.
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "include/xmalloc-config.h"
-#include "src/align.h"
+#include "xmalloc-config.h"
+#include "align.h"
 
 /*
  * @fn void* xAllocFromSystem(size_t size)

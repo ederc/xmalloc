@@ -3,7 +3,7 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
-INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
+INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
 AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
