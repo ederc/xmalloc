@@ -338,11 +338,17 @@ static inline void* xAllocFromFullPage(xBin bin) {
  * @param addr memory address that should be freed.
  *
  */
+
+/**********************************************
+ *
+ * SHOULD BE FOUND IN XMALLOC AS xFreeBinAddr
+ *
 static inline void xFreeBin(void *addr) {
     register void *__addr = (void*) addr;
     register xPage __page = (xPage) xGetPageOfAddr(__addr);
-    xFreeToPage(__addr, __page);
+    xFreeToPage(__page, __addr);
 }
+*/
 
 /************************************************
  * ALLOCATING MEMORY FROM BINS
