@@ -80,7 +80,7 @@ static inline void xFreeToPage(xPage page, void *addr) {
  * STICKY BUSINESS OF BINS
  ***********************************************/
 /**
- * @fn static inline bool xIsStickyBin(xBin bin)
+ * @fn static inline BOOLEAN xIsStickyBin(xBin bin)
  *
  * @brief Tests if @var bin is sticky or not.
  *
@@ -89,7 +89,7 @@ static inline void xFreeToPage(xPage page, void *addr) {
  * @return true if @var bin is sticky, false else
  *
  */
-static inline bool xIsStickyBin(xBin bin) {
+static inline BOOLEAN xIsStickyBin(xBin bin) {
 #if __XMALLOC_DEBUG > 1
   printf("bin %p -- sticky %p\n", bin, bin->sticky);
 #endif
@@ -329,6 +329,7 @@ static inline void* xAllocFromFullPage(xBin bin) {
 /************************************************
  * FREEING BINS
  ***********************************************/
+
 /**
  * @fn static inline void xFreeBin(void *addr)
  *

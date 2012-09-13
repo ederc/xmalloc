@@ -47,7 +47,19 @@ enum xError_e {
   xError_MaxError
 };
 
-typedef enum{false = 0, true  = 1} bool;
+// for Singular :(
+typedef int BOOLEAN;
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+
+//typedef enum{False = 0, True  = 1} boolean;
 
 struct xPageStruct;
 typedef struct xPageStruct    xPageType;

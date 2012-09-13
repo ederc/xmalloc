@@ -102,7 +102,7 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline bool xIsBinAddr(const void *addr)
+ * @fn static inline BOOLEAN xIsBinAddr(const void *addr)
  *
  * @brief Checks if @var addr is an address in the xPages or not.
  *
@@ -111,7 +111,7 @@ static inline xPage xGetPageOfBinAddr(const void *addr) {
  * @return true if @var addr is handled by xmalloc, false else
  *
  */
-static inline bool xIsBinAddr(const void *addr) {
+static inline BOOLEAN xIsBinAddr(const void *addr) {
   register unsigned long testAddr = xGetPageIndexOfAddr(addr);
 #if __XMALLOC_DEBUG 
   printf("------!---------\n");
@@ -194,7 +194,7 @@ void xUnregisterPagesFromRegion(void *startAddr, int numberPages);
  * INLINED PAGE TESTS / ADDRESS HANDLINGS
  ***********************************************/
 /**
- * @fn static inline bool xIsAddrPageAligned(void *addr)
+ * @fn static inline BOOLEAN xIsAddrPageAligned(void *addr)
  *
  * @brief Tests if @var addr is page aligned or not.
  *
@@ -203,7 +203,7 @@ void xUnregisterPagesFromRegion(void *startAddr, int numberPages);
  * @return true if @var addr is aligned, false else
  *
  */
-static inline bool xIsAddrPageAligned(void *addr) {
+static inline BOOLEAN xIsAddrPageAligned(void *addr) {
   return (((long) addr & (__XMALLOC_SIZEOF_SYSTEM_PAGE - 1)) == 0);
 }
 
@@ -221,7 +221,7 @@ static inline void* xGetPageOfAddr(void *addr) {
 }
 
 /**
- * @fn static inline bool xIsAddrOnPage(void *addr, xPage page)
+ * @fn static inline BOOLEAN xIsAddrOnPage(void *addr, xPage page)
  *
  * @brief Checks if @var addr is on @var page .
  *
@@ -231,12 +231,12 @@ static inline void* xGetPageOfAddr(void *addr) {
  *
  * @return true if @var addr is on @var page , false else
  */
-static inline bool xIsAddrOnPage(void *addr, xPage page) {
+static inline BOOLEAN xIsAddrOnPage(void *addr, xPage page) {
   return(xGetPageOfAddr(addr) == page);
 }
 
 /**
- * @fn static inline bool xAreAddressesOnSamePage(void *addr1, void *addr2)
+ * @fn static inline BOOLEAN xAreAddressesOnSamePage(void *addr1, void *addr2)
  *
  * @brief Checks if @var addr1 and @var addr2 lie on the same page.
  *
@@ -246,7 +246,7 @@ static inline bool xIsAddrOnPage(void *addr, xPage page) {
  *
  * @return true if @var addr1 and @var addr2 are on the same page, false else
  */
-static inline bool xAreAddressesOnSamePage(void *addr1, void *addr2) {
+static inline BOOLEAN xAreAddressesOnSamePage(void *addr1, void *addr2) {
   return(xGetPageOfAddr(addr1) == xGetPageOfAddr(addr2));
 }
 
