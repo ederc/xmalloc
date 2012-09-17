@@ -10,7 +10,7 @@ BENCHMARK_CXXFLAGS = -O2 -pthread
 
 SUBDIRS = data
 
-LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
+LDADD = $(top_builddir)/src/.libs/libxmalloc.la
 
 malloc_test_LDFLAGS = -pthread
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  

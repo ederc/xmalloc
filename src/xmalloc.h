@@ -11,8 +11,8 @@
 #define XMALLOC_XMALLOC_H
 
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
+#include <assert.h>
 #include <limits.h> // for ULLONG_MAX etc.
 
 #define X_XMALLOC
@@ -142,11 +142,9 @@ static inline size_t xSizeOfAddr(const void *addr) {
 static inline void* xMalloc(const size_t size) {
   void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
-    printf("klein <- %ld\n",size);
+    //printf("klein <- %ld\n",size);
     xBin bin  = xSmallSize2Bin(size); 
-    assert(NULL != bin);
     addr  = xAllocFromBin(bin);
-    assert(NULL != addr);
     return addr;
   } else {
     //printf("gross <- %ld\n",size);
@@ -191,6 +189,24 @@ static inline void xFreeBinAddr(void *addr) {
 }
 
 /**
+ * @fn static inline void xFreeBin(void *addr, xBin bin)
+ *
+ * @brief Frees memory stored at address @var addr .
+ *
+ * @param addr address of memory to be deleted. 
+ *
+ * @param bin @var xBin @var addr is stored in. 
+ *
+ * @note It is assumed that @var addr != NULL.
+ *
+ */
+static inline void xFreeBin(void *addr, xBin bin) {
+  register void *__addr = addr;
+  register xPage __page = (xPage) xGetPageOfAddr(__addr);
+  xFreeToPage(__page, __addr);
+}
+
+/**
  * @fn static inline void xFreeLargeAddr(void *addr)
  *
  * @brief Frees memory stored at address @var addr .
@@ -201,7 +217,6 @@ static inline void xFreeBinAddr(void *addr) {
  *
  */
 static inline void xFreeLargeAddr(void *addr) {
-  assert(NULL != addr);
   char *_addr  = (char *)addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT;
   xFreeSizeToSystem(_addr,*((size_t*) _addr) + __XMALLOC_SIZEOF_STRICT_ALIGNMENT);
 }
@@ -218,6 +233,23 @@ static inline void xFreeLargeAddr(void *addr) {
  */
 static inline void xFree(void *addr) {
   if (xIsBinAddr(addr))
+    xFreeBinAddr(addr);
+  else
+    xFreeLargeAddr(addr); // TOODOO
+}
+
+/**
+ * @fn static inline void xFreeSize(void *addr, size_t size) {
+ *
+ * @brief Frees memory stored at address @var addr with a size check included.
+ *
+ * @param addr address of memory to be deleted. 
+ *
+ * @note It is assumed that @var addr != NULL.
+ *
+ */
+static inline void xFreeSize(void *addr, size_t size) {
+  if ((size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) || xIsBinAddr(addr))
     xFreeBinAddr(addr);
   else
     xFreeLargeAddr(addr); // TOODOO
@@ -311,6 +343,22 @@ static inline void* xMemDup(void *str) {
 }
 
 
+/************************************************
+ * STICKY BUSINESS OF BINS
+ ***********************************************/
+/**
+ * @fn xBin xGetStickyBinOfBin(xBin bin);
+ *
+ * @brief Gets the sticky bin of @var bin .
+ *
+ * @param bin @var xBin
+ *
+ * @return sticky bin of @var bin .
+ *
+ */
+xBin xGetStickyBinOfBin(xBin bin);
+
+
 #define xTypeAllocBin(T, P, B)  P=(T)xAllocBin(B)
 #define xTypeAlloc(T, P, S)     P=(T)xMalloc(S)
 #define xTypeAlloc0(T, P, S)    P=(T)xMalloc0(S)
@@ -326,9 +374,7 @@ static inline void* xMemDup(void *str) {
 //#define xPrintInfo(F)
 #define xPrintBinStats(F)
 #define xMarkMemoryAsStatic()
-#define xFreeSize(P, S)           xFree(P)
-#define xfreeSize(P, S)           xFreeSize(P,S)
-#define xFreeBinAddr(P)           xFree(P)
+//#define xFreeBinAddr(P)           xFree(P)
 #define xrealloc(A, NS)           xRealloc(A,NS)
 #define xreallocSize(A, OS, NS)   xRealloc(A,NS)
 #define xRealloc0Size(A, OS, NS)  xRealloc0(A,NS)
@@ -337,7 +383,6 @@ static inline void* xMemDup(void *str) {
 #define xMemCpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
 #define xMemcpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
 #define memcpyW(A, B ,C)          memcpy(A,B,(C)*__XMALLOC_SIZEOF_LONG)
-#define xGetStickyBinOfBin(B)     (B)
 #define xFreeFunc                 xFree
 
 /* debug dummies: */
@@ -370,7 +415,6 @@ static inline void* xMemDup(void *str) {
 #define xPrintUsedTrackAddrs(A, B)              ((void) 0)
 #define xPrintUsedAddrs(A, B)                   ((void) 0)
 #define xPrintCurrentBackTrace(A)               ((void) 0)
-
 
 #ifdef __cplusplus
 }

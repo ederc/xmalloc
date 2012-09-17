@@ -125,7 +125,6 @@ xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
  *
  */
 static inline void xFreeRegion(xRegion region) {
-  assert((NULL != region) && (0 == region->numberUsedPages));
 
 #ifndef __XMALLOC_NDEBUG
   info.availablePages -=  region->totalNumberPages;

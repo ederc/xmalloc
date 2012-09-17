@@ -169,3 +169,19 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
 void xFreeSizeFunc(void *ptr, size_t size) { 
   xFree(ptr); 
 }
+
+
+/************************************************
+ * STICKY BUSINESS OF BINS
+ ***********************************************/
+xBin xGetStickyBinOfBin(xBin bin) {
+  xBin newBin = xMalloc(sizeof(xBinType));
+  assert(!xIsStickyBin(bin));
+  newBin->sticky        = __XMALLOC_SIZEOF_VOIDP;
+  newBin->numberBlocks  = bin->numberBlocks;
+  newBin->sizeInWords   = bin->sizeInWords;
+  newBin->next          = xStickyBins;
+  xStickyBins           = newBin;
+  newBin->lastPage      = NULL;
+  newBin->currentPage   = __XMALLOC_ZERO_PAGE;
+}

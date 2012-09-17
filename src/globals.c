@@ -172,7 +172,8 @@ xBin xSize2Bin[/*126*/] = {
 &xStaticBin[22],  /*  992 */
 &xStaticBin[22],  /* 1000 */
 &xStaticBin[22]   /* 1008 */};
-// extern declaration in globals.h --- end
+
+xBin xStickyBins  = NULL;
 
 /************************************
  * STATISTICS / XINFO STUFF
@@ -203,6 +204,7 @@ void xPrintInfo() {
   printf("BytesValloc:     %8ldk  %8ldk\n", info.usedBytesFromValloc/1024, info.availableBytesFromValloc/1024);
   printf("Pages:           %8ld   %8ld\n", info.usedPages, info.availablePages);
 }
+// extern declaration in globals.h --- end
 /************************************************
  * NOTE: These definitions need to be here since
  *       the functionality of getting and freeing

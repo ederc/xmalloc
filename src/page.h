@@ -142,7 +142,6 @@ static inline void* xAllocFromNonEmptyPage(xPage page) {
   page->numberUsedBlocks++;
   //printf("page %p -- page->current %p\n", page, page->current);
   void *addr  = (void*) page->current;
-  assert(NULL != addr);
   page->current = __XMALLOC_NEXT(page->current);
   return addr;
 }

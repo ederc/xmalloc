@@ -14,8 +14,8 @@
 #define XMALLOC_BIN_H
 
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
+#include <assert.h>
 #include <limits.h> // for ULLONG_MAX etc.
 #include "xmalloc-config.h"
 #include "data.h"
@@ -95,6 +95,8 @@ static inline BOOLEAN xIsStickyBin(xBin bin) {
 #endif
   return (bin->sticky >= __XMALLOC_SIZEOF_VOIDP);
 }
+
+// xBin xGetStickyBinOfBin(xBin bin); -> see xmalloc.h
 
 
 /************************************************
@@ -213,10 +215,8 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
     }
   }
   if (bin->lastPage == page) {
-    assert((NULL != page->prev) && (NULL == page->next));
     bin->lastPage = page->prev;
   } else {
-    assert(NULL != page->next);
     page->next->prev  = page->prev;
   }
   if (NULL != page->prev)
@@ -235,7 +235,6 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
  */
 static inline void xInsertPageToBin(xPage page, xBin bin) {
   if (__XMALLOC_ZERO_PAGE == bin->currentPage) {
-    assert(NULL == bin->lastPage);
     page->prev        = NULL;
     page->next        = NULL;
     bin->currentPage  = page;
@@ -312,13 +311,9 @@ static inline void* xAllocFromFullPage(xBin bin) {
   }
 
   if(!bin->sticky && (NULL != bin->currentPage->next)) {
-    assert(NULL != bin->currentPage->next->current);
     newPage = bin->currentPage->next;
   } else {
     newPage = xAllocNewPageForBin(bin);
-    assert((NULL != newPage) && (newPage != __XMALLOC_ZERO_PAGE) &&
-           (NULL != newPage->current));
-    assert(NULL != newPage);
     xInsertPageToBin(newPage, bin);
   }
 
@@ -485,7 +480,6 @@ static inline void xSetStickyOfPage(xPage page, xBin bin) {
 static inline xBin xGetBinOfPage(const xPage page) {
   unsigned long sticky  = xGetStickyOfPage(page);
   xBin bin              = xGetTopBinOfPage(page);
-  assert(NULL != bin);
   if (!xIsStickyBin(bin)) // TOODOO
     while ((bin->sticky != sticky) && (NULL != bin->next))
       bin = bin->next;

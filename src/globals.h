@@ -24,6 +24,8 @@ extern unsigned long *xPageShifts;
 
 extern struct xBinStruct xStaticBin[];
 
+extern xBin xStickyBins;
+
 /********************************************
  * STATISTICS / XINFO STUFF
  *******************************************/
