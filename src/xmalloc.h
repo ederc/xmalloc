@@ -121,6 +121,20 @@ static inline size_t xSizeOfLargeAddr(const void *addr) {
 static inline size_t xSizeOfAddr(const void *addr) {
   return(xIsBinAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
 }
+
+/**
+ * @fn static inline size_t xWordSizeOfAddr(const void *addr)
+ *
+ * @brief Get the word size of the memory chunk stored at address @var addr .
+ *
+ * @param addr Const pointer to the corresponding address.
+ *
+ * @return size of address @var addr
+ */
+static inline size_t xWordSizeOfAddr(const void *addr) {
+  return(xIsBinAddr(addr) ? xWordSizeOfBinAddr(addr) :
+          xSizeOfLargeAddr(addr) >> __XMALLOC_LOG_SIZEOF_LONG);
+}
 //#endif
 
 
