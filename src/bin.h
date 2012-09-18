@@ -498,7 +498,7 @@ static inline xBin xGetBinOfPage(const xPage page) {
  *
  */
 static inline xBin xGetBinOfAddr(void *addr) {
-  return xGetPageOfAddr(addr);
+  return xGetBinOfPage((xPage) xGetPageOfAddr(addr));
 }
 
 /**

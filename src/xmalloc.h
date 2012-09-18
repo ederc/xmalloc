@@ -313,27 +313,6 @@ xBin xGetSpecBin(size_t size);
 void xUnGetSpecBin(xBin *bin);
 
 
-static inline void* xRealloc0(void *oldPtr, size_t newSize) {
-  void *newPtr = xMalloc0(newSize);
-  if (oldPtr != NULL) {
-    size_t oldSize = xSizeOfAddr(oldPtr);
-    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
-    xFree(oldPtr);
-  }
-  return newPtr;
-}
-
-static inline void* xRealloc(void *oldPtr, size_t newSize) {
-  void* newPtr = xMalloc(newSize);
-  if (oldPtr != NULL) {
-    size_t oldSize = xSizeOfAddr(oldPtr);
-    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
-    xFree(oldPtr);
-  }
-  return newPtr;
-}
-
-
 /**
  * @fn void* xReallocLarge(void *oldPtr, size_t newSize)
  *
@@ -410,6 +389,27 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize);
 void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
 
 
+static inline void* xRealloc0(void *oldPtr, size_t newSize) {
+  void *newPtr = xMalloc0(newSize);
+  if (oldPtr != NULL) {
+    size_t oldSize = xSizeOfAddr(oldPtr);
+    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
+    xFree(oldPtr);
+  }
+  return newPtr;
+}
+
+static inline void* xRealloc(void *oldPtr, size_t newSize) {
+  void* newPtr = xMalloc(newSize);
+  if (oldPtr != NULL) {
+    size_t oldSize = xSizeOfAddr(oldPtr);
+    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
+    xFree(oldPtr);
+  }
+  return newPtr;
+}
+
+
 
 static inline char* xStrDup(const char *str) { 
   size_t length = strlen(str);
@@ -457,10 +457,6 @@ xBin xGetStickyBinOfBin(xBin bin);
 #define xPrintBinStats(F)
 #define xMarkMemoryAsStatic()
 //#define xFreeBinAddr(P)           xFree(P)
-#define xrealloc(A, NS)           xRealloc(A,NS)
-#define xreallocSize(A, OS, NS)   xRealloc(A,NS)
-#define xRealloc0Size(A, OS, NS)  xRealloc0(A,NS)
-#define xrealloc0Size(A, OS, NS)  xRealloc(A,NS)
 #define xMarkAsStaticAddr(A)
 #define xMemCpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
 #define xMemcpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)

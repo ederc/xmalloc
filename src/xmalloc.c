@@ -220,7 +220,7 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
     xBin newBin = xSmallSize2Bin(newSize);
 
     if (oldBin != newBin) {
-      size_t oldWordSize  = xIsNormalPageAddr(oldPtr) ? oldBin->sizeInWords :
+      size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
       memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
               newBin->sizeInWords));
@@ -241,7 +241,7 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
     xBin newBin = xSmallSize2Bin(newSize);
 
     if (oldBin != newBin) {
-      size_t oldWordSize  = xIsNormalPageAddr(oldPtr) ? oldBin->sizeInWords :
+      size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
       memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
               newBin->sizeInWords));
@@ -277,4 +277,6 @@ xBin xGetStickyBinOfBin(xBin bin) {
   xStickyBins           = newBin;
   newBin->lastPage      = NULL;
   newBin->currentPage   = __XMALLOC_ZERO_PAGE;
+
+  return newBin;
 }
