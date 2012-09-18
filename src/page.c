@@ -21,7 +21,6 @@ unsigned long *xPageShifts = NULL;
  * PAGE (UN-)REGISTRATION
  *********************************************/
 void xPageIndexFault(unsigned long startIndex, unsigned long endIndex) {
-  printf("--- PAGE INDEX FAULT ---\n");
   unsigned long indexDiff = endIndex - startIndex;
   long i;
   assert((startIndex <= endIndex) &&
