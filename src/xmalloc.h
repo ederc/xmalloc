@@ -333,14 +333,82 @@ static inline void* xRealloc(void *oldPtr, size_t newSize) {
   return newPtr;
 }
 
-static inline void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
-  void *newPtr = xMalloc(newSize);
-  if (oldPtr != NULL) {
-    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
-    xFree(oldPtr);
-  }
-  return newPtr;
-}
+
+/**
+ * @fn void* xReallocLarge(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk from system.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+void* xReallocLarge(void *oldPtr, size_t newSize);
+
+/**
+ * @fn void* xRealloc0Large(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk from system and initializes
+ * everything to zero.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+void* xRealloc0Large(void *oldPtr, size_t newSize);
+
+/**
+ * @fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param oldSize size of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize);
+
+/**
+ * @fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * zero.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param oldSize size of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize);
+
+/**
+ * @fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
+ *
+ * @brief Reallocates memory to @var newSize chunk.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param oldSize size of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @param initZero initializes memory to zero if flag is set to 1
+ *
+ * @return address of new memory chunk
+ */
+void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
+
 
 
 static inline char* xStrDup(const char *str) { 

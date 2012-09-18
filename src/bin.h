@@ -488,6 +488,20 @@ static inline xBin xGetBinOfPage(const xPage page) {
 }
 
 /**
+ * @fn static inline xBin xGetBinOfAddr(const void *addr)
+ *
+ * @brief Get bin of address @var addr .
+ *
+ * @param void * Const @var addr .
+ *
+ * @return  @var xBin of address @var addr
+ *
+ */
+static inline xBin xGetBinOfAddr(void *addr) {
+  return xGetPageOfAddr(addr);
+}
+
+/**
  * @fn static inline void xSetBinOfPage(xPage page, xBin bin)
  *
  * @brief Set top bin the page @var page to sticky of @var bin .

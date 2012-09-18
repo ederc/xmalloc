@@ -166,6 +166,99 @@ void xFreeBinRegion(xRegion reg, void *ptr) {
   }
 }
 */
+void* xReallocLarge(void *oldPtr, size_t newSize) {
+  newSize       = xAlignSize(newSize);
+  char *oldAddr = (char *)oldPtr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT;
+  char *newAddr = xReallocSizeFromSystem(oldAddr,
+                    *((size_t *) oldAddr) + __XMALLOC_SIZEOF_STRICT_ALIGNMENT,
+                    newSize + __XMALLOC_SIZEOF_STRICT_ALIGNMENT);
+  
+  *((size_t *) newAddr) = newSize;
+  return (void *) (newAddr + __XMALLOC_SIZEOF_STRICT_ALIGNMENT);
+}
+
+void* xRealloc0Large(void *oldPtr, size_t newSize) {
+  size_t oldSize  = xSizeOfLargeAddr(oldPtr);
+  char *newPtr    = xReallocLarge(oldPtr, newSize);
+  
+  newSize = xSizeOfLargeAddr(newPtr);
+  // check if we need to initialize stuff to zero
+  if (newSize > oldSize)
+    memset(newPtr + oldSize, 0, newSize - oldSize);
+  
+  return (void *) newPtr;
+}
+
+void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero) {
+  if(!xIsBinAddr(oldPtr) && newSize > __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+    // memory chunk is large, let system malloc handle it
+    if (initZero)
+      return xRealloc0Large(oldPtr, newSize);
+    else
+      return xReallocLarge(oldPtr, newSize);
+  } else {
+    // memory chunk is small enough, xmalloc handles it
+    void *newPtr    = xMalloc(newSize);
+    size_t minSize  = (oldSize < newSize ? oldSize : newSize);
+    memcpy(newPtr, oldPtr, minSize >> __XMALLOC_LOG_SIZEOF_LONG);
+
+    // initialize with 0 if initZero is set
+    if (initZero) {
+      memset((char*) newPtr + minSize, 0, (newSize - oldSize) >>
+            __XMALLOC_LOG_SIZEOF_LONG);
+    }
+    xFreeSize(oldPtr, oldSize);
+
+    return newPtr;
+  }
+}
+
+void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
+  void *newPtr;
+  if (__XMALLOC_MAX(newSize, oldSize) <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+    xBin oldBin = xGetBinOfAddr(oldPtr);
+    xBin newBin = xSmallSize2Bin(newSize);
+
+    if (oldBin != newBin) {
+      size_t oldWordSize  = xIsNormalPageAddr(oldPtr) ? oldBin->sizeInWords :
+                            xWordSizeOfAddr(oldPtr);
+      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+              newBin->sizeInWords));
+      xFreeBinAddr(oldPtr);
+    } else {
+      newPtr  = oldPtr;
+    }
+  } else {
+    newPtr  = xDoRealloc(oldPtr, oldSize, newSize, 0);
+  }
+  return newPtr;
+}
+
+void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
+  void *newPtr;
+  if (__XMALLOC_MAX(newSize, oldSize) <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+    xBin oldBin = xGetBinOfAddr(oldPtr);
+    xBin newBin = xSmallSize2Bin(newSize);
+
+    if (oldBin != newBin) {
+      size_t oldWordSize  = xIsNormalPageAddr(oldPtr) ? oldBin->sizeInWords :
+                            xWordSizeOfAddr(oldPtr);
+      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+              newBin->sizeInWords));
+      // initialize to zero if needed
+      if (newBin->sizeInWords > oldWordSize)
+        memset((void**) newPtr + oldWordSize, 0, newBin->sizeInWords - oldWordSize);
+      
+      xFreeBinAddr(oldPtr);
+    } else {
+      newPtr  = oldPtr;
+    }
+  } else {
+    newPtr  = xDoRealloc(oldPtr, oldSize, newSize, 1);
+  }
+  return newPtr;
+}
+
 void xFreeSizeFunc(void *ptr, size_t size) { 
   xFree(ptr); 
 }
