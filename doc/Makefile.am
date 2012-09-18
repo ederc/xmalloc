@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
-DOC_TARGETS = doc
+DOC_TARGETS =
 endif
 
 if BUILD_REFS
@@ -28,10 +28,16 @@ html/index.html:
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(refdocdir)
-	if test -x $(builddir)/html; then \
-		$(install_sh) $(builddir)/html/* $(DESTDIR)$(refdocdir); \
+	if test -x $(builddir)/html ; then \
+		cp -R $(builddir)/html/* $(DESTDIR)$(refdocdir); \
 	else \
-		$(install_sh) $(srcdir)/html/* $(DESTDIR)$(refdocdir); \
+		cp -R $(srcdir)/html/* $(DESTDIR)$(refdocdir); \
+	fi
+	mkdir -p $(distdir)/html
+	if test -x $(builddir)/html; then \
+		cp -R $(builddir)/html/* $(distdir)/html; \
+	else \
+		cp -R $(srcdir)/html/* $(distdir)/html; \
 	fi
 
 uninstall-hook:
@@ -43,13 +49,7 @@ uninstall-hook:
 maintainer-clean-local:
 	rm -rf $(builddir)/html $(builddir)/latex
 
-dist-hook:
-	mkdir -p $(distdir)/html
-	if test -x $(builddir)/html; then \
-		cp $(builddir)/html/* $(distdir)/html; \
-	else \
-		cp $(srcdir)/html/* $(distdir)/html; \
-	fi
+#dist-hook:
 
 EXTRA_DIST = \
 	index.xml	\
