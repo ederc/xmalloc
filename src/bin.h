@@ -448,7 +448,8 @@ static inline xBin xGetTopBinOfPage(const xPage page) {
 #if __XMALLOC_DEBUG > 1
   printf("page %p -- gtpoba %p\n", page, page->bin);
 #endif
-  return((xBin) ((unsigned long) page->bin));
+  return (xBin) (((unsigned long) page->bin) & 
+      ~((unsigned long) __XMALLOC_SIZEOF_VOIDP_MINUS_ONE));
 }
 
 /**

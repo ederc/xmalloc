@@ -170,6 +170,25 @@ static inline void* xMalloc(const size_t size) {
 }
 
 /**
+ * @fn static inline void* xMalloc0(const size_t size)
+ *
+ * @brief Allocates memory of size class @var size and initializes everything to
+ * zero.
+ *
+ * @param size Const @var size_t giving size class.
+ *
+ * @return address of memory allocated
+ *
+ * @note It is assumed that @var size > 0.
+ *
+ */
+static inline void* xMalloc0(size_t size) {
+  void *ptr = xMalloc(size);
+  memset(ptr, 0, size);
+  return ptr;
+}
+
+/**
  * @fn static inline void* xmalloc(const size_t size)
  *
  * @brief Allocates memory of size class @var size .
@@ -288,12 +307,6 @@ void xFreeSizeFunc(void *ptr, size_t size);
 
 xRegion xIsBinBlock(unsigned long region);
 
-static inline void* xMalloc0(size_t size) {
-  void *ptr = xMalloc(size);
-  memset(ptr, 0, size); 
-  return ptr; 
-}
-
 /************************************************
  * ALLOCATION AND FREEING OF SPECIAL BINS
  * NOTE: This needs to be located here since
@@ -368,8 +381,59 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize);
  * @param newSize size of new memory chunk
  *
  * @return address of new memory chunk
+ *
+ * @note Assumes that @var oldPtr != NULL.
  */
 void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize);
+
+/**
+ * @fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk. xmalloc uses @var oldSize
+ * to find possibly fitting @var xBins for an optimized allocation.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param oldSize size of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunka
+ *
+ * @note Assumes that @var oldPtr != NULL.
+ */
+static inline void* xreallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
+  if (!newSize)
+    newSize = (size_t) 1;
+  if (NULL != oldPtr)
+    return xReallocSize(oldPtr, oldSize, newSize);
+  else
+    return xMalloc(newSize);
+}
+
+/**
+ * @fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * zero. xmalloc uses @var oldSize to find possibly fitting
+ * @var xBins for an optimized allocation.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param oldSize size of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
+  if (!newSize)
+    newSize = (size_t) 1;
+  if (NULL != oldPtr)
+    return xRealloc0Size(oldPtr, oldSize, newSize);
+  else
+    return xMalloc0(newSize);
+}
 
 /**
  * @fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
@@ -388,7 +452,18 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize);
  */
 void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
 
-
+/**
+ * @fn static inline void* xRealloc0(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * zero.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
 static inline void* xRealloc0(void *oldPtr, size_t newSize) {
   void *newPtr = xMalloc0(newSize);
   if (oldPtr != NULL) {
@@ -399,6 +474,17 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
   return newPtr;
 }
 
+/**
+ * @fn static inline void* xRealloc(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk.
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
 static inline void* xRealloc(void *oldPtr, size_t newSize) {
   void* newPtr = xMalloc(newSize);
   if (oldPtr != NULL) {
@@ -409,7 +495,23 @@ static inline void* xRealloc(void *oldPtr, size_t newSize) {
   return newPtr;
 }
 
+static inline void* xrealloc(void *oldPtr, size_t newSize) {
+  if (!newSize)
+    newSize = (size_t) 1;
+  if (NULL != oldPtr)
+    return xRealloc(oldPtr, newSize);
+  else
+    return xMalloc(newSize);
+}
 
+static inline void* xrealloc0(void *oldPtr, size_t newSize) {
+  if (!newSize)
+    newSize = (size_t) 1;
+  if (NULL != oldPtr)
+    return xRealloc0(oldPtr, newSize);
+  else
+    return xMalloc0(newSize);
+}
 
 static inline char* xStrDup(const char *str) { 
   size_t length = strlen(str);
