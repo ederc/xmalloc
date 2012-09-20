@@ -25,6 +25,7 @@ Makefile
 depend
 tags
 missing
+libtool
 aclocal.m4
 autom4te.cache/
 xmalloc-config
