@@ -24,7 +24,6 @@ Makefile.in
 Makefile
 depend
 tags
-libtool
 missing
 aclocal.m4
 autom4te.cache/
