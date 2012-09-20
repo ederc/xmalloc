@@ -24,8 +24,6 @@ Makefile.in
 Makefile
 depend
 tags
-install-sh
-ltmain.sh
 libtool
 missing
 aclocal.m4
