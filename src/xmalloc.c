@@ -200,7 +200,8 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero) {
     // memory chunk is small enough, xmalloc handles it
     void *newPtr    = xMalloc(newSize);
     size_t minSize  = (oldSize < newSize ? oldSize : newSize);
-    memcpy(newPtr, oldPtr, minSize >> __XMALLOC_LOG_SIZEOF_LONG);
+    //memcpy(newPtr, oldPtr, minSize >> __XMALLOC_LOG_SIZEOF_LONG);
+    memcpy(newPtr, oldPtr, minSize);
 
     // initialize with 0 if initZero is set
     if (initZero) {
@@ -215,7 +216,6 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero) {
 
 void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
   void *newPtr  = NULL;
-  printf("CMP SIZES %ld -- %ld -- %ld\n", oldSize, newSize, __XMALLOC_MAX(newSize, oldSize));
   if (__XMALLOC_MAX(newSize, oldSize) <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin oldBin = xGetBinOfAddr(oldPtr);
     xBin newBin = xSmallSize2Bin(newSize);
@@ -223,12 +223,11 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
     if (oldBin != newBin) {
       size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
-      printf("OWS %ld\n", (long) oldWordSize);
       newPtr  = xAllocFromBin(newBin);
-      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
-              newBin->sizeInWords));
-      printf("EQUAL? %d\n", *((void**)newPtr) == *((void**)oldPtr));
-      printf("NWS %ld\n", (long) newBin->sizeInWords);
+      //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+      //        newBin->sizeInWords));
+      memcpy(newPtr, oldPtr, (newSize> oldSize ? oldSize :
+              newSize));
       xFreeBinAddr(oldPtr);
     } else {
       newPtr  = oldPtr;
@@ -241,7 +240,6 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
 
 void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
   void *newPtr  = NULL;
-  printf("CMP SIZES %ld -- %ld -- %ld\n", oldSize, newSize, __XMALLOC_MAX(newSize, oldSize));
   if (__XMALLOC_MAX(newSize, oldSize) <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin oldBin = xGetBinOfAddr(oldPtr);
     xBin newBin = xSmallSize2Bin(newSize);
@@ -250,12 +248,10 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
       size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
       newPtr  = xAllocFromBin(newBin);
-      printf("newptr %p -- %p oldptr\n",newPtr, oldPtr);
-      printf("0 OWS %ld\n", (long) oldWordSize);
-      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
-              newBin->sizeInWords));
-      printf("EQUAL? %d\n", *((void**)newPtr) == *((void**)oldPtr));
-      printf("0 NWS %ld\n", (long) newBin->sizeInWords);
+      //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+      //        newBin->sizeInWords));
+      memcpy(newPtr, oldPtr, (newSize> oldSize ? oldSize :
+              newSize));
       // initialize to zero if needed
       if (newBin->sizeInWords > oldWordSize)
         memset((void**) newPtr + oldWordSize, 0, newBin->sizeInWords - oldWordSize);

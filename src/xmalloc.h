@@ -465,13 +465,8 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
  * @return address of new memory chunk
  */
 static inline void* xRealloc0(void *oldPtr, size_t newSize) {
-  void *newPtr = xMalloc0(newSize);
-  if (oldPtr != NULL) {
-    size_t oldSize = xSizeOfAddr(oldPtr);
-    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
-    xFree(oldPtr);
-  }
-  return newPtr;
+  size_t oldSize = xSizeOfAddr(oldPtr);
+  return xRealloc0Size(oldPtr, oldSize, newSize);
 }
 
 /**
@@ -486,13 +481,8 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
  * @return address of new memory chunk
  */
 static inline void* xRealloc(void *oldPtr, size_t newSize) {
-  void* newPtr = xMalloc(newSize);
-  if (oldPtr != NULL) {
-    size_t oldSize = xSizeOfAddr(oldPtr);
-    memcpy(newPtr, oldPtr, ((oldSize < newSize) ? oldSize : newSize));
-    xFree(oldPtr);
-  }
-  return newPtr;
+  size_t oldSize = xSizeOfAddr(oldPtr);
+  return xReallocSize(oldPtr, oldSize, newSize);
 }
 
 static inline void* xrealloc(void *oldPtr, size_t newSize) {
@@ -543,22 +533,14 @@ static inline void* xMemDup(void *str) {
 xBin xGetStickyBinOfBin(xBin bin);
 
 
-#define xTypeAllocBin(T, P, B)  P=(T)xAllocBin(B)
-#define xTypeAlloc(T, P, S)     P=(T)xMalloc(S)
-#define xTypeAlloc0(T, P, S)    P=(T)xMalloc0(S)
-#define xTypeAlloc0Bin(T, P, B) P=(T)xAlloc0Bin(B)
 #define xAlloc0Aligned(S)       xMalloc0(S)
 #define xAllocAligned(S)        xMalloc(S)
-//#define xAllocBin(B)            xMalloc(B)
-//#define xAlloc0Bin(B)           xMalloc0(B)
 #define xInitInfo()             
 #define xInitGetBackTrace()
 #define xUpdateInfo()             
 #define xPrintStats(F)
-//#define xPrintInfo(F)
 #define xPrintBinStats(F)
 #define xMarkMemoryAsStatic()
-//#define xFreeBinAddr(P)           xFree(P)
 #define xMarkAsStaticAddr(A)
 #define xMemCpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
 #define xMemcpyW(A, B, S)         memcpy(A,B,(S)*__XMALLOC_SIZEOF_LONG)
@@ -568,8 +550,6 @@ xBin xGetStickyBinOfBin(xBin bin);
 /* debug dummies: */
 #define xTypeReallocAlignedSize     xTypeReallocSize
 #define xTypeRealloc0AlignedSize    xTypeRealloc0Size
-#define xReallocAlignedSize         xReallocSize
-#define xRealloc0AlignedSize        xRealloc0Size
 #define xMemDupAligned              xMemDup
 #define xCheckIf(cond, test)                    ((void) 0)
 #define xCheckBinAddr(addr)                     ((void) 0)
