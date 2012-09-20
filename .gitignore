@@ -26,6 +26,8 @@ depend
 tags
 missing
 libtool
+install-sh
+ltmain.sh
 aclocal.m4
 autom4te.cache/
 xmalloc-config
