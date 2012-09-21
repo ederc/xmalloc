@@ -329,7 +329,8 @@ void xUnGetSpecBin(xBin *bin);
 /**
  * @fn void* xReallocLarge(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk from system.
+ * @brief Reallocates memory to @var newSize chunk from system. For this it
+ * takes care of xmallocs alignment of those big memory chunks.
  *
  * @param oldPtr address of old memory chunk
  *
@@ -343,7 +344,8 @@ void* xReallocLarge(void *oldPtr, size_t newSize);
  * @fn void* xRealloc0Large(void *oldPtr, size_t newSize)
  *
  * @brief Reallocates memory to @var newSize chunk from system and initializes
- * everything to zero.
+ * everything to zero. For this it takes care of xmallocs alignment of those
+ * big memory chunks.
  *
  * @param oldPtr address of old memory chunk
  *
@@ -438,7 +440,12 @@ static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) 
 /**
  * @fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
  *
- * @brief Reallocates memory to @var newSize chunk.
+ * @brief Reallocates memory to @var newSize chunk. For this it checks if @var
+ * newSize is smaller than @var __XMALLOC_MAX_SMALL_BLOCK_SIZE . If this is true
+ * it allocates the new memory from xmallocs @var xBin structures. Otherwise a
+ * system reallocation is done via @fn xReallocLarge resp. @fn xRealloc0Large .
+ * If the corresponding flag @var initZero is set, then all new memory is
+ * initialized to zero.
  *
  * @param oldPtr address of old memory chunk
  *
@@ -449,6 +456,9 @@ static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) 
  * @param initZero initializes memory to zero if flag is set to 1
  *
  * @return address of new memory chunk
+ *
+ * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ *
  */
 void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
 
@@ -456,13 +466,17 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
  * @fn static inline void* xRealloc0(void *oldPtr, size_t newSize)
  *
  * @brief Reallocates memory to @var newSize chunk and initializes everything to
- * zero.
+ * zero. Computes the size of the old memory chunk first, then calls
+ * @fn xRealloc0Size .
  *
  * @param oldPtr address of old memory chunk
  *
  * @param newSize size of new memory chunk
  *
  * @return address of new memory chunk
+ *
+ * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ *
  */
 static inline void* xRealloc0(void *oldPtr, size_t newSize) {
   size_t oldSize = xSizeOfAddr(oldPtr);
@@ -472,7 +486,28 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
 /**
  * @fn static inline void* xRealloc(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk.
+ * @brief Reallocates memory to @var newSize chunk. Computes the size of the old
+ * memory chunk first, then calls @fn xReallocSize .
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ *
+ * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ *
+ */
+static inline void* xRealloc(void *oldPtr, size_t newSize) {
+  size_t oldSize = xSizeOfAddr(oldPtr);
+  return xReallocSize(oldPtr, oldSize, newSize);
+}
+
+/**
+ * @fn static inline void* xrealloc0(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * zero. Checks input data first, then calls @fn xRealloc0 .
  *
  * @param oldPtr address of old memory chunk
  *
@@ -480,20 +515,6 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
  *
  * @return address of new memory chunk
  */
-static inline void* xRealloc(void *oldPtr, size_t newSize) {
-  size_t oldSize = xSizeOfAddr(oldPtr);
-  return xReallocSize(oldPtr, oldSize, newSize);
-}
-
-static inline void* xrealloc(void *oldPtr, size_t newSize) {
-  if (!newSize)
-    newSize = (size_t) 1;
-  if (NULL != oldPtr)
-    return xRealloc(oldPtr, newSize);
-  else
-    return xMalloc(newSize);
-}
-
 static inline void* xrealloc0(void *oldPtr, size_t newSize) {
   if (!newSize)
     newSize = (size_t) 1;
@@ -501,6 +522,27 @@ static inline void* xrealloc0(void *oldPtr, size_t newSize) {
     return xRealloc0(oldPtr, newSize);
   else
     return xMalloc0(newSize);
+}
+
+/**
+ * @fn static inline void* xrealloc(void *oldPtr, size_t newSize)
+ *
+ * @brief Reallocates memory to @var newSize chunk. Checks input data first,
+ * then calls @fn xRealloc .
+ *
+ * @param oldPtr address of old memory chunk
+ *
+ * @param newSize size of new memory chunk
+ *
+ * @return address of new memory chunk
+ */
+static inline void* xrealloc(void *oldPtr, size_t newSize) {
+  if (!newSize)
+    newSize = (size_t) 1;
+  if (NULL != oldPtr)
+    return xRealloc(oldPtr, newSize);
+  else
+    return xMalloc(newSize);
 }
 
 static inline char* xStrDup(const char *str) { 
