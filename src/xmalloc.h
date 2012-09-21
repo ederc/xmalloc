@@ -323,7 +323,10 @@ xRegion xIsBinBlock(unsigned long region);
  */
 xBin xGetSpecBin(size_t size);
 
-void xUnGetSpecBin(xBin *bin);
+/**
+ * @fn void xUnGetSpecBin(xBin *oldBin, int remove);
+ */
+void xUnGetSpecBin(xBin *oldBin, int remove);
 
 
 /**

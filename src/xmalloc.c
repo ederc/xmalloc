@@ -116,6 +116,28 @@ xBin xGetSpecBin(size_t size) {
   }
 }
 
+void xUnGetSpecBin(xBin *oldBin, int remove) {
+  xBin bin  = *oldBin;
+  if (!xIsStaticBin(bin)) {
+    xSpecBin sBin = xFindInSortedList(xBaseSpecBin, bin->numberBlocks);
+
+    assert(NULL != sBin && bin == sBin->bin);
+
+    if (NULL != sBin) {
+      sBin->ref--;
+      if (0 == sBin->ref || remove) {
+        xFreeKeptAddrFromBin(sBin->bin);
+        if (NULL == sBin->bin->lastPage || remove) {
+          xBaseSpecBin  = xRemoveFromSortedList(xBaseSpecBin, sBin);
+          xFreeSize(sBin->bin, sizeof(xBinType));
+          xFreeSize(sBin, sizeof(xSpecBinType));
+        }
+      }
+    }
+  }
+  *oldBin = NULL;
+}
+
 /*
 xRegion xIsSmallBlock(void *ptr) {
   xRegion reg           = xBaseRegion;
@@ -221,8 +243,6 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
     xBin newBin = xSmallSize2Bin(newSize);
 
     if (oldBin != newBin) {
-      size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
-                            xWordSizeOfAddr(oldPtr);
       newPtr  = xAllocFromBin(newBin);
       //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
       //        newBin->sizeInWords));

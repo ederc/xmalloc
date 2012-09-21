@@ -125,6 +125,12 @@ XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE=7;
 XMALLOC_LOG_SIZEOF_ALIGNMENT=3;
 XMALLOC_SIZEOF_STRICT_ALIGNMENT=8;
 
+# maximal indexi resp. block size in xStaticBin array
+# these values should depend on architecture, thus there needs to be implemented
+# a more flexible choice of these values
+XMALLOC_MAX_BIN_INDEX=22;
+XMALLOC_MAX_SMALL_BLOCK_SIZE=1008;
+
 # We hereby assume that a character is always one byte
 XMALLOC_INT8="char";
 
@@ -162,7 +168,6 @@ case $FOUR_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT32="long";
-     XMALLOC_MAX_SMALL_BLOCK_SIZE=1016;
      XMALLOC_LOG_BIT_SIZEOF_LONG=5;
      XMALLOC_LOG_SIZEOF_LONG=2;
      ;;
@@ -177,7 +182,6 @@ case $EIGHT_BYTES in
      ;;
   $ac_cv_sizeof_long)
      XMALLOC_INT64="long";
-     XMALLOC_MAX_SMALL_BLOCK_SIZE=1008;
      XMALLOC_LOG_BIT_SIZEOF_LONG=6;
      XMALLOC_LOG_SIZEOF_LONG=3;
      ;;
@@ -247,6 +251,9 @@ AC_DEFINE_UNQUOTED(SIZEOF_STRICT_ALIGNMENT,
     xmalloc)
 AC_DEFINE_UNQUOTED(SIZEOF_VOIDP_MINUS_ONE,
     (__XMALLOC_SIZEOF_VOIDP - 1), depending on sizeof(void*))
+AC_DEFINE_UNQUOTED(MAX_BIN_INDEX,
+    $XMALLOC_MAX_BIN_INDEX, depending on the chosen size classes and their
+    subdivision)
 AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
 AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)
 AC_DEFINE_UNQUOTED(INT32, $XMALLOC_INT32, Canonical 32-bit data type)

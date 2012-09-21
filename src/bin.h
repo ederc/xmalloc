@@ -178,13 +178,58 @@ static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
  *
  * @return address of found xSpecBin, NULL if none is found
  */
-static inline void* xFindInList(xSpecBin bin, long numberBlocks) {
+static inline void* xFindInList(xSpecBin bin, long numberBlocks, xSpecBin sBin) {
   while (NULL != bin) {
     if (bin->numberBlocks == numberBlocks)
       return bin;
     bin = bin->next;
   }
   return NULL;
+}
+
+/**
+ * @fn static inline void* xFindInSortedList(xSpecBin rootBin, xSpecBin sBin)
+ *
+ * @brief Tries to find a special bin @var sBin in the sorted list of special
+ * bins. If it finds it, @var sBin is removed from this list
+ *
+ * @param rootBin @var xSpecBin usually root of the list of special bins, but can be 
+ * any @var xSpecBin .
+ *
+ * @param sBin @var xSpecBin special bin to be removed from the list of special
+ * bins
+ *
+ * @return address of the root of the list of the special bins.
+ *
+ */
+static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin) {
+  // if root of spec bins is NULL, we are done
+  if (NULL == rootBin)
+    return NULL;
+  
+  xSpecBin listIterator       = __XMALLOC_NEXT(rootBin);
+  unsigned long numberBlocks  = sBin->numberBlocks;
+
+  // if root of spec bins coincides with sBin, just cut it out
+  if (rootBin == sBin)
+    return listIterator;
+  // now we really need to search for sBin in the list of spec bins
+  // NOTE: If root of spec bins has a greater number of blocks, then we are 
+  // done at the first step since sBin cannot be in this list at all
+  
+  // we need to remember the starting point of the list of spec bins
+  xSpecBin rootBinAnchor = rootBin;
+  while (NULL != listIterator && listIterator != sBin) {
+    if (rootBin->numberBlocks > numberBlocks)
+      return rootBinAnchor;
+    rootBin       = listIterator;
+    listIterator  = __XMALLOC_NEXT(listIterator);
+  }
+
+  if (NULL != listIterator)
+    __XMALLOC_NEXT(rootBin) = __XMALLOC_NEXT(listIterator);
+
+  return rootBinAnchor;
 }
 
 /************************************************
@@ -527,5 +572,22 @@ static inline void xSetBinOfPage(xPage page, xBin bin) {
  *
  */
 xPage xGetPageFromBin(xBin bin);
-//#endif
+
+/******************************************************
+ * STATIC BIN TESTINGS
+ *****************************************************/
+/**
+ * @fn static inline BOOLEAN xIsStaticBin(xBin bin)
+ *
+ * @brief Tests if @var bin is an @var xStaticBin array entry.
+ *
+ * @var bin @var xBin to be be tested.
+ *
+ * @return true if @var bin is an entry of @var xStaticBin, false otherwise.
+ *
+ */
+static inline BOOLEAN xIsStaticBin(xBin bin) {
+  return  ((unsigned long) bin >= (unsigned long) &xStaticBin[0]) &&
+  ((unsigned long) bin <= (unsigned long) &xStaticBin[__XMALLOC_MAX_BIN_INDEX]);
+}
 #endif
