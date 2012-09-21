@@ -207,7 +207,7 @@ static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin) {
   if (NULL == rootBin)
     return NULL;
   
-  xSpecBin listIterator       = __XMALLOC_NEXT(rootBin);
+  xSpecBin listIterator       = rootBin->next;
   unsigned long numberBlocks  = sBin->numberBlocks;
 
   // if root of spec bins coincides with sBin, just cut it out
@@ -223,11 +223,11 @@ static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin) {
     if (rootBin->numberBlocks > numberBlocks)
       return rootBinAnchor;
     rootBin       = listIterator;
-    listIterator  = __XMALLOC_NEXT(listIterator);
+    listIterator  = listIterator->next;
   }
 
   if (NULL != listIterator)
-    __XMALLOC_NEXT(rootBin) = __XMALLOC_NEXT(listIterator);
+    rootBin->next = listIterator->next;
 
   return rootBinAnchor;
 }

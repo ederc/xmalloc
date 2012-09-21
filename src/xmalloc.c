@@ -126,7 +126,7 @@ void xUnGetSpecBin(xBin *oldBin, int remove) {
     if (NULL != sBin) {
       sBin->ref--;
       if (0 == sBin->ref || remove) {
-        xFreeKeptAddrFromBin(sBin->bin);
+        //xFreeKeptAddrFromBin(sBin->bin);
         if (NULL == sBin->bin->lastPage || remove) {
           xBaseSpecBin  = xRemoveFromSortedList(xBaseSpecBin, sBin);
           xFreeSize(sBin->bin, sizeof(xBinType));
