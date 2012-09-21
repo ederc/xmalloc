@@ -33,6 +33,11 @@ autom4te.cache/
 xmalloc-config
 doc/html/
 doc/latex/
+m4/libtool.m4
+m4/lt~obsolete.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
 src/libxmalloc.la
 include/xmalloc-config.h
 include/xmalloc-config.h.in
