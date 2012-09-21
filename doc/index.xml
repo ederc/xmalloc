@@ -272,6 +272,12 @@
       <programlisting>
       *(void **)tmp = next element in xPage</programlisting>
     </para>
+    <para>
+      In order to simplify using xmalloc there is an easier way of getting the next
+      <type>xPage</type>, namely
+      <programlisting>
+      __XMALLOC_NEXT(tmp) </programlisting>
+    </para>
     </sect3>
     <sect3>
     <title>Finally, getting the memory address</title>
