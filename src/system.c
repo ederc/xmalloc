@@ -36,10 +36,12 @@ void* xAllocFromSystem(size_t size) {
     if (0 == xSbrkInit)
       xSbrkInit = (unsigned long) sbrk(0) - size;
 #if __XMALLOC_DEBUG > 1
+      printf("##########################################\n");
       printf("xsbrkinit       %ld\n", xSbrkInit);
       printf("maxbytessbrk    %ld\n", info.maxBytesSbrk);
       printf("currbytesmalloc %ld\n", info.currentBytesFromMalloc);
       printf("currbytesvalloc %ld\n", info.currentBytesFromValloc);
+      printf("##########################################\n");
 #endif
 #ifndef __XMALLOC_HAVE_MMAP
     if (info.maxBytesFromMalloc + info.currentBytesFromValloc > info.maxBytesSbrk)
