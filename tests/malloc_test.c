@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include "xmalloc-config.h"
+#include "xmalloc.h"
 
 #define	POOL_SIZE	1024
 
@@ -78,7 +80,7 @@ void *mem_allocator (void *arg)
 		/* find first NULL slot */
 		for (i = start; i < end; ++i) {
 		  if (NULL == mem_pool[i]) {
-			mem_pool[i] = malloc(1024);
+			mem_pool[i] = xmalloc(1024);
 			if (debug_flag) 
 			  printf("Allocate %i: slot %i\n", 
 				thread_id, i);
@@ -112,7 +114,7 @@ void *mem_releaser(void *arg)
 		   if (NULL != mem_pool[i]) {
 			  void *ptr = mem_pool[i];
 			  mem_pool[i] = NULL;
-			  free(ptr);
+			  xfree(ptr);
 			  ++counters[thread_id];
 			  if (debug_flag) 
 			    printf("Releaser %i: slot %i\n", 
@@ -137,7 +139,7 @@ int run_memory_free_test()
 	int i;
 	double elapse_time = 0.0;
 	long total = 0;
-	int *ids = (int *)malloc(sizeof(int) * num_workers);
+	int *ids = (int *)xmalloc(sizeof(int) * num_workers);
 
 	/* Initialize counter */
 	for(i = 0; i < num_workers; ++i) 
@@ -220,9 +222,9 @@ int main(int argc, char **argv)
 	}
 
 	/* allocate memory for working arrays */
-	thread_ids = (pthread_t *) malloc(sizeof(pthread_t) * num_workers * 2);
-	counters = (long *) malloc(sizeof(long) * num_workers);
-	mem_pool  = (void **) malloc(sizeof(void *) * POOL_SIZE * num_workers);
+	thread_ids = (pthread_t *) xmalloc(sizeof(pthread_t) * num_workers * 2);
+	counters = (long *) xmalloc(sizeof(long) * num_workers);
+	mem_pool  = (void **) xmalloc(sizeof(void *) * POOL_SIZE * num_workers);
 	
 	run_memory_free_test();
 	

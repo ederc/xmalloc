@@ -24,9 +24,8 @@ BASIC_TESTS =  					\
 				t1-large-blocks	\
 				t2							\
 				t3							\
-				t4
-#				\
-#				malloc_test
+				t4							\
+				malloc_test
 
 # a benchmarker, not to be included in check.
 BENCHMARKS =            
@@ -55,7 +54,7 @@ t3_SOURCES =                \
 t4_SOURCES =                \
         t4.c
 
-#malloc_test_SOURCES =                \
-#        malloc_test.c           
+malloc_test_SOURCES =     	\
+        malloc_test.c
 
 noinst_HEADERS =	
