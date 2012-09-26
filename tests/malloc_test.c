@@ -20,11 +20,11 @@
 #include "xmalloc-config.h"
 #include "xmalloc.h"
 
-#define	POOL_SIZE	1024
+#define	POOL_SIZE	4096
 
 int debug_flag = 0;
 int verbose_flag = 0;
-int num_workers = 2;
+int num_workers = 12;
 double run_time = 20.0;
 
 /* array for thread ids */
@@ -175,10 +175,10 @@ int run_memory_free_test()
 	elapse_time = elapsed_time (&begin);
 
 	for(i = 0; i < num_workers; ++i) {
-		printf("Thread %i frees %d blocks in %.2f seconds. %.2f free/sec.\n",
+		printf("Thread %2i frees %d blocks in %.2f seconds. %.2f free/sec.\n",
 		 	i, counters[i], elapse_time, ((double)counters[i]/elapse_time));
 	}
-	printf("-------------------------------\n");
+	printf("----------------------------------------------------------------\n");
 	for(i = 0; i < num_workers; ++i) total += counters[i];
 	printf("Total %d freed in %.2f seconds. %.2f free/second\n",
 		total, elapse_time, ((double) total/elapse_time));
