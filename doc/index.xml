@@ -662,4 +662,162 @@
       </para>
     </sect2>
   </sect1>
+  <appendix>
+    <title>Thread-safe memory management in general</title>
+    <para>
+      Next we give a short overview of current ideas and trends in multi-threaded
+      memory management. Hereby we concentrate on 3 of the most famous allocators
+      ( ordered by their first public release dates ):
+      <orderedlist>
+      <listitem>
+        <para>
+          Hoard by Emery Berger ( <ulink url="http://www.hoard.org/">http://www.hoard.org/</ulink> )
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Jemalloc by Jason Evans ( <ulink url="http://www.canonware.com/jemalloc/">http://www.canonware.com/jemalloc/</ulink> )
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          TCmalloc by people from Google ( <ulink url="http://gperftools.googlecode.com/">http://gperftools.googlecode.com/</ulink> )
+        </para>
+      </listitem>
+      </orderedlist>
+    </para>
+    <para>
+      Reviewing the common approaches to receive a fast, scalable and
+      thread-safe allocator we also give a discussion on efficiency
+      boundaries inherited by multi-threaded allocations.
+    </para>
+    <sect1>
+      <title>Problems occurring when using multiple threads concurrently</title>
+      <para>
+        Using multiple threads for allocation disadvantages can occur that are not
+        possible in a single-threaded environment. Moreover, well-known problems
+        get way worse.
+      </para>
+    <sect2>
+      <title>False sharing</title>
+      <para>
+        False sharing is a problem that does not occur in single-threaded allocators,
+        but is inherited from optimization ideas plainly based on locality of space:
+        Since packing data as much as possible, e.g. padding memory chunks, one wants
+        to achieve a good locality of reference. This means that data used nearby in
+        time should be stored in nearby memory locations.
+      </para>
+      <para>
+        For a multi-threaded allocator this concept gets way more complex: Let us
+        assume that the allocator divides a cache line into 8 byte chunks. If
+        multiple threads request objects of size 8 bytes, then the allocator may
+        give each of these threads a piece of the cache line.
+      </para>
+      <para>
+        Clearly, such a behaviour, often called <emphasis>actively induced false
+        sharing</emphasis> leads to very bad performance. Concurrently working
+        threads try to lock the cache line, thus the other threads have to wait
+        to set the lock themselves.
+      </para>
+      <para>
+        Moreover, induced by this, also a <emphasis>passively induced false
+        sharing</emphasis> is possible: Assume that after freeing the above
+        mentioned chunks of memory the allocator allows each processor to reuse
+        the memory pieces it freed. With this, false sharing can get even worse.
+      </para>
+    </sect2>
+    <sect2>
+      <title>Blowing up the memory usage</title>
+       <para>
+         The blowing up of memory consumed by the allocator can be illustrated by a
+         very easy example: Assume an application which uses 2 threads. A producer
+         thread allocates a block of memory and hands it to the consumer thread which
+        further processes it and frees it later on. If the used memory is not
+        available to the producer thread after its freeing a blow up in memory
+        emerges.
+       </para>
+       <para>
+        Moreover, keep in mind that there is a trivial blow up occurring: Thinking
+        about an application in which all threads have to allocate and free memory
+        of a given size <varname>s</varname> the application ideally needs only a
+        chunk of memory of size <varname>s</varname> in total. If the different steps
+        resp. threads of this application can work in parallel we need at least
+        a block of memory of the size <varname>n*s</varname> where <varname>n
+        </varname> is the maximum of the number of threads working in parallel.
+       </para>
+    </sect2>
+    </sect1>
+    <sect1>
+       <title>How to efficiently allocate memory in a multi-threaded enivornment</title>
+       <para>
+        In order to reduce the probability of concurrently executing threads using
+       the same cache line, the most common solution is to use multiple regions,
+       areas, heaps, caches or whatever you want to call it ( we stick with
+       <emphasis>heap</emphasis> in the following ). Let us assume in the
+       following a system with <varname>n</varname> processors resp. cores. For the
+       above mentioned allocators it is common to use a multiple of <varname>n
+       </varname> local heaps. By some hashing technique a current thread is
+       related to exactly 1 local heap.
+       </para>
+       <para>
+       Any local heap owns bigger blocks of memory resp. consists of corresponding
+       free lists. Besides the local heaps there exists 1 global heap. It also has
+       some memory chunks preallocated.
+       </para>
+       <para>
+       The main allocation procedure is the following:
+       <orderedlist>
+       <listitem>
+       <para>
+        The thread which needs memory searches it local heap. If there is a free
+       chunk of memory of the required size class, the allocation is done.
+       </para>
+       </listitem>
+       <listitem>
+       <para>
+       If the local heap does not have any appropriate free memory block left,
+       the thread has to ask the global heap for memory. If this leads to a
+       positive response, the thread acquire the given memory to its local heap.
+       </para>
+       </listitem>
+       <listitem>
+       <para>
+       If the global heap also has no appropriate chunk of memory left for the
+       enquiry of the thread, then the global heap allocates a big bunch of
+       memory from the system.
+       </para>
+       </listitem>
+       </orderedlist>
+      </para>
+      <para>
+       Using a scheme like this the probability of false sharing can be decreased
+       quite a lot. On the other hand, a new problem appears: Once memory is freed
+       one needs to take care of the load balance. Once there are 3 local heaps with
+       plenty of available memory on 1 thread completely full making enquiries to
+       the global heap something has went wrong for sure.
+       </para>
+    </sect1>
+    <sect1>
+      <title>Distributing freed memory</title>
+       <para>
+       Using the local heap approach the question of how to distribute beforehand
+       used and now freed memory chunks becomes an important question. Clearly, the
+       memory freed by a thread should be kept to the local heap it came from and
+       should not be handled back to the system. This increases reusability and
+       improves the efficiency of the allocator.
+       </para>
+       <para>
+       On the other hand, there must be some threshold at which big chunks of free
+       memory in a local heap is handed back to the global heap in order make it
+       usable also for the other threads. Otherwise an equilibrium in supply and
+       demand cannot be achieved at all.
+       </para>
+       <para>
+       Also for this there does not exist the one best strategy in every possible
+       situation. Handling the distribution of already owned memory efficiently
+       is one of the main tasks a fast thread-safe memory allocator has to deal
+       with.
+       </para>
+    </sect1>
+  </appendix>
 </article>
