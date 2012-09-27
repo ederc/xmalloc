@@ -7,11 +7,12 @@
  *         Public License version 3. See COPYING for more information.
  */
 
+#include <check.h>
 #include <stdio.h>
 #include "xmalloc-config.h"
 #include "xmalloc.h"
 
-int main()
+START_TEST(testtest)
 {
   int i;
   for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++)
@@ -32,5 +33,9 @@ int main()
     xFree(p);
     printf(" - - - end freeing - - - \n");
   }
+  return 0;
+}
+END_TEST
+int main() {
   return 0;
 }

@@ -9,6 +9,9 @@ AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
 AM_CONFIG_HEADER([include/xmalloc-config.h])
 AX_PREFIX_CONFIG_H(include/xmalloc-config.h, __XMALLOC)
 AC_PATH_PROG(RM, rm, $FALSE)
+
+# for check unit testing suite
+AM_PATH_CHECK()
 RM="$RM -f"
 
 AC_CONFIG_MACRO_DIR([m4])
