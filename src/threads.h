@@ -6,7 +6,7 @@
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
-static inline unsigned long xGetNumberCpus() {
+static inline unsigned int xGetNumberCpus() {
   long result;
 
 #ifdef _WIN32
@@ -14,12 +14,16 @@ static inline unsigned long xGetNumberCpus() {
   GetSystemInfo(&si);
   result  = si.dwNumberOfProcessors;
 #else
+#ifdef _SC_NPROCESSORS_ONLN
   result  = sysconf(_SC_NPROCESSORS_ONLN);
+#elif defined(_SC_NPROCESSORS_CONF)
+  result  = sysconf(_SC_NPROCESSORS_CONF);
+#endif
   // if we don't get useful data, i.e. an error happens we trigger the number of
   // available cpus to be at least 1
   if (-1 == result)
     result  = 1;
 #endif
 
-  return (unsigned long) result;
+  return (unsigned int) result;
 }
