@@ -662,6 +662,40 @@
       </para>
     </sect2>
   </sect1>
+  <sect1>
+  <title>Agreements on the xmalloc test suite</title>
+  <sect2>
+  <title>Unit testing frameworks</title>
+  <para>
+  Keeping dependencies of xmalloc at a low we decided to not use any third-party
+  unit testing framework like <emphasis>check</emphasis> or <emphasis>dejagnu</emphasis>.
+  </para>
+  <para>
+  Still we try to keep our unit test suite up to date. For this we encourage developers
+  to include a test for any new functionality in xmalloc.
+  </para>
+  </sect2>
+  <sect2>
+  <title>Using assert() in the test suite</title>
+  <para>
+  Again we do not want xmalloc to imply too many dependencies. Thus we stick to the
+  default <function>assert()</function> defined in <varname>assert.h</varname>.
+  </para>
+  <para>
+  If a developer wants to add some comment to the <function>assert()</function>
+  triggering there are several methods resp. hacks to do so. We insist to use
+  the following style:
+  <programlisting>
+  assert (NULL != addr &amp;&amp; "addr must not be NULL.");</programlisting>
+  </para>
+  <para>
+  Please try to keep the comment string as short as possible. If the <function>assert()
+  </function> call including the comment would be too long please break the line
+  in the source code exactly behind <varname>&amp;&amp;</varname> and begin the
+  next line with the comment string <varname>"...");</varname>.
+  </para>
+  </sect2>
+  </sect1>
   <appendix>
     <title>Thread-safe memory management in general</title>
     <para>
