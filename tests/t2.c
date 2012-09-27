@@ -17,9 +17,9 @@ int main()
   for (i=1;i<__XMALLOC_MAX_SMALL_BLOCK_SIZE;i++)
   {
     xBin b=xGetSpecBin(i);
+    assert (NULL != b && "There must exist a bin in xStaticBin for this size class.");
     void *p=xMalloc(i);
-    printf(" %d (%d vs %d)\n",i,b->sizeInWords*4,xSizeOfAddr(p));
-    printf("bin addr? %p -- %d\n", p, xIsBinAddr(p));
+    assert (NULL != p);
     xFree(p);
   }
   return 0;

@@ -17,17 +17,11 @@ int main()
   for (i; i < (10 * __XMALLOC_MAX_SMALL_BLOCK_SIZE); i=i+5)
   {
     xBin b=xGetSpecBin(i);
-    printf("BIN DETECTION %p -- %ld\n", b, b->numberBlocks);
-    printf(" - - - start allocation - - - \n");
     void *p=xMalloc(i);
-    printf(" - - - end allocation: %p- - - \n",p);
     if ((i>b->sizeInWords*4)
     || (b->sizeInWords*4 != (long) xSizeOfAddr(p)))
       printf(" %d (%d vs %d)\n",i,((int) b->sizeInWords)*4,(int) xSizeOfAddr(p));
-    //printf("%p in %p ? nrBL %ld\n",p,xGetPageOfAddr(p),((xPage)xGetPageOfAddr(p))->numberUsedBlocks);
-    printf(" - - - start freeing - - - \n");
     xFree(p);
-    printf(" - - - end freeing - - - \n");
   }
   return 0;
 }

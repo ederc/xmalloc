@@ -29,9 +29,7 @@ int main() {
   }
   xPrintInfo();
   for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {
-    printf("free size i: %ld -- %p\n",i, B[i]);
     xFree(B[i]);
-    xPrintInfo();
   }
   xPrintInfo();
   return 0;

@@ -22,7 +22,6 @@ int main()
   {
     B[i]=(char*)xMalloc0(i+1);
     for(j=0;j<i+1;j++) B[i][j]=(char)(i %256);
-    /*if (xSizeOfAddr(B[i])!=(i/100+1))*/ printf("xSizeOfAddr:%d, xAlloc:%d\n",xSizeOfAddr(B[i]),(i+1));
   }
   for( i=0;i<__XMALLOC_TEST_BLOCKS;i+=2)
   {

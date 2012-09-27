@@ -13,11 +13,8 @@
 
 int main()
 {
-  printf("check __XMALLOC_SIZEOF_LONG: %d == %d sizeof(long)\n",__XMALLOC_SIZEOF_LONG,(int)sizeof(long));
   {
-    printf("check X_MAX_SMALL_BLOCK:\n");
     xBin b=&x_StaticBin[sizeof(x_StaticBin)/sizeof(struct xBin_s)-1];
-    printf("  x_StaticBin: %ld==X_MAX_SMALL_BLOCK: %d\n",b->sizeInWords*sizeof(long), X_MAX_SMALL_BLOCK);
   }
   {
     int i;
@@ -28,7 +25,6 @@ int main()
     }
   }
   {
-    printf("check X_PAGES_PER_REGION: %d==4096\n",(int)sizeof(struct xRegion_s));
   }
   {
      xBlock B;
@@ -44,8 +40,6 @@ int main()
         s+=x_StaticBin[0].sizeInWords*sizeof(long);
         B=B->next;
      }
-     printf("check xMakePage: %ld bytes (one more: %ld, header: %ld)\n",
-      s,s+x_StaticBin[0].sizeInWords*sizeof(long),header);
   }
   return 0;
 }
