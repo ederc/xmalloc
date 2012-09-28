@@ -46,6 +46,9 @@ uninstall-hook:
 #clean-local:
 #	rm -rf $(builddir)/html $(builddir)/latex
 
+distclean-local:
+	rm -rf $(builddir)/html $(builddir)/latex
+
 maintainer-clean-local:
 	rm -rf $(builddir)/html $(builddir)/latex
 
@@ -58,11 +61,13 @@ EXTRA_DIST = \
 	config.xsl	\
 	docbook.css
 
-CLEANFILES = \
+CLEANFILES = 	\
+	index.html*	\
+	apa.html*
+
+DISTCLEANFILES = 	\
 	index.html*
 
-DISTCLEANFILES = \
-	index.html*
-
-MAINTAINERCLEANFILES = \
-	index.html*
+MAINTAINERCLEANFILES = 	\
+	index.html*						\
+	apa.html*
