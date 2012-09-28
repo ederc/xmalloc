@@ -11,7 +11,7 @@
 #include "xmalloc-config.h"
 #include "xmalloc.h"
 
-#define __XMALLOC_TEST_BLOCKS 10000
+#define __XMALLOC_TEST_BLOCKS 20000
 char *B[__XMALLOC_TEST_BLOCKS];
 
 int main() {
@@ -24,8 +24,7 @@ int main() {
   }
   for (i = 0; i < __XMALLOC_TEST_BLOCKS; i++) {
     for (j = 0; j <= i * 4; j++) 
-      if (B[i][j] != (char)(i % 256))
-        printf("i = %d, j = %d, expected %d, found %d\n", i, j, B[i][j], (i % 256));
+      assert ((B[i][j] != (char)(i % 256)) && "wrong value in");
   }
   xPrintInfo();
   for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {

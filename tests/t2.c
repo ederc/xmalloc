@@ -19,7 +19,7 @@ int main()
     xBin b=xGetSpecBin(i);
     assert (NULL != b && "There must exist a bin in xStaticBin for this size class.");
     void *p=xMalloc(i);
-    assert (NULL != p);
+    assert (NULL != p && "xMalloc should have allocated addr != NULL.");
     xFree(p);
   }
   return 0;
