@@ -43,8 +43,8 @@ static inline int xReportError(const char *message, ...) {
  */
 #define xAssert(expression, file, line)                           \
 do {                                                              \
-  if (!expression) {                                              \
-    xReportError("Assert violation at %s : %d condition %s\n\n",  \
+  if (!(expression)) {                                            \
+    xReportError("Assert violation at %s : %d ---( %s )---\n\n",  \
         file, line, #expression);                                 \
     exit(EXIT_FAILURE);                                           \
   }                                                               \
