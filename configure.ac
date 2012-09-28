@@ -125,6 +125,10 @@ XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE=7;
 XMALLOC_LOG_SIZEOF_ALIGNMENT=3;
 XMALLOC_SIZEOF_STRICT_ALIGNMENT=8;
 
+# for xmalloc's specialized assert functionality
+XMALLOC_STRINGIFICATION_OF_X="#x";
+XMALLOC_ASSERT="xAssert(x,__FILE__,__LINE__)";
+
 # maximal indexi resp. block size in xStaticBin array
 # these values should depend on architecture, thus there needs to be implemented
 # a more flexible choice of these values
@@ -254,6 +258,11 @@ AC_DEFINE_UNQUOTED(SIZEOF_VOIDP_MINUS_ONE,
 AC_DEFINE_UNQUOTED(MAX_BIN_INDEX,
     $XMALLOC_MAX_BIN_INDEX, depending on the chosen size classes and their
     subdivision)
+AC_DEFINE_UNQUOTED(STRINGIFICATION(x),
+    $XMALLOC_STRINGIFICATION_OF_X, macro stringification mainly used by xassert)
+AC_DEFINE_UNQUOTED(ASSERT(x),
+    $XMALLOC_ASSERT, it is a macro in order to print out the correct file and
+    line)
 AC_DEFINE_UNQUOTED(INT8, $XMALLOC_INT8, Canonical 8-bit data type)
 AC_DEFINE_UNQUOTED(INT16, $XMALLOC_INT16, Canonical 16-bit data type)
 AC_DEFINE_UNQUOTED(INT32, $XMALLOC_INT32, Canonical 32-bit data type)

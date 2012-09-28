@@ -17,6 +17,7 @@ int main()
   for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++)
   {
     xBin b  = xGetSpecBin(i);
+    __XMALLOC_ASSERT(1 == 0);
     assert (NULL != b &&
         "There must exist a bin in xStaticBin for this size class.");
     void *p = xMalloc(i);

@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include "../include/xmalloc-config.h"
 
 /**
  * @fn static inline int xReportError(const char* message, ...)
@@ -29,37 +30,33 @@
 static inline int xReportError(const char *message, ...) {
   va_list ap;
   va_start(ap, message);
-  fprintf(stderr, "\n--- ERROR ---\n");
+  fprintf(stderr, "\n--- ERROR -> ");
   vfprintf(stderr, message, ap);
   
   return 0;
 }
 
 #ifndef NDEBUG
+
 /**
- * @fn static inline void xAssert(int expression)
- *
- * @brief xmallocs assert function.
- *
- * @param expression @var integer expression to be checked
- *
+ * @brief xmalloc-specific assert
  */
-static inline void xAssert(int expression) {
-  if (!expression)
-    xReportError("Assert violation at %s : %d condition %s", __FILE__, __LINE__, (char *)expression);
-}
+#define xAssert(expression, file, line)                           \
+do {                                                              \
+  if (!expression) {                                              \
+    xReportError("Assert violation at %s : %d condition %s\n\n",  \
+        file, line, #expression);                                 \
+    exit(EXIT_FAILURE);                                           \
+  }                                                               \
+} while(0)
+
 // we let it just fall back to assert
 #else
+
 /**
- * @fn static inline void xAssert(int expression)
- *
- * @brief xmallocs assert function.
- *
- * @param expression @var integer expression to be checked
- *
+ * @brief xmalloc-specific assert
  */
-static inline void xAssert(int expression) {
-  assert(int expression);
-}
+#define xAssert(expression, file, line) assert(expression)
+
 #endif
 #endif
