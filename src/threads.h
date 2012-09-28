@@ -6,6 +6,10 @@
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
+
+#ifndef XMALLOC_THREAD_H
+#define XMALLOC_THREAD_H
+
 static inline unsigned int xGetNumberCpus() {
   long result;
 
@@ -27,3 +31,4 @@ static inline unsigned int xGetNumberCpus() {
 
   return (unsigned int) result;
 }
+#endif
