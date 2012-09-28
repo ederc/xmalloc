@@ -635,8 +635,184 @@
   </sect2>
   </sect1>
   <sect1>
-    <title>Guidelines for source code documentation for ongoing implementational tasks</title>
-    <sect2>
+  <title>Guidelines on source code documentation</title>
+  <sect2>
+  <title>How to document your code</title>
+  <para>
+  We insist on documenting all files, all functions, all structures and all macros you implement.
+  Those documentation must be done in Doxygen style
+  ( <ulink url="http://www.stack.nl/~dimitri/doxygen/">http://www.stack.nl/~dimitri/doxygen/</ulink> ).
+  For this please retain the given style, for example, that means use <varname>\param</varname>
+  instead of <varname>@param</varname> for describing parameters of a functions.
+  </para>
+  <sect3>
+  <title>Files</title>
+  <para>
+  For files we insist on the at least the following documentation to be given:
+  <orderedlist>
+  <listitem>
+  <para>
+    <varname>\file</varname>, the file itself
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\date</varname>, date of the first implementations
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\brief</varname>, a short description of the file's functionality
+  </para>
+  </listitem>
+  </orderedlist>
+  </para>
+  <para>
+  This is an example documentation of <filename>src/page.h</filename>:
+  <programlisting>
+    /**
+    * \file   page.h
+    * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+    * \date   July 2012
+    * \brief  Page handlers for xmalloc.
+    *         This file is part of XMALLOC, licensed under the GNU General
+    *         Public License version 3. See COPYING for more information.
+    * \note   There are some page based functions implemented in the bin.*
+    *         files since they depend internally on the strong page &lt;-&gt; bin
+    *         connection. Those files are mentioned ( and commented out! )
+    *         at the end of this file
+    */</programlisting>
+  </para>
+  <para>
+  Moreover, if the file incorporates some oddity, please give a note explaining this
+  behaviour via <varname>\note</varname>.
+  </para>
+  </sect3>
+  <sect3>
+  <title>Functions</title>
+  <para>
+  For functions we insist on the at least the following documentation to be given:
+  <orderedlist>
+  <listitem>
+  <para>
+    <varname>\fn</varname>, the function itself
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\brief</varname>, a brief description of what the function is doing
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\param</varname>, a description of each parameter used
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\return</varname>, the return value of the function
+  </para>
+  </listitem>
+  </orderedlist>
+  </para>
+  <para>
+  This is an example documentation of <function>xIsAddrOnPage</function> in <filename>src/page.h</filename>:
+  <programlisting>
+   /**
+    * \fn static inline BOOLEAN xIsAddrOnPage(void *addr, xPage page)
+    *
+    * \brief Checks if \c addr is on \c page .
+    *
+    * \param addr memory address to be checked
+    *
+    * \param page \c xPage to be checked
+    *
+    * \return true if \c addr is on \c page , false else
+    */</programlisting>
+  </para>
+  <para>
+  Moreover, if your function incorporates some oddity, please give a note explaining this
+  behaviour via <varname>\note</varname>.
+  </para>
+  </sect3>
+  <sect3>
+  <title>Structures</title>
+  <para>
+  For structures we insist on the at least the following documentation to be given:
+  <orderedlist>
+  <listitem>
+  <para>
+    <varname>\struct</varname>, the structure itself
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <varname>\brief</varname>, a brief description of what the structure is doing
+  </para>
+  </listitem>
+  </orderedlist>
+  </para>
+  <para>
+  Moreover, you must document all elements the struct consists of in place.
+  </para>
+  <para>
+  This is an example defintion and documentation of <varname>xPageStruct</varname>
+  in <filename>src/data.h</filename>:
+  <programlisting>
+    /**
+    * \struct xPageStruct
+    *
+    * \brief Structure of the internal xmalloc page including a header for better
+    * handling in the allocator.
+    */
+    struct xPageStruct {
+      long     numberUsedBlocks; /**&lt; number of used blocks in this page */
+      void*    current;          /**&lt; pointer to free list this page is in */
+      xPage    prev;             /**&lt; previous page in the free list */
+      xPage    next;             /**&lt; next page in the free list */
+      void*    bin;              /**&lt; bin of this page */
+      xRegion  region;           /**&lt; region this page comes from */
+    };</programlisting>
+  </para>
+  <para>
+  Moreover, if your function incorporates some oddity, please give a note explaining this
+  behaviour via <varname>\note</varname>.
+  </para>
+  </sect3>
+  <sect3>
+  <title>Macros</title>
+  <para>
+  If you really need to define new macros the documentation is rather short:
+  <orderedlist>
+  <listitem>
+  <para>
+    <varname>\brief</varname>, a brief description of what the macro is doing
+  </para>
+  </listitem>
+  </orderedlist>
+  </para>
+  <para>
+  In the settings of xmalloc's <filename>Doxyfile</filename> all macros are extended and
+  extracted. There are other solutions for documenting macros, for the sake of
+  simplicity we stick to this variant.
+  </para>
+  <para>
+  This is an example documentation of <varname>xAssert</varname>
+  in <filename>src/xassert.h</filename>:
+  <programlisting>
+    /**
+    * \brief xmalloc-specific assert
+    */</programlisting>
+  </para>
+  <para>
+  Moreover, if your function incorporates some oddity, please give a note explaining this
+  behaviour via <varname>\note</varname>.
+  </para>
+  </sect3>
+  </sect2>
+  <sect2>
+    <title>How to document ongoing implementational tasks</title>
+    <sect3>
       <title>Functionality to be implemented</title>
       <para>
         Implementations that need to be migrated from omalloc, but haven't been
@@ -646,8 +822,8 @@
         <programlisting>
         int k = functionStillToBeImplementedInXmalloc(para1, para2); // TOODOO</programlisting>
       </para>
-    </sect2>
-    <sect2>
+    </sect3>
+    <sect3>
       <title>Functionality from omalloc possibly not used in xmalloc</title>
       <para>
         There is functionality in omalloc that will possibly not be part of xmalloc.
@@ -660,7 +836,8 @@
         // OMALLOC FUNCTIONALITY MISSING
         // functionalityStillMissing = 2;</programlisting>
       </para>
-    </sect2>
+    </sect3>
+  </sect2>
   </sect1>
   <sect1>
   <title>Agreements on the xmalloc test suite</title>
