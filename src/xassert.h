@@ -7,10 +7,12 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include <assert.h>
-
 #ifndef XMALLOC_ASSERT_H
 #define XMALLOC_ASSERT_H
+
+#include <assert.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 /**
  * @fn static inline int xReportError(const char* message, ...)
@@ -29,6 +31,8 @@ static inline int xReportError(const char *message, ...) {
   va_start(ap, message);
   fprintf(stderr, "\n--- ERROR ---\n");
   vfprintf(stderr, message, ap);
+  
+  return 0;
 }
 
 #ifndef NDEBUG

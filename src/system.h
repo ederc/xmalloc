@@ -15,6 +15,7 @@
 #include <limits.h> // for ULLONG_MAX etc.
 #include <fcntl.h>
 #include <sys/mman.h>
+#include "xassert.h"
 #include "xmalloc-config.h"
 #include "align.h"
 

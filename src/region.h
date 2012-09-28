@@ -11,9 +11,9 @@
 #define XMALLOC_REGION_H
 
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 #include <limits.h> // for ULLONG_MAX etc.
+#include "xassert.h"
 #include "xmalloc-config.h"
 #include "data.h"
 #include "globals.h"

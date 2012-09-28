@@ -10,6 +10,8 @@
 #ifndef XMALLOC_THREAD_H
 #define XMALLOC_THREAD_H
 
+#include "xassert.h"
+
 static inline unsigned int xGetNumberCpus() {
   long result;
 

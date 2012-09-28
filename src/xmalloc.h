@@ -12,7 +12,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <limits.h> // for ULLONG_MAX etc.
 
 #define X_XMALLOC
@@ -21,6 +20,7 @@
 extern "C" {
 #endif
 
+#include "xassert.h"
 #include "xmalloc-config.h"
 #include "data.h"
 #include "globals.h"
