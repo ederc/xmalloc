@@ -1,8 +1,8 @@
 /**
- * @file   globals.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   July 2012
- * @brief  Global variables needed for xmalloc.
+ * \file   globals.h
+ * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  Global variables needed for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */

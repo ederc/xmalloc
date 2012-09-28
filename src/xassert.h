@@ -1,8 +1,8 @@
 /**
- * @file   xassert.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   July 2012
- * @brief  special assert handling for xmalloc.
+ * \file   xassert.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  special assert handling for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -16,15 +16,15 @@
 #include "../include/xmalloc-config.h"
 
 /**
- * @fn static inline int xReportError(const char* message, ...)
+ * \fn static inline int xReportError(const char* message, ...)
  *
- * @brief Prints the error message if an assert violation happens.
+ * \brief Prints the error message if an assert violation happens.
  *
- * @param message @var const @var char @var * the error message
+ * \param message \c const \c char \c * the error message
  *
- * @param possibly the file and the line in which the error happened
+ * \param possibly the file and the line in which the error happened
  *
- * @return @var integer error code
+ * \return \c integer error code
  *
  */
 static inline int xReportError(const char *message, ...) {
@@ -39,7 +39,7 @@ static inline int xReportError(const char *message, ...) {
 #ifndef NDEBUG
 
 /**
- * @brief xmalloc-specific assert
+ * \brief xmalloc-specific assert
  */
 #define xAssert(expression, file, line)                           \
 do {                                                              \
@@ -54,7 +54,7 @@ do {                                                              \
 #else
 
 /**
- * @brief xmalloc-specific assert
+ * \brief xmalloc-specific assert
  */
 #define xAssert(expression, file, line) assert(expression)
 

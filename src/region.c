@@ -1,8 +1,8 @@
 /**
- * @file   region.c 
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   August 2012
- * @brief  General source file for non-inline region handling functions.
+ * \file   region.c 
+ * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \date   August 2012
+ * \brief  General source file for non-inline region handling functions.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */

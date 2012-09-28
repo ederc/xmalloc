@@ -1,6 +1,6 @@
 /**
  * @file   bin.c
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * @Author Christian Eder ( ederd@mathematik.uni-kl.de )
  * @date   July 2012
  * @brief  General source file for non-inline bin handling functions.
  *         This file is part of XMALLOC, licensed under the GNU General

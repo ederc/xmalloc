@@ -1,8 +1,8 @@
 /**
- * @file   system.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   August 2012
- * @brief  System allocation calls for xmalloc.
+ * \file   system.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   August 2012
+ * \brief  System allocation calls for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -20,95 +20,95 @@
 #include "align.h"
 
 /*
- * @fn void* xAllocFromSystem(size_t size)
+ * \fn void* xAllocFromSystem(size_t size)
  *
- * @brief Allocates memory chunk of size @var size from the system.
+ * \brief Allocates memory chunk of size \c size from the system.
  *
- * @param size size of the memory chunk
+ * \param size size of the memory chunk
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 void* xAllocFromSystem(size_t size);
 
 /*
- * @fn void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize)
+ * \fn void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize)
  *
- * @brief Reallocates memory chunk of size @var oldSize at @var addr to a memory
- * chunk of size @var newSize at a ( possibly ) new address.
+ * \brief Reallocates memory chunk of size \c oldSize at \c addr to a memory
+ * chunk of size \c newSize at a ( possibly ) new address.
  *
- * @param addr address of memory chunk to be reallocated
+ * \param addr address of memory chunk to be reallocated
  *
- * @param oldSize old size of memory chunk to be reallocated
+ * \param oldSize old size of memory chunk to be reallocated
  *
- * @param newSize new size of memory chunk after reallocation
+ * \param newSize new size of memory chunk after reallocation
  *
- * @return address of reallocated memory chunk
+ * \return address of reallocated memory chunk
  *
  */
 void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize);
 
 /*
- * @fn void* xVallocFromSystem(size_t size)
+ * \fn void* xVallocFromSystem(size_t size)
  *
- * @brief Allocates memory chunk of size @var size from the system. This memory
- * is pre-aligned to the page boundary. This is just a wrapper around @see
+ * \brief Allocates memory chunk of size \c size from the system. This memory
+ * is pre-aligned to the page boundary. This is just a wrapper around \see
  * xValloc() which ensures a 2nd try of allocating memory if the 1st one fails.
  *
- * @param size size of the memory chunk
+ * \param size size of the memory chunk
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 void* xVallocFromSystem(size_t size);
 
 /*
- * @fn void* xVallocMmap(size_t size)
+ * \fn void* xVallocMmap(size_t size)
  *
- * @brief Allocates memory chunk of size @var size from the system. This memory
+ * \brief Allocates memory chunk of size \c size from the system. This memory
  * is pre-aligned to the page boundary. Mmap is used.
  *
- * @param size size of the memory chunk
+ * \param size size of the memory chunk
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 void* xVallocMmap(size_t size);
 
 /*
- * @fn void* xVallocMmap(size_t size)
+ * \fn void* xVallocMmap(size_t size)
  *
- * @brief Allocates memory chunk of size @var size from the system. This memory
+ * \brief Allocates memory chunk of size \c size from the system. This memory
  * is pre-aligned to the page boundary. Mmap is NOT used.
  *
- * @param size size of the memory chunk
+ * \param size size of the memory chunk
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
- * @note xmalloc's configure decides which valloc function is used for
+ * \note xmalloc's configure decides which valloc function is used for
  * __XMALLOC_VALLOC. This decision is done on whether mmap is available or not.
  *
  */
 void* xVallocNoMmap(size_t size);
 
 /*
- * @fn void* xFreeToSystem(void *page, size_t size)
+ * \fn void* xFreeToSystem(void *page, size_t size)
  *
- * @brief Frees memory at @var addr to system.
+ * \brief Frees memory at \c addr to system.
  *
- * @param addr address to be freed
+ * \param addr address to be freed
  *
- * @param size @size_t of the memory chunk
+ * \param size \size_t of the memory chunk
  *
  */
 void xVfreeToSystem(void *addr, size_t size);
 
 /*
- * @fn void* xFreeToSystem(void *page, size_t size)
+ * \fn void* xFreeToSystem(void *page, size_t size)
  *
- * @brief Frees memory at @var addr to system.
+ * \brief Frees memory at \c addr to system.
  *
- * @param addr address to be freed
+ * \param addr address to be freed
  *
  */
 void xFreeSizeToSystem(void *addr, size_t size);

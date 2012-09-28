@@ -1,8 +1,8 @@
 /**
- * @file   align.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   August 2012
- * @brief  Memory alignment handlers for xmalloc.
+ * \file   align.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   August 2012
+ * \brief  Memory alignment handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -18,13 +18,13 @@
 #include "data.h"
 
 /**
- * @fn static inline xAlignSize(size_t size)
+ * \fn static inline xAlignSize(size_t size)
  *
- * @brief @var size is aligned for xmalloc.
+ * \brief \c size is aligned for xmalloc.
  *
- * @param size ñvar size_t aligned for xmalloc
+ * \param size ñvar size_t aligned for xmalloc
  *
- * @return aligned size
+ * \return aligned size
  *
  */
 static inline size_t xAlignSize(size_t size) {
@@ -34,13 +34,13 @@ static inline size_t xAlignSize(size_t size) {
 
 #ifndef _XMALLOC_NDEBUG
 /**
- * @fn static inline BOOLEAN xAddressIsAligned(void *addr)
+ * \fn static inline BOOLEAN xAddressIsAligned(void *addr)
  *
- * @brief Checks if @var addr is aligned or not.
+ * \brief Checks if \c addr is aligned or not.
  *
- * @param addr address to be checked
+ * \param addr address to be checked
  *
- * @return true if @var addr is aligned, false else
+ * \return true if \c addr is aligned, false else
  *
  */
 static inline BOOLEAN xAddressIsAligned(void *addr) {

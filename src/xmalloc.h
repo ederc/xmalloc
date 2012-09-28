@@ -1,8 +1,8 @@
 /**
- * @file   xmalloc.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   July 2012
- * @brief  General header file for xmalloc.
+ * \file   xmalloc.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  General header file for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -53,13 +53,13 @@ static inline size_t xSizeOfAddr(const void *addr);
  ********************************************************/
 //#ifdef __XMALLOC_DEBUG
 /**
- * @fn static inline xBin xGetHeadOfBinAddr(const void *addr)
+ * \fn static inline xBin xGetHeadOfBinAddr(const void *addr)
  *
- * @brief Get head of bin the memory chunk at address @var addr is stored in.
+ * \brief Get head of bin the memory chunk at address \c addr is stored in.
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return head of @var xBin @var addr is in
+ * \return head of \c xBin \c addr is in
  */
 static inline xBin xGetHeadOfBinAddr(const void *addr) {
 #if __XMALLOC_DEBUG > 1
@@ -69,13 +69,13 @@ static inline xBin xGetHeadOfBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline size_t xWordSizeOfBinAddr(const void *addr)
+ * \fn static inline size_t xWordSizeOfBinAddr(const void *addr)
  *
- * @brief Get the word size of the memory chunk stored at address @var addr .
+ * \brief Get the word size of the memory chunk stored at address \c addr .
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return size in words of address @var addr
+ * \return size in words of address \c addr
  *
  */
 static inline size_t xWordSizeOfBinAddr(const void *addr) {
@@ -83,13 +83,13 @@ static inline size_t xWordSizeOfBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline size_t xSizeOfBinAddr(const void *addr)
+ * \fn static inline size_t xSizeOfBinAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address @var addr .
+ * \brief Get the size of the memory chunk stored at address \c addr .
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return size of address @var addr
+ * \return size of address \c addr
  *
  */
 static inline size_t xSizeOfBinAddr(const void *addr) {
@@ -97,39 +97,39 @@ static inline size_t xSizeOfBinAddr(const void *addr) {
 }
 
 /**
- * @fn static inline size_t xSizeOfLargeAddr(const void *addr)
+ * \fn static inline size_t xSizeOfLargeAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address @var addr .
+ * \brief Get the size of the memory chunk stored at address \c addr .
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return size of address @var addr
+ * \return size of address \c addr
  */
 static inline size_t xSizeOfLargeAddr(const void *addr) {
   return *((size_t *) ((char *) addr - __XMALLOC_SIZEOF_STRICT_ALIGNMENT));
 }
 
 /**
- * @fn static inline size_t xSizeOfAddr(const void *addr)
+ * \fn static inline size_t xSizeOfAddr(const void *addr)
  *
- * @brief Get the size of the memory chunk stored at address @var addr .
+ * \brief Get the size of the memory chunk stored at address \c addr .
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return size of address @var addr
+ * \return size of address \c addr
  */
 static inline size_t xSizeOfAddr(const void *addr) {
   return(xIsBinAddr(addr) ? xSizeOfBinAddr(addr) : xSizeOfLargeAddr(addr));
 }
 
 /**
- * @fn static inline size_t xWordSizeOfAddr(const void *addr)
+ * \fn static inline size_t xWordSizeOfAddr(const void *addr)
  *
- * @brief Get the word size of the memory chunk stored at address @var addr .
+ * \brief Get the word size of the memory chunk stored at address \c addr .
  *
- * @param addr Const pointer to the corresponding address.
+ * \param addr Const pointer to the corresponding address.
  *
- * @return size of address @var addr
+ * \return size of address \c addr
  */
 static inline size_t xWordSizeOfAddr(const void *addr) {
   return(xIsBinAddr(addr) ? xWordSizeOfBinAddr(addr) :
@@ -142,15 +142,15 @@ static inline size_t xWordSizeOfAddr(const void *addr) {
  * GENERAL MALLOC AND FREE STUFF
  ********************************************************/
 /**
- * @fn static inline void* xMalloc(const size_t size)
+ * \fn static inline void* xMalloc(const size_t size)
  *
- * @brief Allocates memory of size class @var size .
+ * \brief Allocates memory of size class \c size .
  *
- * @param size Const @var size_t giving size class. 
+ * \param size Const \c size_t giving size class. 
  *
- * @return address of memory allocated
+ * \return address of memory allocated
  *
- * @note It is assumed that @var size > 0.
+ * \note It is assumed that \c size > 0.
  *
  */
 static inline void* xMalloc(const size_t size) {
@@ -170,16 +170,16 @@ static inline void* xMalloc(const size_t size) {
 }
 
 /**
- * @fn static inline void* xMalloc0(const size_t size)
+ * \fn static inline void* xMalloc0(const size_t size)
  *
- * @brief Allocates memory of size class @var size and initializes everything to
+ * \brief Allocates memory of size class \c size and initializes everything to
  * zero.
  *
- * @param size Const @var size_t giving size class.
+ * \param size Const \c size_t giving size class.
  *
- * @return address of memory allocated
+ * \return address of memory allocated
  *
- * @note It is assumed that @var size > 0.
+ * \note It is assumed that \c size > 0.
  *
  */
 static inline void* xMalloc0(size_t size) {
@@ -189,13 +189,13 @@ static inline void* xMalloc0(size_t size) {
 }
 
 /**
- * @fn static inline void* xmalloc(const size_t size)
+ * \fn static inline void* xmalloc(const size_t size)
  *
- * @brief Allocates memory of size class @var size .
+ * \brief Allocates memory of size class \c size .
  *
- * @return address of memory allocated
+ * \return address of memory allocated
  *
- * @param size Const @var size_t giving size class. @var size can be 0.
+ * \param size Const \c size_t giving size class. \c size can be 0.
  *
  */
 static inline void* xmalloc(const size_t size) {
@@ -206,13 +206,13 @@ static inline void* xmalloc(const size_t size) {
 }
 
 /**
- * @fn static inline void xFreeBinAddr(void *addr)
+ * \fn static inline void xFreeBinAddr(void *addr)
  *
- * @brief Frees memory stored at address @var addr .
+ * \brief Frees memory stored at address \c addr .
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @note It is assumed that @var addr != NULL.
+ * \note It is assumed that \c addr != NULL.
  *
  */
 static inline void xFreeBinAddr(void *addr) {
@@ -222,15 +222,15 @@ static inline void xFreeBinAddr(void *addr) {
 }
 
 /**
- * @fn static inline void xFreeBin(void *addr, xBin bin)
+ * \fn static inline void xFreeBin(void *addr, xBin bin)
  *
- * @brief Frees memory stored at address @var addr .
+ * \brief Frees memory stored at address \c addr .
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @param bin @var xBin @var addr is stored in. 
+ * \param bin \c xBin \c addr is stored in. 
  *
- * @note It is assumed that @var addr != NULL.
+ * \note It is assumed that \c addr != NULL.
  *
  */
 static inline void xFreeBin(void *addr, xBin bin) {
@@ -240,13 +240,13 @@ static inline void xFreeBin(void *addr, xBin bin) {
 }
 
 /**
- * @fn static inline void xFreeLargeAddr(void *addr)
+ * \fn static inline void xFreeLargeAddr(void *addr)
  *
- * @brief Frees memory stored at address @var addr .
+ * \brief Frees memory stored at address \c addr .
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @note It is assumed that @var addr != NULL.
+ * \note It is assumed that \c addr != NULL.
  *
  */
 static inline void xFreeLargeAddr(void *addr) {
@@ -255,13 +255,13 @@ static inline void xFreeLargeAddr(void *addr) {
 }
 
 /**
- * @fn static inline void xFree(void *addr)
+ * \fn static inline void xFree(void *addr)
  *
- * @brief Frees memory stored at address @var addr .
+ * \brief Frees memory stored at address \c addr .
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @note It is assumed that @var addr != NULL.
+ * \note It is assumed that \c addr != NULL.
  *
  */
 static inline void xFree(void *addr) {
@@ -272,13 +272,13 @@ static inline void xFree(void *addr) {
 }
 
 /**
- * @fn static inline void xFreeSize(void *addr, size_t size) {
+ * \fn static inline void xFreeSize(void *addr, size_t size) {
  *
- * @brief Frees memory stored at address @var addr with a size check included.
+ * \brief Frees memory stored at address \c addr with a size check included.
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @note It is assumed that @var addr != NULL.
+ * \note It is assumed that \c addr != NULL.
  *
  */
 static inline void xFreeSize(void *addr, size_t size) {
@@ -289,13 +289,13 @@ static inline void xFreeSize(void *addr, size_t size) {
 }
 
 /**
- * @fn static inline void xfree(void *addr)
+ * \fn static inline void xfree(void *addr)
  *
- * @brief Frees memory stored at address @var addr .
+ * \brief Frees memory stored at address \c addr .
  *
- * @param addr address of memory to be deleted. 
+ * \param addr address of memory to be deleted. 
  *
- * @note If @var addr == NULL, then freeing does not take place.
+ * \note If \c addr == NULL, then freeing does not take place.
  *
  */
 static inline void xfree(void *addr) {
@@ -313,99 +313,99 @@ xRegion xIsBinBlock(unsigned long region);
  *       it depends on xMalloc()
  ***********************************************/
 /**
- * @fn xBin xGetSpecBin(size_t size);
+ * \fn xBin xGetSpecBin(size_t size);
  *
- * @brief Returns a special bin for monomial handling
+ * \brief Returns a special bin for monomial handling
  *
- * @param size @var size_t size class of the monomials
+ * \param size \c size_t size class of the monomials
  *
- * @return @var xBin of the @var xSpecBin of size class @var size
+ * \return \c xBin of the \c xSpecBin of size class \c size
  */
 xBin xGetSpecBin(size_t size);
 
 /**
- * @fn void xUnGetSpecBin(xBin *oldBin, int remove);
+ * \fn void xUnGetSpecBin(xBin *oldBin, int remove);
  */
 void xUnGetSpecBin(xBin *oldBin, int remove);
 
 
 /**
- * @fn void* xReallocLarge(void *oldPtr, size_t newSize)
+ * \fn void* xReallocLarge(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk from system. For this it
+ * \brief Reallocates memory to \c newSize chunk from system. For this it
  * takes care of xmallocs alignment of those big memory chunks.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 void* xReallocLarge(void *oldPtr, size_t newSize);
 
 /**
- * @fn void* xRealloc0Large(void *oldPtr, size_t newSize)
+ * \fn void* xRealloc0Large(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk from system and initializes
+ * \brief Reallocates memory to \c newSize chunk from system and initializes
  * everything to zero. For this it takes care of xmallocs alignment of those
  * big memory chunks.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 void* xRealloc0Large(void *oldPtr, size_t newSize);
 
 /**
- * @fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
+ * \fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk.
+ * \brief Reallocates memory to \c newSize chunk.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param oldSize size of old memory chunk
+ * \param oldSize size of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize);
 
 /**
- * @fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
+ * \fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * \brief Reallocates memory to \c newSize chunk and initializes everything to
  * zero.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param oldSize size of old memory chunk
+ * \param oldSize size of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  *
- * @note Assumes that @var oldPtr != NULL.
+ * \note Assumes that \c oldPtr != NULL.
  */
 void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize);
 
 /**
- * @fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
+ * \fn void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk. xmalloc uses @var oldSize
- * to find possibly fitting @var xBins for an optimized allocation.
+ * \brief Reallocates memory to \c newSize chunk. xmalloc uses \c oldSize
+ * to find possibly fitting \c xBins for an optimized allocation.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param oldSize size of old memory chunk
+ * \param oldSize size of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunka
+ * \return address of new memory chunka
  *
- * @note Assumes that @var oldPtr != NULL.
+ * \note Assumes that \c oldPtr != NULL.
  */
 static inline void* xreallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
   if (!newSize)
@@ -417,19 +417,19 @@ static inline void* xreallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
 }
 
 /**
- * @fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
+ * \fn void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk and initializes everything to
- * zero. xmalloc uses @var oldSize to find possibly fitting
- * @var xBins for an optimized allocation.
+ * \brief Reallocates memory to \c newSize chunk and initializes everything to
+ * zero. xmalloc uses \c oldSize to find possibly fitting
+ * \c xBins for an optimized allocation.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param oldSize size of old memory chunk
+ * \param oldSize size of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
   if (!newSize)
@@ -441,44 +441,44 @@ static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) 
 }
 
 /**
- * @fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
+ * \fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
  *
- * @brief Reallocates memory to @var newSize chunk. For this it checks if @var
- * newSize is smaller than @var __XMALLOC_MAX_SMALL_BLOCK_SIZE . If this is true
- * it allocates the new memory from xmallocs @var xBin structures. Otherwise a
- * system reallocation is done via @fn xReallocLarge resp. @fn xRealloc0Large .
- * If the corresponding flag @var initZero is set, then all new memory is
+ * \brief Reallocates memory to \c newSize chunk. For this it checks if \c
+ * newSize is smaller than \c __XMALLOC_MAX_SMALL_BLOCK_SIZE . If this is true
+ * it allocates the new memory from xmallocs \c xBin structures. Otherwise a
+ * system reallocation is done via \fn xReallocLarge resp. \fn xRealloc0Large .
+ * If the corresponding flag \c initZero is set, then all new memory is
  * initialized to zero.
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param oldSize size of old memory chunk
+ * \param oldSize size of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @param initZero initializes memory to zero if flag is set to 1
+ * \param initZero initializes memory to zero if flag is set to 1
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  *
- * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ * \note Assumes that \c newSize =/= 0 and \c oldPtr =/= NULL .
  *
  */
 void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
 
 /**
- * @fn static inline void* xRealloc0(void *oldPtr, size_t newSize)
+ * \fn static inline void* xRealloc0(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk and initializes everything to
+ * \brief Reallocates memory to \c newSize chunk and initializes everything to
  * zero. Computes the size of the old memory chunk first, then calls
- * @fn xRealloc0Size .
+ * \fn xRealloc0Size .
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  *
- * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ * \note Assumes that \c newSize =/= 0 and \c oldPtr =/= NULL .
  *
  */
 static inline void* xRealloc0(void *oldPtr, size_t newSize) {
@@ -487,18 +487,18 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
 }
 
 /**
- * @fn static inline void* xRealloc(void *oldPtr, size_t newSize)
+ * \fn static inline void* xRealloc(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk. Computes the size of the old
- * memory chunk first, then calls @fn xReallocSize .
+ * \brief Reallocates memory to \c newSize chunk. Computes the size of the old
+ * memory chunk first, then calls \fn xReallocSize .
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  *
- * @note Assumes that @var newSize =/= 0 and @var oldPtr =/= NULL .
+ * \note Assumes that \c newSize =/= 0 and \c oldPtr =/= NULL .
  *
  */
 static inline void* xRealloc(void *oldPtr, size_t newSize) {
@@ -507,16 +507,16 @@ static inline void* xRealloc(void *oldPtr, size_t newSize) {
 }
 
 /**
- * @fn static inline void* xrealloc0(void *oldPtr, size_t newSize)
+ * \fn static inline void* xrealloc0(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk and initializes everything to
- * zero. Checks input data first, then calls @fn xRealloc0 .
+ * \brief Reallocates memory to \c newSize chunk and initializes everything to
+ * zero. Checks input data first, then calls \fn xRealloc0 .
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 static inline void* xrealloc0(void *oldPtr, size_t newSize) {
   if (!newSize)
@@ -528,16 +528,16 @@ static inline void* xrealloc0(void *oldPtr, size_t newSize) {
 }
 
 /**
- * @fn static inline void* xrealloc(void *oldPtr, size_t newSize)
+ * \fn static inline void* xrealloc(void *oldPtr, size_t newSize)
  *
- * @brief Reallocates memory to @var newSize chunk. Checks input data first,
- * then calls @fn xRealloc .
+ * \brief Reallocates memory to \c newSize chunk. Checks input data first,
+ * then calls \fn xRealloc .
  *
- * @param oldPtr address of old memory chunk
+ * \param oldPtr address of old memory chunk
  *
- * @param newSize size of new memory chunk
+ * \param newSize size of new memory chunk
  *
- * @return address of new memory chunk
+ * \return address of new memory chunk
  */
 static inline void* xrealloc(void *oldPtr, size_t newSize) {
   if (!newSize)
@@ -566,13 +566,13 @@ static inline void* xMemDup(void *str) {
  * STICKY BUSINESS OF BINS
  ***********************************************/
 /**
- * @fn xBin xGetStickyBinOfBin(xBin bin);
+ * \fn xBin xGetStickyBinOfBin(xBin bin);
  *
- * @brief Gets the sticky bin of @var bin .
+ * \brief Gets the sticky bin of \c bin .
  *
- * @param bin @var xBin
+ * \param bin \c xBin
  *
- * @return sticky bin of @var bin .
+ * \return sticky bin of \c bin .
  *
  */
 xBin xGetStickyBinOfBin(xBin bin);

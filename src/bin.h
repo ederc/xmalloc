@@ -1,11 +1,11 @@
 /**
- * @file   bin.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   August 2012
- * @brief  Bin handlers for xmalloc.
+ * \file   bin.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   August 2012
+ * \brief  Bin handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
- * @note   There are some page based functions implemented in the bin.* 
+ * \note   There are some page based functions implemented in the bin.* 
  *         files since they depend internally on the strong page <-> bin
  *         connection.
  */
@@ -37,34 +37,34 @@
  * DEPEND ON BINS => THEY ARE IMPLEMENTED HERE
  ***********************************************/
 /**
- * @fn void xFreeToPageFault(xPage page, void *addr)
+ * \fn void xFreeToPageFault(xPage page, void *addr)
  *
- * @brief If there was a problem in @var xFreeToPage() this function has to
+ * \brief If there was a problem in \c FreeToPage() this function has to
  * take care of the freeing: At the point this function is called we already
- * know that @var page->numberUsedBlocks <= 0.
+ * know that \c page->numberUsedBlocks <= 0.
  * There are 3 different strategies on what to do with pages which were full and
  * have a free block now:
  * 1. Insert at the end ( default ).
- * 2. Insert after @var current_page
+ * 2. Insert after \c current_page
  *    => #define __XMALLOC_PAGE_AFTER_CURRENT
- * 3. Insert before @var current_page , i.e. let it be the new current page
+ * 3. Insert before \c current_page , i.e. let it be the new current page
  *    => #define __XMALLOC_PAGE_BEFORE_CURRENT
  *
- * @param page \c xPage the freed memory should be given to
+ * \param page \c xPage the freed memory should be given to
  *
- * @param addr memory address to be checked
+ * \param addr memory address to be checked
  *
  */
 void xFreeToPageFault(xPage page, void *addr); // TOODOO
 
 /**
- * @fn static inline void xFreeToPage(xPage page, void *addr)
+ * \fn static inline void xFreeToPage(xPage page, void *addr)
  *
- * @brief Frees memory at @var addr to @c xPage @var page .
+ * \brief Frees memory at \c addr to \c xPage \c page .
  *
- * @param page @c xPage the freed memory should be given to
+ * \param page \c xPage the freed memory should be given to
  *
- * @param addr memory address to be checked
+ * \param addr memory address to be checked
  *
  */
 static inline void xFreeToPage(xPage page, void *addr) {
@@ -80,13 +80,13 @@ static inline void xFreeToPage(xPage page, void *addr) {
  * STICKY BUSINESS OF BINS
  ***********************************************/
 /**
- * @fn static inline BOOLEAN xIsStickyBin(xBin bin)
+ * \fn static inline BOOLEAN xIsStickyBin(xBin bin)
  *
- * @brief Tests if @var bin is sticky or not.
+ * \brief Tests if \c bin is sticky or not.
  *
- * @param bin @var xBin to be tested
+ * \param bin \c xBin to be tested
  *
- * @return true if @var bin is sticky, false else
+ * \return true if \c bin is sticky, false else
  *
  */
 static inline BOOLEAN xIsStickyBin(xBin bin) {
@@ -103,11 +103,11 @@ static inline BOOLEAN xIsStickyBin(xBin bin) {
  * LIST HANDLING FOR SPECIAL BINS
  ***********************************************/
 /**
- * @fn static inline xOffsetToNextSpecBin(xSpecBin specBin)
+ * \fn static inline xOffsetToNextSpecBin(xSpecBin specBin)
  *
- * @brief Returns the offset in the list of special bins w.r.t. to next
+ * \brief Returns the offset in the list of special bins w.r.t. to next
  *
- * @param specBin @var xSpecBin the offset is computed of.
+ * \param specBin \c xSpecBin the offset is computed of.
  *
  */
 
@@ -118,11 +118,11 @@ static inline xOffsetToNextSpecBin(xSpecBin specBin) {
 */
 
 /**
- * @fn static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin)
+ * \fn static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin)
  *
- * @brief Returns the offset in the list of special bins w.r.t. to numberBlocks
+ * \brief Returns the offset in the list of special bins w.r.t. to numberBlocks
  *
- * @param specBin @var xSpecBin the offset is computed of.
+ * \param specBin \c xSpecBin the offset is computed of.
  *
  */
 
@@ -134,20 +134,20 @@ static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin) {
 */
 
 /**
- * @fn static inline void* xFindInSortedList(xSpecBin xBaseSpecBin, long numberBlocks)
+ * \fn static inline void* xFindInSortedList(xSpecBin xBaseSpecBin, long numberBlocks)
  *
- * @brief Tries to find a special bin for the size class given by
- * @var numberBlocks . If there does not exist such a special bin, then
+ * \brief Tries to find a special bin for the size class given by
+ * \c numberBlocks . If there does not exist such a special bin, then
  * it returns NULL. Here the list searched through is already sorted by
  * increasing size classes.
  *
- * @param bin @var xSpecBin usually base of special bins, but can be any
- * @var xSpecBin .
+ * \param bin \c xSpecBin usually base of special bins, but can be any
+ * \c xSpecBin .
  *
- * @param numberBlocks @var long number of blocks in bin, i.e. size class
+ * \param numberBlocks \c long number of blocks in bin, i.e. size class
  * needed for special bin.
  *
- * @return address of found xSpecBin, NULL if none is found
+ * \return address of found xSpecBin, NULL if none is found
  */
 static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
   while (NULL != bin) {
@@ -164,19 +164,19 @@ static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
 }
 
 /**
- * @fn static inline void* xFindInList(xSpecBin xBaseSpecBin, long numberBlocks)
+ * \fn static inline void* xFindInList(xSpecBin xBaseSpecBin, long numberBlocks)
  *
- * @brief Tries to find a special bin for the size class given by
- * @var numberBlocks . If there does not exist such a special bin, then
+ * \brief Tries to find a special bin for the size class given by
+ * \c numberBlocks . If there does not exist such a special bin, then
  * it returns NULL. Here the list searched through is possibly not sorted.
  *
- * @param bin @var xSpecBin usually base of special bins, but can be any
- * @var xSpecBin .
+ * \param bin \c xSpecBin usually base of special bins, but can be any
+ * \c xSpecBin .
  *
- * @param numberBlocks @var long number of blocks in bin, i.e. size class
+ * \param numberBlocks \c long number of blocks in bin, i.e. size class
  * needed for special bin.
  *
- * @return address of found xSpecBin, NULL if none is found
+ * \return address of found xSpecBin, NULL if none is found
  */
 static inline void* xFindInList(xSpecBin bin, long numberBlocks, xSpecBin sBin) {
   while (NULL != bin) {
@@ -188,18 +188,18 @@ static inline void* xFindInList(xSpecBin bin, long numberBlocks, xSpecBin sBin) 
 }
 
 /**
- * @fn static inline void* xFindInSortedList(xSpecBin rootBin, xSpecBin sBin)
+ * \fn static inline void* xFindInSortedList(xSpecBin rootBin, xSpecBin sBin)
  *
- * @brief Tries to find a special bin @var sBin in the sorted list of special
- * bins. If it finds it, @var sBin is removed from this list
+ * \brief Tries to find a special bin \c sBin in the sorted list of special
+ * bins. If it finds it, \c sBin is removed from this list
  *
- * @param rootBin @var xSpecBin usually root of the list of special bins, but can be 
- * any @var xSpecBin .
+ * \param rootBin \c xSpecBin usually root of the list of special bins, but can be 
+ * any \c xSpecBin .
  *
- * @param sBin @var xSpecBin special bin to be removed from the list of special
+ * \param sBin \c xSpecBin special bin to be removed from the list of special
  * bins
  *
- * @return address of the root of the list of the special bins.
+ * \return address of the root of the list of the special bins.
  *
  */
 static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin) {
@@ -237,13 +237,13 @@ static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin) {
  * IN BINS
  ***********************************************/
 /**
- * @fn void xTakeOutPageFromBin(xPage page, xBin bin)
+ * \fn void xTakeOutPageFromBin(xPage page, xBin bin)
  *
- * @brief Takes @var page out of @var bin.
+ * \brief Takes \c page out of \c bin.
  *
- * @param bin @var xBin the new page is a part of
+ * \param bin \c xBin the new page is a part of
  *
- * @param page @var xPage taken out of @var bin
+ * \param page \c xPage taken out of \c bin
  *
  */
 static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
@@ -269,13 +269,13 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
 }
 
 /**
- * @fn void xInsertPageToBin(xPage page, xBin* bin)
+ * \fn void xInsertPageToBin(xPage page, xBin* bin)
  *
- * @brief Inserts the newly allocated @var xPage @var page to @var bin.
+ * \brief Inserts the newly allocated \c xPage \c page to \c bin.
  *
- * @param page @var xPage the new page
+ * \param page \c xPage the new page
  *
- * @param bin @var xBin* the new page becomes a part of
+ * \param bin \c xBin* the new page becomes a part of
  *
  */
 static inline void xInsertPageToBin(xPage page, xBin bin) {
@@ -297,40 +297,40 @@ static inline void xInsertPageToBin(xPage page, xBin bin) {
 }
 
 /**
- * @fn xPage xAllocNewPageForBin(xBin bin)
+ * \fn xPage xAllocNewPageForBin(xBin bin)
  *
- * @brief Allocates a new @var xPage to @var bin.
+ * \brief Allocates a new \c xPage to \c bin.
  *
- * @param bin @var xBin the new page becomes a part of
+ * \param bin \c xBin the new page becomes a part of
  *
- * @return @var xPage allocated
+ * \return \c xPage allocated
  */
 xPage xAllocNewPageForBin(xBin bin);
 
 /**
- * @fn xPage xAllocSmallBlockPageForBin()
+ * \fn xPage xAllocSmallBlockPageForBin()
  *
- * @brief Allocates a new @var xPage for small block free lists.
+ * \brief Allocates a new \c xPage for small block free lists.
  *
- * @note This function does NEITHER subdivide NOR structure the allocated page.
+ * \note This function does NEITHER subdivide NOR structure the allocated page.
  * This must be done afterwards
  *
- * @return @var xPage allocated.
+ * \return \c xPage allocated.
  *
  */
 xPage xAllocSmallBlockPageForBin();
 
 /**
- * @fn xPage xAllocBigBlockPagesForBin(int numberNeeded)
+ * \fn xPage xAllocBigBlockPagesForBin(int numberNeeded)
  *
- * @brief Allocates new @var xPages for big block memory.
+ * \brief Allocates new \c xPages for big block memory.
  *
- * @param numberNeeded is the number of pages to be allocated.
+ * \param numberNeeded is the number of pages to be allocated.
  *
- * @note This function does NEITHER subdivide NOR structure the allocated pages.
+ * \note This function does NEITHER subdivide NOR structure the allocated pages.
  * This must be done afterwards.
  *
- * @return @var xPage representing the first one of @var numberNeeded @var
+ * \return \c xPage representing the first one of \c numberNeeded \c
  * xPages needed for this allocation
  *
  */
@@ -340,13 +340,13 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * ALLOCATING PAGES IN BINS
  ***********************************************/
 /**
- * @fn void xAllocFromFullPage(xBin* bin)
+ * \fn void xAllocFromFullPage(xBin* bin)
  *
- * @brief Returns memory address from a newly allocated page.
+ * \brief Returns memory address from a newly allocated page.
  *
- * @param bin @var xBin* the new page becomes a part of
+ * \param bin \c xBin* the new page becomes a part of
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 static inline void* xAllocFromFullPage(xBin bin) {
@@ -371,11 +371,11 @@ static inline void* xAllocFromFullPage(xBin bin) {
  ***********************************************/
 
 /**
- * @fn static inline void xFreeBin(void *addr)
+ * \fn static inline void xFreeBin(void *addr)
  *
- * @brief Frees the memory of @var addr .
+ * \brief Frees the memory of \c addr .
  *
- * @param addr memory address that should be freed.
+ * \param addr memory address that should be freed.
  *
  */
 
@@ -394,13 +394,13 @@ static inline void xFreeBin(void *addr) {
  * ALLOCATING MEMORY FROM BINS
  ***********************************************/
 /**
- * @fn static inline void xAllocFromBin(xBin bin)
+ * \fn static inline void xAllocFromBin(xBin bin)
  *
- * @brief Generic memory allocation from @var bin.
+ * \brief Generic memory allocation from \c bin.
  *
- * @param bin @var xBin the bin memory should be allocated from
+ * \param bin \c xBin the bin memory should be allocated from
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 static inline void* xAllocFromBin(xBin bin) {
@@ -412,13 +412,13 @@ static inline void* xAllocFromBin(xBin bin) {
 }
 
 /**
- * @fn static inline void xAlloc0FromBin(xBin bin)
+ * \fn static inline void xAlloc0FromBin(xBin bin)
  *
- * @brief Generic memory allocation from @var bin , sets to zero.
+ * \brief Generic memory allocation from \c bin , sets to zero.
  *
- * @param bin @var xBin the bin memory should be allocated from
+ * \param bin \c xBin the bin memory should be allocated from
  *
- * @return address of allocated memory
+ * \return address of allocated memory
  *
  */
 static inline void* xAlloc0FromBin(xBin bin) {
@@ -436,13 +436,13 @@ static inline void* xAlloc0FromBin(xBin bin) {
  * STICKY BIN PAGE BUSINESS
  ***********************************************/
 /**
- * @fn static inline unsigned long xGetStickyOfPage(xPage page)
+ * \fn static inline unsigned long xGetStickyOfPage(xPage page)
  *
- * @brief Gets sticky of @var xBin of @var page .
+ * \brief Gets sticky of \c xBin of \c page .
  *
- * @param page @var xPage
+ * \param page \c xPage
  *
- * @return sticky of @var page
+ * \return sticky of \c page
  *
  */
 static inline unsigned long xGetStickyOfPage(xPage page) {
@@ -451,13 +451,13 @@ static inline unsigned long xGetStickyOfPage(xPage page) {
 }
 
 /**
- * @fn static inline xBin xSetTopBinAndStickyOfPage(xPage page)
+ * \fn static inline xBin xSetTopBinAndStickyOfPage(xPage page)
  *
- * @brief Set top bin and sticky bin of the page @var page .
+ * \brief Set top bin and sticky bin of the page \c page .
  *
- * @param page @var xPage .
+ * \param page \c xPage .
  *
- * @param bin @var xBin .
+ * \param bin \c xBin .
  *
  */
 static inline void xSetTopBinAndStickyOfPage(xPage page, xBin bin) {
@@ -466,13 +466,13 @@ static inline void xSetTopBinAndStickyOfPage(xPage page, xBin bin) {
 }
 
 /**
- * @fn static inline xBin xSetTopBinOfPage(xPage page)
+ * \fn static inline xBin xSetTopBinOfPage(xPage page)
  *
- * @brief Set top bin of the page @var page .
+ * \brief Set top bin of the page \c page .
  *
- * @param page @var xPage .
+ * \param page \c xPage .
  *
- * @param bin @var xBin .
+ * \param bin \c xBin .
  *
  */
 static inline void xSetTopBinOfPage(xPage page, xBin bin) {
@@ -480,13 +480,13 @@ static inline void xSetTopBinOfPage(xPage page, xBin bin) {
 }
 
 /**
- * @fn static inline xBin xGetTopBinOfPage(const xPage page)
+ * \fn static inline xBin xGetTopBinOfPage(const xPage page)
  *
- * @brief Get top bin the page @var page .
+ * \brief Get top bin the page \c page .
  *
- * @param page Const @var xPage .
+ * \param page Const \c xPage .
  *
- * @return top @var xBin of @var xPage @var page
+ * \return top \c xBin of \c xPage \c page
  *
  */
 static inline xBin xGetTopBinOfPage(const xPage page) {
@@ -498,13 +498,13 @@ static inline xBin xGetTopBinOfPage(const xPage page) {
 }
 
 /**
- * @fn static inline void xSetStickyOfPage(xPage page, xBin sBin)
+ * \fn static inline void xSetStickyOfPage(xPage page, xBin sBin)
  *
- * @brief Sets sticky bin of @var page .
+ * \brief Sets sticky bin of \c page .
  *
- * @param page @var xPage
+ * \param page \c xPage
  *
- * @param Bin @var xBin sticky
+ * \param Bin \c xBin sticky
  *
  */
 static inline void xSetStickyOfPage(xPage page, xBin bin) {
@@ -514,13 +514,13 @@ static inline void xSetStickyOfPage(xPage page, xBin bin) {
 }
 
 /**
- * @fn static inline xBin xGetBinOfPage(const xPage page)
+ * \fn static inline xBin xGetBinOfPage(const xPage page)
  *
- * @brief Get top bin the page @var page .
+ * \brief Get top bin the page \c page .
  *
- * @param page Const @var xPage .
+ * \param page Const \c xPage .
  *
- * @return top @var xBin of @var xPage @var page
+ * \return top \c xBin of \c xPage \c page
  *
  */
 static inline xBin xGetBinOfPage(const xPage page) {
@@ -534,13 +534,13 @@ static inline xBin xGetBinOfPage(const xPage page) {
 }
 
 /**
- * @fn static inline xBin xGetBinOfAddr(const void *addr)
+ * \fn static inline xBin xGetBinOfAddr(const void *addr)
  *
- * @brief Get bin of address @var addr .
+ * \brief Get bin of address \c addr .
  *
- * @param void * Const @var addr .
+ * \param void * Const \c addr .
  *
- * @return  @var xBin of address @var addr
+ * \return  \c xBin of address \c addr
  *
  */
 static inline xBin xGetBinOfAddr(void *addr) {
@@ -548,13 +548,13 @@ static inline xBin xGetBinOfAddr(void *addr) {
 }
 
 /**
- * @fn static inline void xSetBinOfPage(xPage page, xBin bin)
+ * \fn static inline void xSetBinOfPage(xPage page, xBin bin)
  *
- * @brief Set top bin the page @var page to sticky of @var bin .
+ * \brief Set top bin the page \c page to sticky of \c bin .
  *
- * @param page @var xPage .
+ * \param page \c xPage .
  *
- * @param bin @var xbin .
+ * \param bin \c xbin .
  *
  */
 static inline void xSetBinOfPage(xPage page, xBin bin) {
@@ -562,13 +562,13 @@ static inline void xSetBinOfPage(xPage page, xBin bin) {
 }
 
 /**
- * @fn xPage xGetPageFromBin(xBin bin)
+ * \fn xPage xGetPageFromBin(xBin bin)
  *
- * @brief Gets a currently free page from @var bin.
+ * \brief Gets a currently free page from \c bin.
  *
- * @param bin @var xBin the bin the page should be part of
+ * \param bin \c xBin the bin the page should be part of
  *
- * @return „current free @var xPage from @var bin
+ * \return „current free \c xPage from \c bin
  *
  */
 xPage xGetPageFromBin(xBin bin);
@@ -577,13 +577,13 @@ xPage xGetPageFromBin(xBin bin);
  * STATIC BIN TESTINGS
  *****************************************************/
 /**
- * @fn static inline BOOLEAN xIsStaticBin(xBin bin)
+ * \fn static inline BOOLEAN xIsStaticBin(xBin bin)
  *
- * @brief Tests if @var bin is an @var xStaticBin array entry.
+ * \brief Tests if \c bin is an \c xStaticBin array entry.
  *
- * @var bin @var xBin to be be tested.
+ * \param bin \c xBin to be be tested.
  *
- * @return true if @var bin is an entry of @var xStaticBin, false otherwise.
+ * \return true if \c bin is an entry of \c xStaticBin, false otherwise.
  *
  */
 static inline BOOLEAN xIsStaticBin(xBin bin) {

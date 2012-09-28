@@ -1,8 +1,8 @@
 /**
- * @file   data.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   July 2012
- * @brief  Basic data structures needed for xmalloc.
+ * \file   data.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  Basic data structures needed for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -82,9 +82,9 @@ typedef struct xRegionStruct  xRegionType;
 typedef xRegionType*          xRegion;
 
 /**
- * @struct xPageStruct
+ * \struct xPageStruct
  *
- * @brief Structure of the internal xmalloc page including a header for better
+ * \brief Structure of the internal xmalloc page including a header for better
  * handling in the allocator.
  */
 struct xPageStruct {
@@ -97,9 +97,9 @@ struct xPageStruct {
 };
 
 /**
- * @struct xBinStruct
+ * \struct xBinStruct
  *
- * @brief Structure of the free list holding pages divided into the same number
+ * \brief Structure of the free list holding pages divided into the same number
  * of blocks, i.e. for the same size class
  */
 struct xBinStruct {
@@ -114,9 +114,9 @@ struct xBinStruct {
 };
 
 /**
- * @struct xSpecBinStruct
+ * \struct xSpecBinStruct
  *
- * @brief Bin structure eSPECially for monomials.
+ * \brief Bin structure eSPECially for monomials.
  */
 struct xSpecBinStruct {
   xSpecBin  next;           /**< pointer to next bin */
@@ -128,9 +128,9 @@ struct xSpecBinStruct {
 };
 
 /**
- * @struct xRegionStruct
+ * \struct xRegionStruct
  *
- * @brief Structure of the regions new free pages are allocated in the first
+ * \brief Structure of the regions new free pages are allocated in the first
  * place. They present a block in memory representing an array of pages.
  */
 struct xRegionStruct {
@@ -149,9 +149,9 @@ struct xRegionStruct {
 
 
 /**
- * @struct xInfoStruct
+ * \struct xInfoStruct
  *
- * @brief Structure storing all information about ongoing allocation resp.
+ * \brief Structure storing all information about ongoing allocation resp.
  * freeing processes in xmalloc.
  */
 struct xInfoStruct {

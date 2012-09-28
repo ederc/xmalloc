@@ -1,8 +1,8 @@
 /**
- * @file   region.h
- * @Author Christian Eder ( ederc@mathematik.uni-kl.de )
- * @date   August 2012
- * @brief  Region handlers for xmalloc.
+ * \file   region.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   August 2012
+ * \brief  Region handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -22,13 +22,13 @@
 #include "system.h"
 
 /**
- * @fn static inline BOOLEAN xIsRegionEmpty(xRegion region)
+ * \fn static inline BOOLEAN xIsRegionEmpty(xRegion region)
  *
- * @brief Tests if @var region is empty or not
+ * \brief Tests if \c region is empty or not
  *
- * @param region @var xRegion to be checked
+ * \param region \c xRegion to be checked
  *
- * @return true if @var region is empty, false else
+ * \return true if \c region is empty, false else
  *
  */
 static inline BOOLEAN xIsRegionEmpty(xRegion region) {
@@ -36,24 +36,24 @@ static inline BOOLEAN xIsRegionEmpty(xRegion region) {
 }
 
 /**
- * @fn xRegion xAllocNewRegion(int minNumberPages)
+ * \fn xRegion xAllocNewRegion(int minNumberPages)
  *
- * @brief Allocates a new region with at least @var minNumberPages pages.
+ * \brief Allocates a new region with at least \c minNumberPages pages.
  *
- * @param minNumberPages @var int giving the minimal number of pages the newly
+ * \param minNumberPages \c int giving the minimal number of pages the newly
  * allocated region should consist of
  *
- * @return new @var xRegion
+ * \return new \c xRegion
  *
  */
 xRegion xAllocNewRegion(int minNumberPages);
 
 /**
- * @fn static inline void xTakeOutRegion(xRegion region)
+ * \fn static inline void xTakeOutRegion(xRegion region)
  *
- * @brief Removes a region from the list of regions.
+ * \brief Removes a region from the list of regions.
  *
- * @param region @var xRegion removed from the list of regions
+ * \param region \c xRegion removed from the list of regions
  *
  */
 static inline void xTakeOutRegion(xRegion region) {
@@ -65,13 +65,13 @@ static inline void xTakeOutRegion(xRegion region) {
 }
 
 /**
- * @fn static inline void xInsertRegionBefore(xRegion insert, xRegion before)
+ * \fn static inline void xInsertRegionBefore(xRegion insert, xRegion before)
  *
- * @brief Inserts a region before another one.
+ * \brief Inserts a region before another one.
  *
- * @param insert @var xRegion to be inserted
+ * \param insert \c xRegion to be inserted
  *
- * @param before @var xRegion before which a new region has to be inserted
+ * \param before \c xRegion before which a new region has to be inserted
  *
  */
 static inline void xInsertRegionBefore(xRegion insert, xRegion before) {
@@ -84,13 +84,13 @@ static inline void xInsertRegionBefore(xRegion insert, xRegion before) {
 }
 
 /**
- * @fn static inline void xInsertRegionAfter(xRegion insert, xRegion after)
+ * \fn static inline void xInsertRegionAfter(xRegion insert, xRegion after)
  *
- * @brief Inserts a region after another one.
+ * \brief Inserts a region after another one.
  *
- * @param insert @var xRegion to be inserted
+ * \param insert \c xRegion to be inserted
  *
- * @param after @var xRegion after which a new region has to be inserted
+ * \param after \c xRegion after which a new region has to be inserted
  *
  */
 static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
@@ -103,25 +103,25 @@ static inline void xInsertRegionAfter(xRegion insert, xRegion after) {
 }
 
 /**
- * @fn xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded)
+ * \fn xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded)
  *
- * @brief Gets a consecutive memory chunk of @var numberNeeded @var
- * xPages out of @var region.
+ * \brief Gets a consecutive memory chunk of \c numberNeeded \c
+ * xPages out of \c region.
  *
- * @param region is the region the pages are allocated from.
+ * \param region is the region the pages are allocated from.
  *
- * @param numberNeeded is the number of pages to be allocated.
+ * \param numberNeeded is the number of pages to be allocated.
  *
- * @return first page of the consecutive bunch of @var numberNeeded @var xPages
+ * \return first page of the consecutive bunch of \c numberNeeded \c xPages
  */
 xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded);
 
 /**
- * @fn static inline void xFreeRegion(xRegion region)
+ * \fn static inline void xFreeRegion(xRegion region)
  *
- * @brief Frees @var region
+ * \brief Frees \c region
  *
- * @param region to be freed.
+ * \param region to be freed.
  *
  */
 static inline void xFreeRegion(xRegion region) {
@@ -139,13 +139,13 @@ static inline void xFreeRegion(xRegion region) {
  * FREEING OPERATIONS CONCERNING PAGES
  ***********************************************/
 /**
- * @fn void xFreePagesFromBin(xPage page, int quantity)
+ * \fn void xFreePagesFromBin(xPage page, int quantity)
  *
- * @brief Frees @var quantity @var xPages from region starting at @var page .
+ * \brief Frees \c quantity \c xPages from region starting at \c page .
  *
- * @param page @var xPage starting point of freeing
+ * \param page \c xPage starting point of freeing
  *
- * @param quantity @var int number of pages to be freed
+ * \param quantity \c int number of pages to be freed
  *
  */
 void xFreePagesFromRegion(xPage page, int quantity);
