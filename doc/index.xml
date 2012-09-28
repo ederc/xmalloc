@@ -790,20 +790,14 @@
   <title>Using assert() in the test suite</title>
   <para>
   Again we do not want xmalloc to imply too many dependencies. Thus we stick to the
-  default <function>assert()</function> defined in <varname>assert.h</varname>.
-  </para>
-  <para>
-  If a developer wants to add some comment to the <function>assert()</function>
-  triggering there are several methods resp. hacks to do so. We insist to use
-  the following style:
+  default <function>assert()</function>. For a more accurate printout once an assert
+  fails we have overriden it. The default assert functionality to be used in xmalloc
+  is called by
   <programlisting>
-  assert (NULL != addr &amp;&amp; "addr must not be NULL.");</programlisting>
-  </para>
-  <para>
-  Please try to keep the comment string as short as possible. If the <function>assert()
-  </function> call including the comment would be too long please break the line
-  in the source code exactly behind <varname>&amp;&amp;</varname> and begin the
-  next line with the comment string <varname>"...");</varname>.
+  __XMALLOC_ASSERT(expression);</programlisting>
+  This returns not only where the assumption that <varname>expression</varname> is
+  correct failed, but also expression as a string itself. This makes debugging a lot
+  easier.
   </para>
   </sect2>
   </sect1>
@@ -964,7 +958,8 @@
        with.
        </para>
     </sect1>
-  <sect1>
+  </appendix>
+  <appendix>
     <title>What are possible ideas for making xmalloc thread-safe?</title>
     <para>
       We could try a thread-caching attempt like tcmalloc and jemalloc are using.
@@ -972,7 +967,7 @@
       starts: Should there be local <type>xRegion</type>s, or only local <type>
       xBin</type>s with completely global <type>xRegion</type>s?
     </para>
-  <sect2>
+  <sect1>
     <title>Keeping <type>xRegion</type>s global</title>
     <para>
       If we let <type>xRegion</type>s global this means that we need to set a lock
@@ -990,8 +985,8 @@
       to be handled. Having 200 MB of free memory on thread A, but no free
       memory for thread B something went wrong for sure.
     </para>
-  </sect2>
-  <sect2>
+  </sect1>
+  <sect1>
     <title>Making <type>xRegion</type>s local</title>
     <para>
       If every thread has its own region allocating new pages from them is a
@@ -1028,7 +1023,6 @@
       </listitem>
       </orderedlist>
     </para>
-  </sect2>
   </sect1>
   </appendix>
 </article>
