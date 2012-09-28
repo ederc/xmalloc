@@ -485,72 +485,6 @@
   </sect2>
   </sect1>
   <sect1>
-    <title>What are possible ideas for making xmalloc thread-safe?</title>
-    <para>
-      We could try a thread-caching attempt like tcmalloc and jemalloc are using.
-      For this we need to discuss at which level the <emphasis>locality</emphasis>
-      starts: Should there be local <type>xRegion</type>s, or only local <type>
-      xBin</type>s with completely global <type>xRegion</type>s?
-    </para>
-  <sect2>
-    <title>Keeping <type>xRegion</type>s global</title>
-    <para>
-      If we let <type>xRegion</type>s global this means that we need to set a lock
-      whenever we need a new page from the region. This could hinder other threads
-      on going on for a high percentage of the overall computation.
-    </para>
-    <para>
-      On the other hand, this attempt would keep the complexity of implementing
-      xmalloc a lot easier. Working with global regions for allocating new
-      pages makes xmalloc way more static for every bigger memory allocation.
-      Having the problem of being not dynamically enough for many-threaded
-      applications this attempt leaves out the problem of implementing a good
-      scheduler for handling and balancing big local memory chunks. Clearly,
-      the bigger the memory chunks handled locally, the more careful they need
-      to be handled. Having 200 MB of free memory on thread A, but no free
-      memory for thread B something went wrong for sure.
-    </para>
-  </sect2>
-  <sect2>
-    <title>Making <type>xRegion</type>s local</title>
-    <para>
-      If every thread has its own region allocating new pages from them is a
-      completely lock-free process. Clearly, there has to be the concept of a
-      global <emphasis>super-xRegion</emphasis>. This region would be empty
-      in the beginning, but gets free pages from the different threads back
-      once a given threshold is exceeded. Besides the above mentioned advantage,
-      this attempt introduces some problems xmalloc needs to take care of:
-      <orderedlist>
-      <listitem>
-        <para>
-          Checking if a memory address is allocated by xmalloc or not is a
-          <emphasis>global</emphasis> action. Since the regions are local
-          we need to check in each thread, if the corresponding memory address
-          is allocated or not. On the other hand, all this checks are completely
-          independent of each other, thus it is possible do perform this check
-          in parallel. This should still be faster than doing it by 1 thread
-          only in the situation of a global region.
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Once in a while, every thread needs to look check at how big its own
-          region has become. If a given threshold is exceeded a fixed number of
-          free pages should be moved to the global super-xRegion. This helps
-          balancing the memory. Once there are pages available in the super-
-          xRegion, a thread in the need of a new free page would not call system
-          malloc to get a bunch of new pages for its local <type>xRegion</type>,
-          but would try to receive it from the super-xRegion. Clearly this is a
-          process where all other threads are locked. On the other hand, if a
-          thread asks system malloc for a new bunch of free pages this is also
-          a locked process, isn't it?
-        </para>
-      </listitem>
-      </orderedlist>
-    </para>
-  </sect2>
-  </sect1>
-  <sect1>
     <title>Customized usages of xBins for special purposes</title>
     <para>
       For the following note that xmalloc is a special-purpose memory allocator
@@ -1030,5 +964,71 @@
        with.
        </para>
     </sect1>
+  <sect1>
+    <title>What are possible ideas for making xmalloc thread-safe?</title>
+    <para>
+      We could try a thread-caching attempt like tcmalloc and jemalloc are using.
+      For this we need to discuss at which level the <emphasis>locality</emphasis>
+      starts: Should there be local <type>xRegion</type>s, or only local <type>
+      xBin</type>s with completely global <type>xRegion</type>s?
+    </para>
+  <sect2>
+    <title>Keeping <type>xRegion</type>s global</title>
+    <para>
+      If we let <type>xRegion</type>s global this means that we need to set a lock
+      whenever we need a new page from the region. This could hinder other threads
+      on going on for a high percentage of the overall computation.
+    </para>
+    <para>
+      On the other hand, this attempt would keep the complexity of implementing
+      xmalloc a lot easier. Working with global regions for allocating new
+      pages makes xmalloc way more static for every bigger memory allocation.
+      Having the problem of being not dynamically enough for many-threaded
+      applications this attempt leaves out the problem of implementing a good
+      scheduler for handling and balancing big local memory chunks. Clearly,
+      the bigger the memory chunks handled locally, the more careful they need
+      to be handled. Having 200 MB of free memory on thread A, but no free
+      memory for thread B something went wrong for sure.
+    </para>
+  </sect2>
+  <sect2>
+    <title>Making <type>xRegion</type>s local</title>
+    <para>
+      If every thread has its own region allocating new pages from them is a
+      completely lock-free process. Clearly, there has to be the concept of a
+      global <emphasis>super-xRegion</emphasis>. This region would be empty
+      in the beginning, but gets free pages from the different threads back
+      once a given threshold is exceeded. Besides the above mentioned advantage,
+      this attempt introduces some problems xmalloc needs to take care of:
+      <orderedlist>
+      <listitem>
+        <para>
+          Checking if a memory address is allocated by xmalloc or not is a
+          <emphasis>global</emphasis> action. Since the regions are local
+          we need to check in each thread, if the corresponding memory address
+          is allocated or not. On the other hand, all this checks are completely
+          independent of each other, thus it is possible do perform this check
+          in parallel. This should still be faster than doing it by 1 thread
+          only in the situation of a global region.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Once in a while, every thread needs to look check at how big its own
+          region has become. If a given threshold is exceeded a fixed number of
+          free pages should be moved to the global super-xRegion. This helps
+          balancing the memory. Once there are pages available in the super-
+          xRegion, a thread in the need of a new free page would not call system
+          malloc to get a bunch of new pages for its local <type>xRegion</type>,
+          but would try to receive it from the super-xRegion. Clearly this is a
+          process where all other threads are locked. On the other hand, if a
+          thread asks system malloc for a new bunch of free pages this is also
+          a locked process, isn't it?
+        </para>
+      </listitem>
+      </orderedlist>
+    </para>
+  </sect2>
+  </sect1>
   </appendix>
 </article>
