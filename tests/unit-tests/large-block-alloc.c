@@ -21,8 +21,6 @@ int main()
     void *p=xMalloc(i);
     if ((i > (bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG))
     || ((bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG) != (long) xSizeOfAddr(p)))
-      printf(" %d (%d vs %d)\n",i,((long) bin->sizeInWords) >> __XMALLOC_LOG_SIZEOF_LONG,(int) xSizeOfAddr(p));
-      printf(" %d",bin->sizeInWords);
     xFree(p);
   }
   return 0;

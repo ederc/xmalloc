@@ -3,12 +3,12 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
+AM_COLOR_TESTS=always
+
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
 AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
-
-SUBDIRS = unit-tests data
 
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
 
@@ -19,10 +19,10 @@ malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
-BASIC_TESTS =  						\
-				t3								\
-				t4								\
-				malloc_test
+UNIT_TESTS =  						\
+				small-block-alloc \
+				large-block-alloc	\
+				spec-bin
 
 # a benchmarker, not to be included in check.
 BENCHMARKS =            
@@ -30,19 +30,19 @@ BENCHMARKS =
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 TESTS =                               \
-        $(BASIC_TESTS)
+        $(UNIT_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
 CLEANFILES = $(TESTS)
 
-t3_SOURCES =                \
-        t3.c
+small_block_alloc_SOURCES = \
+        small-block-alloc.c           
 
-t4_SOURCES =                \
-        t4.c
+large_block_alloc_SOURCES = \
+        large-block-alloc.c           
 
-malloc_test_SOURCES =     	\
-        malloc_test.c
+spec_bin_SOURCES =      		\
+        spec-bin.c
 
 noinst_HEADERS =	

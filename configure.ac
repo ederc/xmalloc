@@ -313,6 +313,7 @@ Makefile
 xmalloc-config
 src/Makefile
 tests/Makefile
+tests/unit-tests/Makefile
 tests/data/Makefile
 m4/Makefile
 doc/Makefile

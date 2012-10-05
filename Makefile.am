@@ -3,6 +3,8 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
+AUTOMAKE_OPTIONS=color-tests
+
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
 SUBDIRS= . m4 src doc tests
