@@ -46,8 +46,8 @@ doc/index.html
 doc/apa.html
 doc/apb.html
 doc/*.html
-tests/t1
-tests/t1-large-blocks
+tests/small-block-alloc
+tests/large-block-alloc
 tests/t2
 tests/t3
 tests/t4

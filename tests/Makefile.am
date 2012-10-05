@@ -19,12 +19,12 @@ malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
-BASIC_TESTS =  					\
-				t1  						\
-				t1-large-blocks	\
-				t2							\
-				t3							\
-				t4							\
+BASIC_TESTS =  						\
+				small-block-alloc \
+				large-block-alloc	\
+				t2								\
+				t3								\
+				t4								\
 				malloc_test
 
 # a benchmarker, not to be included in check.
@@ -39,11 +39,11 @@ check_PROGRAMS = $(TESTS)
 
 CLEANFILES = $(TESTS)
 
-t1_SOURCES =                \
-        t1.c           
+small_block_alloc_SOURCES = \
+        small-block-alloc.c           
 
-t1_large_blocks_SOURCES = 	\
-        t1-large-blocks.c
+large_block_alloc_SOURCES = \
+        large-block-alloc.c           
 
 t2_SOURCES =                \
         t2.c
