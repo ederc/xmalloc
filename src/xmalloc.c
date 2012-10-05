@@ -53,7 +53,6 @@ xBin xGetSpecBin(size_t size) {
   long sizeInWords;
 
   size  = xAlignSize(size);
-
   if (size > __XMALLOC_SIZEOF_PAGE) {
     // large memory chunks
     // reserve memory for page header
@@ -85,11 +84,9 @@ xBin xGetSpecBin(size_t size) {
     else
       newSpecBin  = xSmallSize2Bin(size);
   }
-
   if (__XMALLOC_LARGE_BIN == newSpecBin ||
       numberBlocks > newSpecBin->numberBlocks) {
     xSpecBin specBin  = xFindInSortedList(xBaseSpecBin, numberBlocks);
-
     // we get a specBin from the list search in above
     if (NULL != specBin) {
       (specBin->ref)++;
@@ -110,6 +107,7 @@ xBin xGetSpecBin(size_t size) {
     specBin->bin->sizeInWords   = sizeInWords;
     specBin->bin->numberBlocks  = numberBlocks;
     specBin->bin->sticky        = 0;
+    xBaseSpecBin  = xInsertIntoSortedList(xBaseSpecBin, specBin, numberBlocks);
     return specBin->bin;
   } else {
     return newSpecBin;
