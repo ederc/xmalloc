@@ -188,10 +188,48 @@ static inline void* xFindInList(xSpecBin bin, long numberBlocks, xSpecBin sBin) 
 }
 
 /**
- * \fn static inline void* xFindInSortedList(xSpecBin rootBin, xSpecBin sBin)
+ * \fn static inline void* xInsertIntoSortedList(xSpecBin rootBin, xSpecBin sBin,
+ * long numberBlocks)
  *
- * \brief Tries to find a special bin \c sBin in the sorted list of special
- * bins. If it finds it, \c sBin is removed from this list
+ * \brief Inserts spec bin \c bin into sorted list of spec bins. The list is
+ * sorted by increasing \c numberBlocks .
+ *
+ * \param rootBin \c xSpecBin usually root of the list of special bins, but can be
+ * any \c xSpecBin .
+ *
+ * \param sBin \c xSpecBin special bin to be inserted into the list of special
+ * bins
+ *
+ * \param numberBlocks \c long number of blocks in bin, i.e. size class
+ * needed for special bin.
+ *
+ * \return address of the root of the list of the special bins.
+ *
+ */
+static inline xSpecBin xInsertIntoSortedList(xSpecBin rootBin, xSpecBin sBin,
+    long numberBlocks) {
+  if (NULL == rootBin || numberBlocks <= rootBin->numberBlocks) {
+    sBin->next = rootBin;
+    return sBin;
+  } else {
+    xSpecBin prev = rootBin;
+    xSpecBin curr = rootBin->next;
+
+    while (NULL != curr && curr->numberBlocks < numberBlocks) {
+      prev  = curr;
+      curr  = curr->next;
+    }
+    prev->next  = sBin;
+    sBin->next  = curr;
+
+    return rootBin;
+  }
+}
+
+/**
+ * \fn static inline xSpecBin xRemoveFromSortedList(xSpecBin rootBin, xSpecBin sBin)
+ *
+ * \brief Removes \c sBin from list of spec bins beginning at \c rootBin .
  *
  * \param rootBin \c xSpecBin usually root of the list of special bins, but can be 
  * any \c xSpecBin .
