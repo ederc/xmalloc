@@ -11,16 +11,12 @@
 #include "xmalloc-config.h"
 #include "xmalloc.h"
 
-int main()
-{
+int main() {
   int i;
-  for (i=1;i<__XMALLOC_MAX_SMALL_BLOCK_SIZE;i++)
-  {
-    xBin b=xGetSpecBin(i);
+  for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++) {
+    xBin b  = xGetSpecBin(i);
     __XMALLOC_ASSERT(NULL != b && "There must exist a bin in xStaticBin for this size class.");
-    void *p=xMalloc(i);
-    __XMALLOC_ASSERT(NULL != p && "xMalloc should have allocated addr != NULL.");
-    xFree(p);
+    xUnGetSpecBin(&b, 0);
   }
   return 0;
 }

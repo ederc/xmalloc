@@ -119,7 +119,8 @@ void xUnGetSpecBin(xBin *oldBin, int remove) {
   if (!xIsStaticBin(bin)) {
     xSpecBin sBin = xFindInSortedList(xBaseSpecBin, bin->numberBlocks);
 
-    __XMALLOC_ASSERT(NULL != sBin && bin == sBin->bin);
+    __XMALLOC_ASSERT(NULL != sBin);
+    __XMALLOC_ASSERT(bin == sBin->bin);
 
     if (NULL != sBin) {
       sBin->ref--;

@@ -22,7 +22,7 @@ malloc_test_LDFLAGS = -pthread
 BASIC_TESTS =  						\
 				small-block-alloc \
 				large-block-alloc	\
-				t2								\
+				spec-bin					\
 				t3								\
 				t4								\
 				malloc_test
@@ -45,8 +45,8 @@ small_block_alloc_SOURCES = \
 large_block_alloc_SOURCES = \
         large-block-alloc.c           
 
-t2_SOURCES =                \
-        t2.c
+spec_bin_SOURCES =      		\
+        spec-bin.c
 
 t3_SOURCES =                \
         t3.c

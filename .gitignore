@@ -48,7 +48,7 @@ doc/apb.html
 doc/*.html
 tests/small-block-alloc
 tests/large-block-alloc
-tests/t2
+tests/spec-bin
 tests/t3
 tests/t4
 tests/t5
