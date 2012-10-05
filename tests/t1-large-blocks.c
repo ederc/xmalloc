@@ -16,11 +16,13 @@ int main()
   int i = __XMALLOC_MAX_SMALL_BLOCK_SIZE;
   for (i; i < (10 * __XMALLOC_MAX_SMALL_BLOCK_SIZE); i=i+5)
   {
-    xBin b=xGetSpecBin(i);
+    xBin bin  = xGetSpecBin(i);
+    __XMALLOC_ASSERT(NULL != bin);
     void *p=xMalloc(i);
-    if ((i>b->sizeInWords*4)
-    || (b->sizeInWords*4 != (long) xSizeOfAddr(p)))
-      printf(" %d (%d vs %d)\n",i,((int) b->sizeInWords)*4,(int) xSizeOfAddr(p));
+    if ((i > (bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG))
+    || ((bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG) != (long) xSizeOfAddr(p)))
+      printf(" %d (%d vs %d)\n",i,((long) bin->sizeInWords) >> __XMALLOC_LOG_SIZEOF_LONG,(int) xSizeOfAddr(p));
+      printf(" %d",bin->sizeInWords);
     xFree(p);
   }
   return 0;

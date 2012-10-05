@@ -197,7 +197,7 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
  * PAGE FREEING
  *********************************************/
 void xFreeToPageFault(xPage page, void *addr) {
-  assert(page->numberUsedBlocks <= 0L);
+  __XMALLOC_ASSERT(page->numberUsedBlocks <= 0L);
   xBin bin  = xGetBinOfPage(page);
   if ((NULL != page->current) || (bin->numberBlocks <= 1)) {
     // collect all blocks of page

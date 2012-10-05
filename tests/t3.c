@@ -24,7 +24,7 @@ int main() {
   }
   for (i = 0; i < __XMALLOC_TEST_BLOCKS; i++) {
     for (j = 0; j <= i * 4; j++) 
-      assert ((B[i][j] != (char)(i % 256)) && "wrong value in");
+      __XMALLOC_ASSERT((B[i][j] != (char)(i % 256)) && "wrong value in");
   }
   xPrintInfo();
   for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {

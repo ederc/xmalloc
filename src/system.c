@@ -90,7 +90,7 @@ void* xVallocFromSystem(size_t size) {
     addr = __XMALLOC_VALLOC(size);
 
 #ifndef __XMALLOC_NDEBUG
-  assert(xIsAddrPageAligned(addr));
+  __XMALLOC_ASSERT(xIsAddrPageAligned(addr));
 
   // track some statistics if in debugging mode
   info.currentBytesFromMalloc +=  size;
@@ -111,7 +111,7 @@ void* xVallocFromSystem(size_t size) {
       printf("currbytesmalloc %ld\n", info.currentBytesFromMalloc);
       printf("currbytesvalloc %ld\n", info.currentBytesFromValloc);
 #endif
-      assert(info.maxBytesSbrk >= info.currentBytesFromMalloc 
+      __XMALLOC_ASSERT(info.maxBytesSbrk >= info.currentBytesFromMalloc 
               + info.currentBytesFromValloc);
     }
 #endif
@@ -122,7 +122,7 @@ void* xVallocFromSystem(size_t size) {
 }
 
 void xVfreeToSystem(void *addr, size_t size) {
-  assert(xIsAddrPageAligned(addr));
+  __XMALLOC_ASSERT(xIsAddrPageAligned(addr));
   munmap(addr, size);
 #ifndef __XMALLOC_NDEBUG
   info.currentBytesFromMalloc -=  size;

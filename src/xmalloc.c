@@ -75,8 +75,8 @@ xBin xGetSpecBin(size_t size) {
     sizeInWords   = ((size + sizeInWords) &
       ~(__XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE));
 
-    assert(sizeInWords >= size);
-    assert(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_PAGE);
+    __XMALLOC_ASSERT(sizeInWords >= size);
+    __XMALLOC_ASSERT(numberBlocks * sizeInWords <= __XMALLOC_SIZEOF_PAGE);
 
     sizeInWords = sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG;
 
@@ -93,7 +93,7 @@ xBin xGetSpecBin(size_t size) {
     // we get a specBin from the list search in above
     if (NULL != specBin) {
       (specBin->ref)++;
-      assert(NULL != specBin->bin &&
+      __XMALLOC_ASSERT(NULL != specBin->bin &&
           specBin->bin->numberBlocks  ==  specBin->numberBlocks &&
           specBin->bin->sizeInWords   ==  sizeInWords);
       return specBin->bin;
@@ -121,7 +121,7 @@ void xUnGetSpecBin(xBin *oldBin, int remove) {
   if (!xIsStaticBin(bin)) {
     xSpecBin sBin = xFindInSortedList(xBaseSpecBin, bin->numberBlocks);
 
-    assert(NULL != sBin && bin == sBin->bin);
+    __XMALLOC_ASSERT(NULL != sBin && bin == sBin->bin);
 
     if (NULL != sBin) {
       sBin->ref--;
@@ -296,7 +296,7 @@ void xFreeSizeFunc(void *ptr, size_t size) {
  ***********************************************/
 xBin xGetStickyBinOfBin(xBin bin) {
   xBin newBin = xMalloc(sizeof(xBinType));
-  assert(!xIsStickyBin(bin));
+  __XMALLOC_ASSERT(!xIsStickyBin(bin));
   newBin->sticky        = __XMALLOC_SIZEOF_VOIDP;
   newBin->numberBlocks  = bin->numberBlocks;
   newBin->sizeInWords   = bin->sizeInWords;

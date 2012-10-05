@@ -23,7 +23,7 @@ unsigned long *xPageShifts = NULL;
 void xPageIndexFault(unsigned long startIndex, unsigned long endIndex) {
   unsigned long indexDiff = endIndex - startIndex;
   long i;
-  assert((startIndex <= endIndex) &&
+  __XMALLOC_ASSERT((startIndex <= endIndex) &&
          (endIndex > xMaxPageIndex || startIndex < xMinPageIndex));
 
   if (NULL == xPageShifts) {

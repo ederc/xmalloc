@@ -16,16 +16,15 @@ int main()
   int i;
   for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++)
   {
-    xBin b  = xGetSpecBin(i);
-    __XMALLOC_ASSERT(1 == 0);
-    assert (NULL != b &&
+    xBin bin  = xGetSpecBin(i);
+    __XMALLOC_ASSERT(NULL == bin &&
         "There must exist a bin in xStaticBin for this size class.");
     void *p = xMalloc(i);
-    assert (NULL != p &&
+    __XMALLOC_ASSERT(NULL != p &&
         "xMalloc should have allocated addr != NULL.");
-    assert ((i > (b->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG)) &&
+    __XMALLOC_ASSERT((i > (bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG)) &&
         "xBin word size class is less than the actual word size to be allocated.");
-    assert (((b->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG) != (long) xSizeOfAddr(p)) &&
+    __XMALLOC_ASSERT(((bin->sizeInWords >> __XMALLOC_LOG_SIZEOF_LONG) != (long) xSizeOfAddr(p)) &&
         "Size of memory stored at p does not coincide with xBin word size class.");
     xFree(p);
   }
