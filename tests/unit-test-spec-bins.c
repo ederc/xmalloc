@@ -1,5 +1,5 @@
 /**
- * \file   t2.c
+ * \file   unit-test-spec-bins.c
  * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Test file for xmalloc.

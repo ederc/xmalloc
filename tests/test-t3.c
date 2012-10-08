@@ -1,5 +1,5 @@
 /**
- * \file   t3.c
+ * \file   test-t3.c
  * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Test file for xmalloc.

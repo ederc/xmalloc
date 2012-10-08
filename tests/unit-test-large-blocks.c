@@ -1,5 +1,5 @@
 /**
- * \file   t1.c
+ * \file   unit-test-large-blocks.c
  * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Test file for xmalloc.

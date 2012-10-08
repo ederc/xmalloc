@@ -46,10 +46,10 @@ doc/index.html
 doc/apa.html
 doc/apb.html
 doc/*.html
-tests/unit-tests/small-block-alloc
-tests/unit-tests/large-block-alloc
-tests/unit-tests/spec-bin
-tests/t3
-tests/t4
-tests/t5
-tests/malloc_test
+tests/unit-test-small-blocks
+tests/unit-test-large-blocks
+tests/unit-test-spec-bins
+tests/test-t3
+tests/test-t4
+tests/test-t5
+tests/test-malloc_test

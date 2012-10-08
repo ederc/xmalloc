@@ -1,5 +1,5 @@
 /**
- * \file   t4.c
+ * \file   test-t4.c
  * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Test file for xmalloc.
