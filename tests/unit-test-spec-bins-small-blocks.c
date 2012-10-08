@@ -1,8 +1,8 @@
 /**
- * \file   unit-test-spec-bins.c
- * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
- * \date   July 2012
- * \brief  Test file for xmalloc.
+ * \file   unit-test-spec-bins-small-blocks.c
+ * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \date   October 2012
+ * \brief  Unit test for special bins, small memory blocks file for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */

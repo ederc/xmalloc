@@ -19,14 +19,17 @@ test_malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
-UNIT_TESTS =  									\
-				unit-test-small-blocks	\
-				unit-test-large-blocks	\
-				unit-test-spec-bins
+UNIT_TESTS =  														\
+				unit-test-small-blocks						\
+				unit-test-large-blocks						\
+				unit-test-malloc-small-blocks			\
+				unit-test-malloc-large-blocks			\
+				unit-test-spec-bins-small-blocks	\
+				unit-test-spec-bins-large-blocks
 
 BASIC_TESTS =  						\
-				test-t3								\
-				test-t4								\
+				test-t3						\
+				test-t4						\
 				test-malloc_test
 
 # a benchmarker, not to be included in check.
@@ -42,22 +45,31 @@ check_PROGRAMS = $(TESTS)
 
 CLEANFILES = $(TESTS)
 
-unit_test_small_blocks_SOURCES =	\
+unit_test_small_blocks_SOURCES =						\
         unit-test-small-blocks.c
 
-unit_test_large_blocks_SOURCES =	\
+unit_test_large_blocks_SOURCES =						\
         unit-test-large-blocks.c
 
-unit_test_spec_bins_SOURCES =    	\
-        unit-test-spec-bins.c
+unit_test_malloc_small_blocks_SOURCES =			\
+        unit-test-malloc-small-blocks.c
 
-test_t3_SOURCES =   \
+unit_test_malloc_large_blocks_SOURCES =			\
+        unit-test-malloc-large-blocks.c
+
+unit_test_spec_bins_small_blocks_SOURCES = 	\
+        unit-test-spec-bins-small-blocks.c
+
+unit_test_spec_bins_large_blocks_SOURCES = 	\
+        unit-test-spec-bins-large-blocks.c
+
+test_t3_SOURCES =   												\
         test-t3.c
 
-test_t4_SOURCES =   \
+test_t4_SOURCES =   												\
         test-t4.c
 
-test_malloc_test_SOURCES =   \
+test_malloc_test_SOURCES =   								\
         test-malloc_test.c
 
 noinst_HEADERS =	

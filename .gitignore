@@ -48,7 +48,10 @@ doc/apb.html
 doc/*.html
 tests/unit-test-small-blocks
 tests/unit-test-large-blocks
-tests/unit-test-spec-bins
+tests/unit-test-malloc-small-blocks
+tests/unit-test-malloc-large-blocks
+tests/unit-test-spec-bins-small-blocks
+tests/unit-test-spec-bins-large-blocks
 tests/test-t3
 tests/test-t4
 tests/test-t5
