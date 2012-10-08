@@ -783,7 +783,28 @@
   </para>
   <para>
   Still we try to keep our unit test suite up to date. For this we encourage developers
-  to include a test for any new functionality in xmalloc.
+  to include a test for any new functionality in xmalloc. There are two shell sripts in the
+  <filename>tests/</filename> directory with which one can run either all tests at once or
+  the unit tests only: <filename>run-unit-tests.sh</filename> respectively <filename>
+  run-all-tests.sh</filename>
+  </para>
+  <para>
+  For those shell scripts to work correctly please note the following naming convention
+  for tests:
+  <orderedlist>
+  <listitem>
+  <para>
+  Files consisting of unit tests have to be named <filename>unit-test-*.c</filename>, e.g.
+  <filename>unit-test-spec-bins.c</filename>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+  Files consisting of usual resp. bigger tests have to be named <filename>
+  test-*.c</filename>, e.g. <filename>test-bigger-computation.c</filename>.
+  </para>
+  </listitem>
+  </orderedlist>
   </para>
   </sect2>
   <sect2>
