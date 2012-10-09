@@ -1,5 +1,5 @@
 /**
- * \file   unit-test-malloc-small-blocks.c
+ * \file   unit-test-realloc-small-blocks.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for small block allocations for xmalloc.
@@ -11,15 +11,17 @@
 #include "xmalloc-config.h"
 #include "xmalloc.h"
 
-int main()
-{
+int main() {
+  // alloc small memory block
+  void *p = xMalloc(1);
   int i;
-  for (i = 1; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++)
-  {
-    void *p = xMalloc(i);
+  // reallocate the memory as long as the reallocated block size fits in
+  // xmallocs bins
+  for (i = 2; i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++) {
+    p = xrealloc(p,i);
     __XMALLOC_ASSERT(NULL != p &&
-        "xMalloc should have allocated addr != NULL.");
-    xFree(p);
+        "xRealloc should have allocated addr != NULL.");
   }
+  xFree(p);
   return 0;
 }

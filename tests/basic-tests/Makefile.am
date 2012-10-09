@@ -8,7 +8,7 @@ AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
-SUBDIRS = unit-tests universal-tests data
+SUBDIRS =
 
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
 
@@ -19,21 +19,6 @@ test_malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
-UNIT_TESTS =																	\
-				unit-test-small-blocks								\
-				unit-test-large-blocks								\
-				unit-test-malloc-small-blocks					\
-				unit-test-malloc-large-blocks					\
-				unit-test-Realloc-small-blocks				\
-				unit-test-Realloc-large-blocks				\
-				unit-test-realloc-small-blocks				\
-				unit-test-realloc-large-blocks				\
-				unit-test-Realloc-size-small-blocks		\
-				unit-test-Realloc-size-large-blocks		\
-				unit-test-Realloc-zero								\
-				unit-test-spec-bins-small-blocks			\
-				unit-test-spec-bins-large-blocks
-
 BASIC_TESTS =  						\
 				test-t3						\
 				test-t4						\
@@ -45,7 +30,6 @@ BENCHMARKS =
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 TESTS =                               		\
-        $(UNIT_TESTS) 										\
 				$(BASIC_TESTS)
 
 check_PROGRAMS = $(TESTS)

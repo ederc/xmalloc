@@ -8,7 +8,7 @@ AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
-SUBDIRS = unit-tests universal-tests data
+SUBDIRS =
 
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
 
@@ -33,20 +33,13 @@ UNIT_TESTS =																	\
 				unit-test-Realloc-zero								\
 				unit-test-spec-bins-small-blocks			\
 				unit-test-spec-bins-large-blocks
-
-BASIC_TESTS =  						\
-				test-t3						\
-				test-t4						\
-				test-malloc_test
-
 # a benchmarker, not to be included in check.
 BENCHMARKS =            
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 TESTS =                               		\
-        $(UNIT_TESTS) 										\
-				$(BASIC_TESTS)
+        $(UNIT_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
