@@ -1,45 +1,53 @@
 #!/bin/sh
-countpassed=0
+countfailed=0
 countall=0
-
-countunitpassed=0
-countunitall=0
-FILES=$(find -name unit-\* -perm /a+x)
-echo "---------------------------------------------"
+echo "==========================================="
+echo "------ start: all tests for xmalloc -------"
+echo "==========================================="
+FILES=$(find unit -name test-\* -perm /a+x)
+countfailedunit=0
+countallunit=0
+echo "1. unit tests"
+echo "-------------------------------------------"
 for f in $FILES
 do
-  countunitall=`expr $countunitall + 1`
+  countallunit=`expr $countallunit + 1`
+  countall=`expr $countall + 1`
   ./$f
   if test $? -eq 0 
   then
-    echo "PASSED: $f"
-    countunitpassed=`expr $countunitpassed + 1`
+    echo "PASS: $f"
   else
-    echo "NOT PASSED: $f"
+    echo "FAIL: $f"
+    countfailedunit=`expr $countfailedunit + 1`
+    countfailed=`expr $countfailed + 1`
   fi
 done
-echo "---------------------------------------------"
-echo "UNIT-TESTS: $countunitpassed / $countunitall PASSED";
-echo "---------------------------------------------"
-countbigpassed=0
-countbigall=0
-FILES=$(find -name test-\* -perm /a+x)
+FILES=$(find basic -name test-\* -perm /a+x)
+countfailedbasic=0
+countallbasic=0
+echo "-------------------------------------------"
+echo "2. basic tests"
+echo "-------------------------------------------"
 for f in $FILES
 do
-  countbigall=`expr $countbigall + 1`
+  countallbasic=`expr $countallbasic + 1`
+  countall=`expr $countall + 1`
   ./$f
   if test $? -eq 0 
   then
-    echo "PASSED: $f"
-    countbigpassed=`expr $countbigpassed + 1`
+    echo "PASS: $f"
   else
-    echo "NOT PASSED: $f"
+    echo "FAIL: $f"
+    countfailedbasic=`expr $countfailedbasic + 1`
+    countfailed=`expr $countfailed + 1`
   fi
 done
-echo "BIGGER-TESTS: $countbigpassed / $countbigall PASSED";
-countpassed=`expr $countunitpassed + $countbigpassed`
-countall=`expr $countunitall + $countbigall`
-echo "---------------------------------------------"
-echo "ALL TESTS: $countpassed / $countall PASSED";
-echo "---------------------------------------------"
+echo "==========================================="
+echo "$countfailedunit of $countallunit unit tests failed";
+echo "$countfailedbasic of $countallbasic basic tests failed";
+echo "-------------------------------------------"
+echo "$countfailed of $countall all tests failed";
+echo "Please report to ederc@mathematik.uni-kl.de"
+echo "==========================================="
 

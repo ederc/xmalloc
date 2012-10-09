@@ -36,45 +36,6 @@ check_PROGRAMS = $(TESTS)
 
 CLEANFILES = $(TESTS)
 
-unit_test_small_blocks_SOURCES =								\
-        unit-test-small-blocks.c
-
-unit_test_large_blocks_SOURCES =								\
-        unit-test-large-blocks.c
-
-unit_test_malloc_small_blocks_SOURCES =					\
-        unit-test-malloc-small-blocks.c
-
-unit_test_malloc_large_blocks_SOURCES =					\
-        unit-test-malloc-large-blocks.c
-
-unit_test_Realloc_small_blocks_SOURCES =				\
-        unit-test-Realloc-small-blocks.c
-
-unit_test_Realloc_large_blocks_SOURCES =				\
-        unit-test-Realloc-large-blocks.c
-
-unit_test_realloc_small_blocks_SOURCES =				\
-        unit-test-realloc-small-blocks.c
-
-unit_test_realloc_large_blocks_SOURCES =				\
-			unit-test-realloc-large-blocks.c
-
-unit_test_Realloc_zero_SOURCES =								\
-			unit-test-Realloc-zero.c
-
-unit_test_Realloc_size_small_blocks_SOURCES =		\
-        unit-test-Realloc-size-small-blocks.c
-
-unit_test_Realloc_size_large_blocks_SOURCES =		\
-        unit-test-Realloc-size-large-blocks.c
-
-unit_test_spec_bins_small_blocks_SOURCES =			\
-        unit-test-spec-bins-small-blocks.c
-
-unit_test_spec_bins_large_blocks_SOURCES =			\
-        unit-test-spec-bins-large-blocks.c
-
 test_t3_SOURCES =																\
         test-t3.c
 

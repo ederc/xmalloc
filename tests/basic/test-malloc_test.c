@@ -24,8 +24,8 @@
 
 int debug_flag = 0;
 int verbose_flag = 0;
-int num_workers = 12;
-double run_time = 20.0;
+int num_workers = 4;
+double run_time = 5.0;
 
 /* array for thread ids */
 pthread_t *thread_ids;

@@ -1,9 +1,9 @@
 #!/bin/sh
 countfailed=0
 countall=0
-FILES=$(find unit -name test-\* -perm /a+x)
+FILES=$(find basic -name test-\* -perm /a+x)
 echo "==========================================="
-echo "------ start: unit tests for xmalloc ------"
+echo "------ start: basic tests for xmalloc -----"
 echo "==========================================="
 for f in $FILES
 do
@@ -21,3 +21,4 @@ echo "==========================================="
 echo "$countfailed of $countall tests failed";
 echo "Please report to ederc@mathematik.uni-kl.de"
 echo "==========================================="
+
