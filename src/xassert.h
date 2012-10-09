@@ -41,13 +41,13 @@ static inline int xReportError(const char *message, ...) {
 /**
  * \brief xmalloc-specific assert
  */
-#define xAssert(expression, file, line)                           \
-do {                                                              \
-  if (!(expression)) {                                            \
-    xReportError("Assert violation at %s : %d ---( %s )---\n\n",  \
-        file, line, #expression);                                 \
-    exit(EXIT_FAILURE);                                           \
-  }                                                               \
+#define xAssert(expression, file, line)                                       \
+do {                                                                          \
+  if (!(expression)) {                                                        \
+    xReportError("Assert violation at %s ( line %d ):\n             %s\n\n",  \
+        file, line, #expression);                                             \
+    exit(EXIT_FAILURE);                                                       \
+  }                                                                           \
 } while(0)
 
 // we let it just fall back to assert
