@@ -776,36 +776,43 @@
   <sect1>
   <title>Agreements on the xmalloc test suite</title>
   <sect2>
-  <title>Unit testing frameworks</title>
+  <title>Testing frameworks</title>
   <para>
   Keeping dependencies of xmalloc at a low we decided to not use any third-party
-  unit testing framework like <emphasis>check</emphasis> or <emphasis>dejagnu</emphasis>.
+  testing framework like <emphasis>check</emphasis> or <emphasis>dejagnu</emphasis>.
   </para>
   <para>
-  Still we try to keep our unit test suite up to date. For this we encourage developers
-  to include a test for any new functionality in xmalloc. There are two shell sripts in the
-  <filename>tests/</filename> directory with which one can run either all tests at once or
-  the unit tests only: <filename>run-unit-tests.sh</filename> respectively <filename>
-  run-all-tests.sh</filename>
+  Still we try to keep our test suite up to date. For this we encourage developers
+  to include a test for any new functionality in xmalloc. The test suite is dedicated
+  to be structured into subdirectories which keep specialized tests:
+  <programlisting>
+                           tests/
+                          /    \
+                         /      \
+                        /        \
+                      unit/     basic/</programlisting>
+  In <filename>unit/</filename> we keep all unit tests. <filename>basic/</filename> is the
+  place where to put bigger and more general tests that do not only test some special unit,
+  but are still basic.
   </para>
   <para>
-  For those shell scripts to work correctly please note the following naming convention
-  for tests:
-  <orderedlist>
-  <listitem>
+  There are 3 shell sripts in the
+  <filename>tests/</filename> directory with which one can run either the tests in the above
+  mentioned subdirectories separately or all tests at once:
+  <programlisting>
+  ./run-unit-tests.sh
+  ./run-basic-tests.sh
+  ./run-all-tests.sh</programlisting>
+  </para>
+  <note>
   <para>
-  Files consisting of unit tests have to be named <filename>unit-test-*.c</filename>, e.g.
-  <filename>unit-test-spec-bins.c</filename>.
+  For those shell scripts to work correctly please note that there is a naming
+  convention for all tests in any of the above mentioned subdirectories.
+  The name of each test file must meet the following template:<filename>test-*.c</filename>.
+  For example, in <filename>unit/</filename> a unit test for checking reallocations with
+  small memory block sizes should be named <filename>test-realloc-small-blocks.c</filename>.
   </para>
-  </listitem>
-  <listitem>
-  <para>
-  Files consisting of usual resp. bigger tests have to be named <filename>
-  test-*.c</filename>, e.g. <filename>test-bigger-computation.c</filename>.
-  </para>
-  </listitem>
-  </orderedlist>
-  </para>
+  </note>
   </sect2>
   <sect2>
   <title>Using assert() in the test suite</title>
