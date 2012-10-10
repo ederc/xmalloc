@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include "../include/xmalloc-config.h"
+#include "xmalloc-config.h"
 
 /**
  * \fn static inline int xReportError(const char* message, ...)
