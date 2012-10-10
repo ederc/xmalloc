@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
-AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
+AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer -pthread
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
@@ -19,6 +19,7 @@ test_malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
+# a benchmarker, not to be included in check.
 UNIT_TESTS =														\
 				test-small-blocks								\
 				test-large-blocks								\
@@ -30,20 +31,16 @@ UNIT_TESTS =														\
 				test-realloc-large-blocks				\
 				test-Realloc-size-small-blocks	\
 				test-Realloc-size-large-blocks	\
-				test-Realloc-zero								\
+				test-malloc-zero								\
+				test-realloc-zero								\
 				test-spec-bins-small-blocks			\
 				test-spec-bins-large-blocks
-# a benchmarker, not to be included in check.
+
 BENCHMARKS =            
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
-TESTS =                               		\
-        $(UNIT_TESTS)
-
-check_PROGRAMS = $(TESTS)
-
-CLEANFILES = $(TESTS)
+bin_PROGRAMS = $(UNIT_TESTS)
 
 test_small_blocks_SOURCES =									\
    test-small-blocks.c
@@ -69,8 +66,11 @@ test_realloc_small_blocks_SOURCES =					\
 test_realloc_large_blocks_SOURCES =					\
  		test-realloc-large-blocks.c
 
-test_Realloc_zero_SOURCES =									\
- 		test-Realloc-zero.c
+test_malloc_zero_SOURCES =									\
+		test-malloc-zero.c
+
+test_realloc_zero_SOURCES =									\
+		test-realloc-zero.c
 
 test_Realloc_size_small_blocks_SOURCES =		\
    	test-Realloc-size-small-blocks.c

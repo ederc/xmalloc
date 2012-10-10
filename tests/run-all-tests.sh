@@ -43,11 +43,15 @@ do
     countfailed=`expr $countfailed + 1`
   fi
 done
-echo "==========================================="
-echo "$countfailedunit of $countallunit unit tests failed";
-echo "$countfailedbasic of $countallbasic basic tests failed";
 echo "-------------------------------------------"
-echo "$countfailed of $countall all tests failed";
+printf "%3d of %3d unit  tests failed\n" "$countfailedunit" "$countallunit"
+printf "%3d of %3d basic tests failed\n" "$countfailedbasic" "$countallbasic"
+echo "-------------------------------------------"
+printf "%3d of %3d tests failed\n" "$countfailed" "$countall"
+echo "==========================================="
 echo "Please report to ederc@mathematik.uni-kl.de"
 echo "==========================================="
-
+if test $countfailed -gt 0
+then
+  exit 1
+fi

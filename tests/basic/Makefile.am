@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
-AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer
+AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer -pthread
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
@@ -19,22 +19,18 @@ test_malloc_test_LDFLAGS = -pthread
 # Once present, tests should remain present, being moved from one group to another.
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
+# a benchmarker, not to be included in check.
+
 BASIC_TESTS =  						\
 				test-t3						\
 				test-t4						\
 				test-malloc_test
 
-# a benchmarker, not to be included in check.
 BENCHMARKS =            
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
-TESTS =                               		\
-				$(BASIC_TESTS)
-
-check_PROGRAMS = $(TESTS)
-
-CLEANFILES = $(TESTS)
+bin_PROGRAMS = $(BASIC_TESTS)
 
 test_t3_SOURCES =																\
         test-t3.c

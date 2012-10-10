@@ -17,7 +17,12 @@ do
     countfailed=`expr $countfailed + 1`
   fi
 done
+echo "-------------------------------------------"
+printf "%3d of %3d tests failed\n" "$countfailed" "$countall"
 echo "==========================================="
-echo "$countfailed of $countall tests failed";
 echo "Please report to ederc@mathematik.uni-kl.de"
 echo "==========================================="
+if test $countfailed -gt 0
+then
+  exit 1
+fi
