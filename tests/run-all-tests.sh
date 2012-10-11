@@ -4,7 +4,7 @@ countall=0
 echo "==========================================="
 echo "------ start: all tests for xmalloc -------"
 echo "==========================================="
-FILES=$(find unit -name test-\* -perm /a+x)
+FILES=$(find unit -name test-\* -perm /a+x | sort)
 countfailedunit=0
 countallunit=0
 echo "1. unit tests"
@@ -23,7 +23,7 @@ do
     countfailed=`expr $countfailed + 1`
   fi
 done
-FILES=$(find basic -name test-\* -perm /a+x)
+FILES=$(find basic -name test-\* -perm /a+x | sort)
 countfailedbasic=0
 countallbasic=0
 echo "-------------------------------------------"

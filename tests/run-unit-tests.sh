@@ -1,7 +1,7 @@
 #!/bin/sh
 countfailed=0
 countall=0
-FILES=$(find unit -name test-\* -perm /a+x)
+FILES=$(find unit -name test-\* -perm /a+x | sort)
 echo "==========================================="
 echo "------ start: unit tests for xmalloc ------"
 echo "==========================================="

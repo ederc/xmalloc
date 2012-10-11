@@ -1,7 +1,7 @@
 #!/bin/sh
 countfailed=0
 countall=0
-FILES=$(find basic -name test-\* -perm /a+x)
+FILES=$(find basic -name test-\* -perm /a+x | sort)
 echo "==========================================="
 echo "------ start: basic tests for xmalloc -----"
 echo "==========================================="
