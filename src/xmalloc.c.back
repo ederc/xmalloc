@@ -199,10 +199,10 @@ void* xReallocLarge(void *oldPtr, size_t newSize) {
 }
 
 void* xRealloc0Large(void *oldPtr, size_t newSize) {
-  size_t oldSize  = xWordSizeOfAddr(oldPtr);
+  size_t oldSize  = xSizeOfAddr(oldPtr);
   char *newPtr    = xReallocLarge(oldPtr, newSize);
   
-  newSize = xWordSizeOfAddr(newPtr);
+  newSize = xSizeOfAddr(newPtr);
   // check if we need to initialize stuff to zero
   if (newSize > oldSize)
     memset(newPtr + oldSize, 0, newSize - oldSize);
@@ -221,13 +221,13 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero) {
     // memory chunk is small enough, xmalloc handles it
     void *newPtr    = xMalloc(newSize);
     size_t minSize  = (oldSize < newSize ? oldSize : newSize);
-    //memcpy(newPtr, oldPtr, minSize >> __XMALLOC_LOG_SIZEOF_LONG);
-    memcpy(newPtr, oldPtr, minSize);
+    memcpy(newPtr, oldPtr, minSize >> __XMALLOC_LOG_SIZEOF_LONG);
+    //memcpy(newPtr, oldPtr, minSize);
 
     // initialize with 0 if initZero is set
     if (initZero) {
-      memset((char*) newPtr + minSize, 0, (newSize - oldSize) >>
-            __XMALLOC_LOG_SIZEOF_LONG);
+      memset(newPtr + (minSize >> __XMALLOC_LOG_SIZEOF_LONG), 
+          0, (newSize - oldSize) >> __XMALLOC_LOG_SIZEOF_LONG);
     }
     xFreeSize(oldPtr, oldSize);
 
@@ -240,13 +240,12 @@ void* xReallocSize(void *oldPtr, size_t oldSize, size_t newSize) {
   if (__XMALLOC_MAX(newSize, oldSize) <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
     xBin oldBin = xGetBinOfAddr(oldPtr);
     xBin newBin = xSmallSize2Bin(newSize);
-
+    long oldWordSize  = xWordSizeOfAddr(oldPtr);
     if (oldBin != newBin) {
       newPtr  = xAllocFromBin(newBin);
-      //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
-      //        newBin->sizeInWords));
-      memcpy(newPtr, oldPtr, (newSize> oldSize ? oldSize :
-              newSize));
+      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+              newBin->sizeInWords));
+      //memcpy(newPtr, oldPtr, (newSize > oldSize ? oldSize : newSize));
       xFreeBinAddr(oldPtr);
     } else {
       newPtr  = oldPtr;
@@ -267,14 +266,13 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
       size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
       newPtr  = xAllocFromBin(newBin);
-      //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
-      //        newBin->sizeInWords));
-      memcpy(newPtr, oldPtr, (newSize> oldSize ? oldSize :
-              newSize));
+      memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
+              newBin->sizeInWords));
+      //memcpy(newPtr, oldPtr, (newSize > oldSize ? oldSize : newSize));
       // initialize to zero if needed
-      if (newBin->sizeInWords > oldWordSize) {
+      if (newBin->sizeInWords > oldWordSize)
         memset(newPtr + oldWordSize, 0, newBin->sizeInWords - oldWordSize);
-      }
+      
       xFreeBinAddr(oldPtr);
     } else {
       newPtr  = oldPtr;

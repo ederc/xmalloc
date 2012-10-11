@@ -13,21 +13,27 @@
 
 int main() {
   // alloc small memory block
-  int *p = (int*) xMalloc0(sizeof(int));
-  __XMALLOC_ASSERT(NULL != p && 0 == *p && "Should be allocated and set to zero");
-  int i, j;
+  void *p = xMalloc0(1);
+  __XMALLOC_ASSERT(NULL != p);
+  __XMALLOC_ASSERT(0 == *((char *)p));
+
+  int i, j, maxWordSize;
   // reallocate the memory as long as the reallocated block size fits in
   // xmallocs bins
-  for (i = i + __XMALLOC_SIZEOF_INT ; 
-      i < __XMALLOC_MAX_SMALL_BLOCK_SIZE; 
-      i = i + __XMALLOC_SIZEOF_INT) {
+  for (i = 1 ; i < 10 * __XMALLOC_MAX_SMALL_BLOCK_SIZE; i++) {
     p = xRealloc0(p,i);
-    __XMALLOC_ASSERT(NULL != p &&
-        "xRealloc should have allocated addr != NULL.");
-    for(j = 0; j <= i; j = j + __XMALLOC_SIZEOF_INT) {
-      printf("p+j = %ld\n",*(p+j));
-      printf("j = %ld\n",j);
-      __XMALLOC_ASSERT(0 == *(p + j));
+    __XMALLOC_ASSERT(NULL != p);
+    // get word size of corresponding bin
+    if (i <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+      xBin bin  = xGetBinOfAddr(p);
+      maxWordSize = bin->sizeInWords;
+    } else {
+      maxWordSize = xWordSizeOfAddr(p);
+    }
+
+    // check if memory is set to zero
+    for (j = 0; j < maxWordSize; j++) {
+      __XMALLOC_ASSERT(0 == *((char *)p + j));
     }
   }
   xFree(p);
