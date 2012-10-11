@@ -282,6 +282,8 @@ static inline void xFree(void *addr) {
  *
  */
 static inline void xFreeSize(void *addr, size_t size) {
+  __XMALLOC_ASSERT(NULL != addr);
+  __XMALLOC_ASSERT(0 != size);
   if ((size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) || xIsBinAddr(addr))
     xFreeBinAddr(addr);
   else
@@ -299,8 +301,21 @@ static inline void xFreeSize(void *addr, size_t size) {
  *
  */
 static inline void xfree(void *addr) {
-  if(NULL != addr)
+  if (NULL != addr)
     xFree(addr);
+}
+
+/**
+ * \fn static inline void xfreeSize(void *addr, size_t size) {
+ *
+ * \brief Frees memory stored at address \c addr with a size check included.
+ *
+ * \param addr address of memory to be deleted.
+ *
+ */
+static inline void xfreeSize(void *addr, size_t size) {
+  if ((NULL != addr) && (0 != size))
+    return xFreeSize(addr, size);
 }
 
 void xFreeSizeFunc(void *ptr, size_t size);
