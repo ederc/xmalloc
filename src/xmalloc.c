@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include "src/xmalloc.h"
+#include "xmalloc.h"
 
 extern xBin __XMALLOC_LARGE_BIN;
 
@@ -226,7 +226,7 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero) {
 
     // initialize with 0 if initZero is set
     if (initZero) {
-      memset((char *)newPtr + minSize, 0, (newSize - oldSize) >>
+      xMemsetInWords((char *)newPtr + minSize, 0, (newSize - oldSize) >>
             __XMALLOC_LOG_SIZEOF_LONG);
     }
     xFreeSize(oldPtr, oldSize);
@@ -267,14 +267,14 @@ void* xRealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) {
       size_t oldWordSize  = xIsBinAddr(oldPtr) ? oldBin->sizeInWords :
                             xWordSizeOfAddr(oldPtr);
       newPtr  = xAllocFromBin(newBin);
+      __XMALLOC_ASSERT(NULL != newPtr);
       //memcpy(newPtr, oldPtr, (newBin->sizeInWords > oldWordSize ? oldWordSize :
       //        newBin->sizeInWords));
       memcpy(newPtr, oldPtr, (newSize> oldSize ? oldSize :
               newSize));
       // initialize to zero if needed
       if (newBin->sizeInWords > oldWordSize)
-        memset((void**)newPtr + oldWordSize, 0, newBin->sizeInWords - oldWordSize);
-      
+        xMemsetInWords((void **)newPtr + oldWordSize, 0, newBin->sizeInWords - oldWordSize);
       xFreeBinAddr(oldPtr);
     } else {
       newPtr  = oldPtr;

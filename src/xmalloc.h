@@ -22,6 +22,7 @@ extern "C" {
 
 #include "xassert.h"
 #include "xmalloc-config.h"
+#include "system.h"
 #include "data.h"
 #include "globals.h"
 #include "page.h"
@@ -156,12 +157,10 @@ static inline size_t xWordSizeOfAddr(const void *addr) {
 static inline void* xMalloc(const size_t size) {
   void *addr  = NULL;
   if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
-    //printf("klein <- %ld\n",size);
     xBin bin  = xSmallSize2Bin(size); 
-    addr  = xAllocFromBin(bin);
+    addr      = xAllocFromBin(bin);
     return addr;
   } else {
-    //printf("gross <- %ld\n",size);
     long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
     *ptr       = size;
     ptr++;
@@ -183,9 +182,19 @@ static inline void* xMalloc(const size_t size) {
  *
  */
 static inline void* xMalloc0(size_t size) {
-  void *ptr = xMalloc(size);
-  memset(ptr, 0, size);
-  return ptr;
+  void *addr  = NULL;
+  if (size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) {
+    xBin bin  = xSmallSize2Bin(size);
+    addr      = xAllocFromBin(bin);
+    xMemsetInWords(addr, 0, bin->sizeInWords);
+    return addr;
+  } else {
+    long *ptr  = (long*) malloc(size + __XMALLOC_SIZEOF_LONG);
+    *ptr       = size;
+    ptr++;
+    memset(ptr, 0, size);
+    return ptr;
+  }
 }
 
 /**
@@ -591,6 +600,7 @@ static inline void* xMemDup(void *str) {
  *
  */
 xBin xGetStickyBinOfBin(xBin bin);
+
 
 
 #define xAlloc0Aligned(S)       xMalloc0(S)
