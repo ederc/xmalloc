@@ -33,7 +33,7 @@ int main() {
 
     // check if memory is set to zero
     for (j = 0; j < maxWordSize; j++) {
-      __XMALLOC_ASSERT(0 == *((char *)p + j));
+      __XMALLOC_ASSERT(0 == *((long *)p + j));
     }
   }
   xFree(p);
