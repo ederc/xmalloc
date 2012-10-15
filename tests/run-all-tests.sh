@@ -1,10 +1,15 @@
 #!/bin/sh
 countfailed=0
 countall=0
+# Absolute path to this script, e.g. /home/user/bin/foo.csh
+SCRIPT=`readlink -f $0`
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=`dirname $SCRIPT`
+TESTPATH="$SCRIPTPATH/unit"
 echo "==========================================="
 echo "------ start: all tests for xmalloc -------"
 echo "==========================================="
-FILES=$(find unit -name test-\* -perm /a+x | sort)
+FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
 countfailedunit=0
 countallunit=0
 echo "1. unit tests"
@@ -13,7 +18,7 @@ for f in $FILES
 do
   countallunit=`expr $countallunit + 1`
   countall=`expr $countall + 1`
-  ./$f
+  $f
   if test $? -eq 0 
   then
     echo "PASS: $f"
@@ -23,7 +28,12 @@ do
     countfailed=`expr $countfailed + 1`
   fi
 done
-FILES=$(find basic -name test-\* -perm /a+x | sort)
+# Absolute path to this script, e.g. /home/user/bin/foo.csh
+SCRIPT=`readlink -f $0`
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=`dirname $SCRIPT`
+TESTPATH="$SCRIPTPATH/basic"
+FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
 countfailedbasic=0
 countallbasic=0
 echo "-------------------------------------------"
@@ -33,7 +43,7 @@ for f in $FILES
 do
   countallbasic=`expr $countallbasic + 1`
   countall=`expr $countall + 1`
-  ./$f
+  $f
   if test $? -eq 0 
   then
     echo "PASS: $f"

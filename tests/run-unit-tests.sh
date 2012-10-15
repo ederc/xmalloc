@@ -1,14 +1,19 @@
 #!/bin/sh
 countfailed=0
 countall=0
-FILES=$(find unit -name test-\* -perm /a+x | sort)
+# Absolute path to this script, e.g. /home/user/bin/foo.csh
+SCRIPT=`readlink -f $0`
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=`dirname $SCRIPT`
+TESTPATH="$SCRIPTPATH/unit"
+FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
 echo "==========================================="
 echo "------ start: unit tests for xmalloc ------"
 echo "==========================================="
 for f in $FILES
 do
   countall=`expr $countall + 1`
-  ./$f
+  $f
   if test $? -eq 0 
   then
     echo "PASS: $f"
