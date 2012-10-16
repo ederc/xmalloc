@@ -21,6 +21,7 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
+				test-system-allocation							\
 				test-region-insertion								\
 				test-consecutive-pages-from-region	\
 				test-region-allocation							\
@@ -115,5 +116,8 @@ test_consecutive_pages_from_region_SOURCES =		\
 
 test_region_insertion_SOURCES =									\
     test-region-insertion.c
+
+test_system_allocation_SOURCES =								\
+    test-system-allocation.c
 
 noinst_HEADERS =	
