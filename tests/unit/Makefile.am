@@ -21,6 +21,7 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =														\
+				test-bin-page-addr							\
 				test-is-sticky-bin							\
 				test-page-of-addr								\
 				test-small-blocks								\
@@ -91,5 +92,8 @@ test_is_sticky_bin_SOURCES =								\
 
 test_page_of_addr_SOURCES =									\
     test-page-of-addr.c
+
+test_bin_page_addr_SOURCES =								\
+    test-bin-page-addr.c
 
 noinst_HEADERS =	
