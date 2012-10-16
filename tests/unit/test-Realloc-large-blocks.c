@@ -1,5 +1,5 @@
 /**
- * \file   unit-test-Realloc-large-blocks.c
+ * \file   test-Realloc-large-blocks.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for large block reallocations for xmalloc.
