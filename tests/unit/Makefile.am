@@ -21,6 +21,7 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
+				test-non-empty-page-allocation			\
 				test-address-alignments							\
 				test-size-alignments								\
 				test-system-allocation							\
@@ -127,5 +128,8 @@ test_size_alignments_SOURCES =									\
 
 test_address_alignments_SOURCES =								\
 		test-address-alignments.c
+
+test_non_empty_page_allocation_SOURCES =				\
+		test-non-empty-page-allocation.c
 
 noinst_HEADERS =	
