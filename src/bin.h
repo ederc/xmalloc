@@ -399,7 +399,9 @@ static inline void* xAllocFromFullPage(xBin bin) {
     newPage = xAllocNewPageForBin(bin);
     xInsertPageToBin(newPage, bin);
   }
-
+  __XMALLOC_ASSERT(NULL != newPage);
+  __XMALLOC_ASSERT(__XMALLOC_ZERO_PAGE != newPage);
+  __XMALLOC_ASSERT(NULL != newPage->current);
   bin->currentPage  = newPage;
   return xAllocFromNonEmptyPage(newPage);
 }
@@ -564,7 +566,7 @@ static inline void xSetStickyOfPage(xPage page, xBin bin) {
 static inline xBin xGetBinOfPage(const xPage page) {
   unsigned long sticky  = xGetStickyOfPage(page);
   xBin bin              = xGetTopBinOfPage(page);
-  if (!xIsStickyBin(bin)) // TOODOO
+  if (!xIsStickyBin(bin))
     while ((bin->sticky != sticky) && (NULL != bin->next))
       bin = bin->next;
 

@@ -70,8 +70,9 @@ xPage xAllocNewPageForBin(xBin bin) {
 #if __XMALLOC_DEBUG > 1
   printf("binNumberBlocks %ld in %p\n",bin->numberBlocks,bin);
 #endif
-  if (bin->numberBlocks > 0)
+  if (bin->numberBlocks > 0) {
     newPage = xAllocSmallBlockPageForBin();
+  }
   // block size > page size
   else
     newPage = xAllocBigBlockPagesForBin(-bin->numberBlocks);
@@ -86,6 +87,7 @@ xPage xAllocNewPageForBin(xBin bin) {
     i++;
   }
   __XMALLOC_NEXT(tmp) = NULL;
+
 #if __XMALLOC_DEBUG > 1
   printf("PAGEUSEDBLOCKS %ld\n", newPage->numberUsedBlocks);
 #endif
@@ -121,7 +123,7 @@ xPage xAllocSmallBlockPageForBin() {
     } else {
       xRegion region  = xAllocNewRegion(1);
       region->prev    = xBaseRegion;
-      xBaseRegion      = xBaseRegion->next  = region;
+      xBaseRegion     = xBaseRegion->next  = region;
     }
   }
 

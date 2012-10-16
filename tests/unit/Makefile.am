@@ -22,6 +22,7 @@ test_malloc_test_LDFLAGS = -pthread
 # a benchmarker, not to be included in check.
 UNIT_TESTS =														\
 				test-is-sticky-bin							\
+				test-page-of-addr								\
 				test-small-blocks								\
 				test-large-blocks								\
 				test-malloc-small-blocks				\
@@ -87,5 +88,8 @@ test_spec_bins_large_blocks_SOURCES =				\
 
 test_is_sticky_bin_SOURCES =								\
     test-is-sticky-bin.c
+
+test_page_of_addr_SOURCES =									\
+    test-page-of-addr.c
 
 noinst_HEADERS =	

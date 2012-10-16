@@ -277,7 +277,7 @@ static inline void xFree(void *addr) {
   if (xIsBinAddr(addr))
     xFreeBinAddr(addr);
   else
-    xFreeLargeAddr(addr); // TOODOO
+    xFreeLargeAddr(addr);
 }
 
 /**
@@ -296,7 +296,7 @@ static inline void xFreeSize(void *addr, size_t size) {
   if ((size <= __XMALLOC_MAX_SMALL_BLOCK_SIZE) || xIsBinAddr(addr))
     xFreeBinAddr(addr);
   else
-    xFreeLargeAddr(addr); // TOODOO
+    xFreeLargeAddr(addr);
 }
 
 /**
