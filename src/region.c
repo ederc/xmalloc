@@ -50,7 +50,7 @@ xRegion xAllocNewRegion(int minNumberPages) {
 /************************************************
  * PAGE HANDLING IN REGIONS
  ***********************************************/
-xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) { // TOODOO
+xPage xGetConsecutivePagesFromRegion(xRegion region, int numberNeeded) {
   void  *current, *page, *prev = NULL;
   char  *iter;
   int   found;

@@ -20,25 +20,27 @@ test_malloc_test_LDFLAGS = -pthread
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
-UNIT_TESTS =														\
-				test-is-static-bin							\
-				test-is-bin-addr								\
-				test-bin-page-addr							\
-				test-is-sticky-bin							\
-				test-page-of-addr								\
-				test-small-blocks								\
-				test-large-blocks								\
-				test-malloc-small-blocks				\
-				test-malloc-large-blocks				\
-				test-Realloc-small-blocks				\
-				test-Realloc-large-blocks				\
-				test-realloc-small-blocks				\
-				test-realloc-large-blocks				\
-				test-Realloc-size-small-blocks	\
-				test-Realloc-size-large-blocks	\
-				test-malloc-zero								\
-				test-realloc-zero								\
-				test-spec-bins-small-blocks			\
+UNIT_TESTS =																\
+				test-consecutive-pages-from-region	\
+				test-region-allocation							\
+				test-is-static-bin									\
+				test-is-bin-addr										\
+				test-bin-page-addr									\
+				test-is-sticky-bin									\
+				test-page-of-addr										\
+				test-small-blocks										\
+				test-large-blocks										\
+				test-malloc-small-blocks						\
+				test-malloc-large-blocks						\
+				test-Realloc-small-blocks						\
+				test-Realloc-large-blocks						\
+				test-realloc-small-blocks						\
+				test-realloc-large-blocks						\
+				test-Realloc-size-small-blocks			\
+				test-Realloc-size-large-blocks			\
+				test-malloc-zero										\
+				test-realloc-zero										\
+				test-spec-bins-small-blocks					\
 				test-spec-bins-large-blocks
 
 BENCHMARKS =            
@@ -47,61 +49,67 @@ EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 bin_PROGRAMS = $(UNIT_TESTS)
 
-test_small_blocks_SOURCES =									\
+test_small_blocks_SOURCES =											\
    test-small-blocks.c
 
-test_large_blocks_SOURCES =									\
+test_large_blocks_SOURCES =											\
    test-large-blocks.c
 
-test_malloc_small_blocks_SOURCES =					\
+test_malloc_small_blocks_SOURCES =							\
    test-malloc-small-blocks.c
 
-test_malloc_large_blocks_SOURCES =					\
+test_malloc_large_blocks_SOURCES =							\
    test-malloc-large-blocks.c
 
-test_Realloc_small_blocks_SOURCES =					\
+test_Realloc_small_blocks_SOURCES =							\
    test-Realloc-small-blocks.c
 
-test_Realloc_large_blocks_SOURCES =					\
+test_Realloc_large_blocks_SOURCES =							\
    test-Realloc-large-blocks.c
 
-test_realloc_small_blocks_SOURCES =					\
+test_realloc_small_blocks_SOURCES =							\
    test-realloc-small-blocks.c
 
-test_realloc_large_blocks_SOURCES =					\
+test_realloc_large_blocks_SOURCES =							\
  		test-realloc-large-blocks.c
 
-test_malloc_zero_SOURCES =									\
+test_malloc_zero_SOURCES =											\
 		test-malloc-zero.c
 
-test_realloc_zero_SOURCES =									\
+test_realloc_zero_SOURCES =											\
 		test-realloc-zero.c
 
-test_Realloc_size_small_blocks_SOURCES =		\
+test_Realloc_size_small_blocks_SOURCES =				\
    	test-Realloc-size-small-blocks.c
 
-test_Realloc_size_large_blocks_SOURCES =		\
+test_Realloc_size_large_blocks_SOURCES =				\
   	test-Realloc-size-large-blocks.c
 
-test_spec_bins_small_blocks_SOURCES =				\
+test_spec_bins_small_blocks_SOURCES =						\
    	test-spec-bins-small-blocks.c
 
-test_spec_bins_large_blocks_SOURCES =				\
+test_spec_bins_large_blocks_SOURCES =						\
     test-spec-bins-large-blocks.c
 
-test_is_sticky_bin_SOURCES =								\
+test_is_sticky_bin_SOURCES =										\
     test-is-sticky-bin.c
 
-test_page_of_addr_SOURCES =									\
+test_page_of_addr_SOURCES =											\
     test-page-of-addr.c
 
-test_bin_page_addr_SOURCES =								\
+test_bin_page_addr_SOURCES =										\
     test-bin-page-addr.c
 
-test_is_bin_addr_SOURCES =									\
+test_is_bin_addr_SOURCES =											\
     test-is-bin-addr.c
 
-test_is_static_bin_SOURCES =								\
+test_is_static_bin_SOURCES =										\
     test-is-static-bin.c
+
+test_region_allocation_SOURCES =								\
+    test-region-allocation.c
+
+test_consecutive_pages_from_region_SOURCES =		\
+    test-consecutive-pages-from-region.c
 
 noinst_HEADERS =	

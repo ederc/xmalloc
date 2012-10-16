@@ -153,10 +153,15 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded) {
   while (1) {
     // memory chunk fits in this region
     if (region->numberInitPages >= numberNeeded) {
+      printf("here\n");
       page                    =   (xPage) region->initAddr;
       region->numberInitPages -=  numberNeeded;
-      if (region->numberInitPages > 0)
+      if (region->numberInitPages > 0) {
+        printf("%p\n", region->initAddr);
         region->initAddr  +=  numberNeeded * __XMALLOC_SIZEOF_SYSTEM_PAGE;
+        printf("here2\n");
+        printf("%p\n", region->initAddr);
+      }
       else
         region->initAddr  =   NULL;
       goto Found;
