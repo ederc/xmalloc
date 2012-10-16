@@ -22,7 +22,7 @@
  *
  * \brief \c size is aligned for xmalloc.
  *
- * \param size ñvar size_t aligned for xmalloc
+ * \param size \c size_t aligned for xmalloc
  *
  * \return aligned size
  *

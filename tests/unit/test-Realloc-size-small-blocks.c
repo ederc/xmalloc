@@ -1,5 +1,5 @@
 /**
- * \file   unit-test-Realloc-small-blocks.c
+ * \file   test-Realloc-small-blocks.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for small block allocations for xmalloc.
