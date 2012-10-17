@@ -31,6 +31,7 @@ UNIT_TESTS =																\
 				test-xTakeOutRegion									\
 				test-xInsertRegionAfter							\
 				test-xInsertRegionBefore						\
+				test-xPageIndexFault								\
 				test-xAllocSmallBigBlockPagesForBin	\
 				test-xAllocNewRegion								\
 				test-xIsStaticBin										\
@@ -151,5 +152,8 @@ test_xAllocFromNonEmptyPage_SOURCES =						\
 
 test_xAreAddressesOnSamePage_SOURCES =					\
 		test-xAreAddressesOnSamePage.c
+
+test_xPageIndexFault_SOURCES =									\
+		test-xPageIndexFault.c
 
 noinst_HEADERS =	

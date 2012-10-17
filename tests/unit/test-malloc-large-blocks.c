@@ -1,5 +1,5 @@
 /**
- * \file   unit-test-malloc-large-blocks.c
+ * \file   test-malloc-large-blocks.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for large block allocations for xmalloc.

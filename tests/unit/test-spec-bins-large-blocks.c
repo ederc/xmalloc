@@ -1,5 +1,5 @@
 /**
- * \file   unit-test-spec-bins-large-blocks.c
+ * \file   test-spec-bins-large-blocks.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for special bins, large memory blocks file for xmalloc.
