@@ -1,5 +1,5 @@
 /**
- * \file   test-size-alignments.c
+ * \file   test-xAlignSize.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test of size alignments in xmalloc.

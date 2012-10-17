@@ -1,5 +1,5 @@
 /**
- * \file   test-consecutve-pages-from-region.c
+ * \file   test-xAllocSmallBigBlockPagesForBin.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test getting consecutive pages from a region.

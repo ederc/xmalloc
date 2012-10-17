@@ -21,18 +21,23 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
-				test-non-empty-page-allocation			\
-				test-address-alignments							\
-				test-size-alignments								\
-				test-system-allocation							\
-				test-region-insertion								\
-				test-consecutive-pages-from-region	\
-				test-region-allocation							\
-				test-is-static-bin									\
-				test-is-bin-addr										\
-				test-bin-page-addr									\
-				test-is-sticky-bin									\
-				test-page-of-addr										\
+				test-xAreAddressesOnSamePage				\
+				test-xAllocFromNonEmptyPage					\
+				test-xAddressIsAligned							\
+				test-xAlignSize											\
+				test-xAllocFromSystem								\
+				test-xReallocSizeFromSystem					\
+				test-xVallocFromSystem							\
+				test-xTakeOutRegion									\
+				test-xInsertRegionAfter							\
+				test-xInsertRegionBefore						\
+				test-xAllocSmallBigBlockPagesForBin	\
+				test-xAllocNewRegion								\
+				test-xIsStaticBin										\
+				test-xIsBinAddr											\
+				test-xGetBinPageOfPageAddr	  			\
+				test-xIsStickyBin										\
+				test-xGetPageOfAddr									\
 				test-small-blocks										\
 				test-large-blocks										\
 				test-malloc-small-blocks						\
@@ -96,40 +101,55 @@ test_spec_bins_small_blocks_SOURCES =						\
 test_spec_bins_large_blocks_SOURCES =						\
     test-spec-bins-large-blocks.c
 
-test_is_sticky_bin_SOURCES =										\
-    test-is-sticky-bin.c
+test_xIsStickyBin_SOURCES =											\
+    test-xIsStickyBin.c
 
-test_page_of_addr_SOURCES =											\
-    test-page-of-addr.c
+test_xGetPageOfAddr__SOURCES =									\
+    test-xGetPageOfAddr.c
 
-test_bin_page_addr_SOURCES =										\
-    test-bin-page-addr.c
+test_xGetBinPageOfPageAddr_SOURCES =						\
+    test-xGetBinPageOfPageAddr.c
 
-test_is_bin_addr_SOURCES =											\
-    test-is-bin-addr.c
+test_xIsBinAddr_SOURCES =												\
+    test-xIsBinAddr.c
 
-test_is_static_bin_SOURCES =										\
-    test-is-static-bin.c
+test_xIsStaticBin_SOURCES =											\
+    test-xIsStaticBin.c
 
-test_region_allocation_SOURCES =								\
-    test-region-allocation.c
+test_xAllocNewRegion_SOURCES =									\
+		test-xAllocNewRegion.c
 
-test_consecutive_pages_from_region_SOURCES =		\
-    test-consecutive-pages-from-region.c
+test_xAllocSmallBigBlockPagesForBin_SOURCES =		\
+    test-xAllocSmallBigBlockPagesForBin.c
 
-test_region_insertion_SOURCES =									\
-    test-region-insertion.c
+test_xInsertRegionAfter_SOURCES =								\
+    test-xInsertRegionAfter.c
 
-test_system_allocation_SOURCES =								\
-    test-system-allocation.c
+test_xInsertRegionBefore_SOURCES =							\
+    test-xInsertRegionBefore.c
 
-test_size_alignments_SOURCES =									\
-		test-size-alignments.c
+test_xTakeOutRegion_SOURCES =										\
+    test-xTakeOutRegion.c
 
-test_address_alignments_SOURCES =								\
-		test-address-alignments.c
+test_xAllocFromSystem_SOURCES =									\
+    test-xAllocFromSystem.c
 
-test_non_empty_page_allocation_SOURCES =				\
-		test-non-empty-page-allocation.c
+test_xReallocSizeFromSystem_SOURCES =						\
+    test-xReallocSizeFromSystem.c
+
+test_xVallocFromSystem_SOURCES =								\
+    test-xVallocFromSystem.c
+
+test_xAlignSize_SOURCES =												\
+		test-xAlignSize.c
+
+test_xAddressIsAligned_SOURCES =								\
+		test-xAddressIsAligned.c
+
+test_xAllocFromNonEmptyPage_SOURCES =						\
+		test-xAllocFromNonEmptyPage.c
+
+test_xAreAddressesOnSamePage_SOURCES =					\
+		test-xAreAddressesOnSamePage.c
 
 noinst_HEADERS =	

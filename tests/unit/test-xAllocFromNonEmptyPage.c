@@ -1,5 +1,5 @@
 /**
- * \file   test-non-empty-page-allocation.c
+ * \file   test-xAllocFromNonEmptyPage.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test of allocation from non-empty page in xmalloc.

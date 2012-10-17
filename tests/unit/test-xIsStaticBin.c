@@ -1,5 +1,5 @@
 /**
- * \file   test-is-static-bin.c
+ * \file   test-xIsStaticBin.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test if bin is static or not.

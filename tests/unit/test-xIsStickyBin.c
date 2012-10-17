@@ -1,5 +1,5 @@
 /**
- * \file   test-is-sticky-bin.c
+ * \file   test-xIsStickyBin.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for sticky bins for xmalloc.

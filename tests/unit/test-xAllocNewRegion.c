@@ -1,5 +1,5 @@
 /**
- * \file   test-region-allocation.c
+ * \file   test-xAllocNewRegion.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for allocation of xRegions.

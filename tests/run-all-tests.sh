@@ -16,14 +16,15 @@ echo "1. unit tests"
 echo "-------------------------------------------"
 for f in $FILES
 do
+  fname=`basename $f`
   countallunit=`expr $countallunit + 1`
   countall=`expr $countall + 1`
   $f
   if test $? -eq 0 
   then
-    echo "PASS: $f"
+    echo "PASS: $fname"
   else
-    echo "FAIL: $f"
+    echo "FAIL: $fname"
     countfailedunit=`expr $countfailedunit + 1`
     countfailed=`expr $countfailed + 1`
   fi
@@ -41,14 +42,15 @@ echo "2. basic tests"
 echo "-------------------------------------------"
 for f in $FILES
 do
+  fname=`basename $f`
   countallbasic=`expr $countallbasic + 1`
   countall=`expr $countall + 1`
   $f
   if test $? -eq 0 
   then
-    echo "PASS: $f"
+    echo "PASS: $fname"
   else
-    echo "FAIL: $f"
+    echo "FAIL: $fname"
     countfailedbasic=`expr $countfailedbasic + 1`
     countfailed=`expr $countfailed + 1`
   fi

@@ -1,5 +1,5 @@
 /**
- * \file   test-page-of-addr.c
+ * \file   test-xGetPageOfAddr.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test page for address for xmalloc.
