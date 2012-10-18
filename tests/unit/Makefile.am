@@ -40,58 +40,25 @@ UNIT_TESTS =																\
 				test-xGetBinPageOfPageAddr	  			\
 				test-xIsStickyBin										\
 				test-xGetPageOfAddr									\
-				test-small-blocks										\
-				test-large-blocks										\
-				test-malloc-small-blocks						\
-				test-malloc-large-blocks						\
-				test-Realloc-small-blocks						\
-				test-Realloc-large-blocks						\
-				test-realloc-small-blocks						\
-				test-realloc-large-blocks						\
-				test-Realloc-size-small-blocks			\
-				test-Realloc-size-large-blocks			\
 				test-xMalloc0												\
 				test-xMalloc												\
 				test-xmalloc												\
+				test-xDoRealloc											\
 				test-xRealloc0											\
 				test-xRealloc												\
 				test-xrealloc												\
+				test-xreallocSize										\
 				test-xReallocSize										\
+				test-xrealloc0Size									\
 				test-xRealloc0Size									\
 				test-xReallocLarge									\
-				test-xRealloc0Large									\
-				test-spec-bins-small-blocks					\
-				test-spec-bins-large-blocks
+				test-xRealloc0Large
 
 BENCHMARKS =            
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 bin_PROGRAMS = $(UNIT_TESTS)
-
-test_small_blocks_SOURCES =											\
-   test-small-blocks.c
-
-test_large_blocks_SOURCES =											\
-   test-large-blocks.c
-
-test_malloc_small_blocks_SOURCES =							\
-   test-malloc-small-blocks.c
-
-test_malloc_large_blocks_SOURCES =							\
-   test-malloc-large-blocks.c
-
-test_Realloc_small_blocks_SOURCES =							\
-   test-Realloc-small-blocks.c
-
-test_Realloc_large_blocks_SOURCES =							\
-   test-Realloc-large-blocks.c
-
-test_realloc_small_blocks_SOURCES =							\
-   test-realloc-small-blocks.c
-
-test_realloc_large_blocks_SOURCES =							\
- 		test-realloc-large-blocks.c
 
 test_xMalloc0_SOURCES =													\
 		test-xMalloc0.c
@@ -105,11 +72,20 @@ test_xMalloc_SOURCES =													\
 test_xmalloc_SOURCES =													\
 		test-xmalloc.c
 
+test_xDoRealloc_SOURCES =												\
+		test-xDoRealloc.c
+
 test_xRealloc_SOURCES =													\
 		test-xRealloc.c
 
+test_xreallocSize_SOURCES =											\
+		test-xreallocSize.c
+
 test_xReallocSize_SOURCES =											\
 		test-xReallocSize.c
+
+test_xrealloc0Size_SOURCES =										\
+		test-xrealloc0Size.c
 
 test_xRealloc0Size_SOURCES =										\
 		test-xRealloc0Size.c
@@ -128,12 +104,6 @@ test_Realloc_size_small_blocks_SOURCES =				\
 
 test_Realloc_size_large_blocks_SOURCES =				\
   	test-Realloc-size-large-blocks.c
-
-test_spec_bins_small_blocks_SOURCES =						\
-   	test-spec-bins-small-blocks.c
-
-test_spec_bins_large_blocks_SOURCES =						\
-    test-spec-bins-large-blocks.c
 
 test_xIsStickyBin_SOURCES =											\
     test-xIsStickyBin.c

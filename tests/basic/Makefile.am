@@ -21,9 +21,21 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 
-BASIC_TESTS =  						\
-				test-t3						\
-				test-t4						\
+BASIC_TESTS =  															\
+				test-spec-bins-small-blocks					\
+				test-spec-bins-large-blocks  				\
+				test-small-blocks										\
+				test-large-blocks										\
+				test-malloc-small-blocks						\
+				test-malloc-large-blocks						\
+				test-Realloc-small-blocks						\
+				test-Realloc-large-blocks						\
+				test-realloc-small-blocks						\
+				test-realloc-large-blocks						\
+				test-Realloc-size-small-blocks			\
+				test-Realloc-size-large-blocks			\
+				test-t3															\
+				test-t4															\
 				test-malloc_test
 
 BENCHMARKS =            
@@ -31,6 +43,36 @@ BENCHMARKS =
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 bin_PROGRAMS = $(BASIC_TESTS)
+
+test_spec_bins_small_blocks_SOURCES =						\
+   	test-spec-bins-small-blocks.c
+
+test_spec_bins_large_blocks_SOURCES =						\
+    test-spec-bins-large-blocks.c
+
+test_small_blocks_SOURCES =											\
+   test-small-blocks.c
+
+test_large_blocks_SOURCES =											\
+   test-large-blocks.c
+
+test_malloc_small_blocks_SOURCES =							\
+   test-malloc-small-blocks.c
+
+test_malloc_large_blocks_SOURCES =							\
+   test-malloc-large-blocks.c
+
+test_Realloc_small_blocks_SOURCES =							\
+   test-Realloc-small-blocks.c
+
+test_Realloc_large_blocks_SOURCES =							\
+   test-Realloc-large-blocks.c
+
+test_realloc_small_blocks_SOURCES =							\
+   test-realloc-small-blocks.c
+
+test_realloc_large_blocks_SOURCES =							\
+ 		test-realloc-large-blocks.c
 
 test_t3_SOURCES =																\
         test-t3.c
