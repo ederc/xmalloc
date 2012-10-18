@@ -21,6 +21,7 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
+				test-xGetSpecBin										\
 				test-xAreAddressesOnSamePage				\
 				test-xAllocFromNonEmptyPage					\
 				test-xAddressIsAligned							\
@@ -49,8 +50,15 @@ UNIT_TESTS =																\
 				test-realloc-large-blocks						\
 				test-Realloc-size-small-blocks			\
 				test-Realloc-size-large-blocks			\
-				test-malloc-zero										\
-				test-realloc-zero										\
+				test-xMalloc0												\
+				test-xMalloc												\
+				test-xmalloc												\
+				test-xRealloc0											\
+				test-xRealloc												\
+				test-xrealloc												\
+				test-xReallocSize										\
+				test-xRealloc0Size									\
+				test-xReallocLarge									\
 				test-spec-bins-small-blocks					\
 				test-spec-bins-large-blocks
 
@@ -84,11 +92,32 @@ test_realloc_small_blocks_SOURCES =							\
 test_realloc_large_blocks_SOURCES =							\
  		test-realloc-large-blocks.c
 
-test_malloc_zero_SOURCES =											\
-		test-malloc-zero.c
+test_xMalloc0_SOURCES =													\
+		test-xMalloc0.c
 
-test_realloc_zero_SOURCES =											\
-		test-realloc-zero.c
+test_xRealloc0_SOURCES =												\
+		test-xRealloc0.c
+
+test_xMalloc_SOURCES =													\
+		test-xMalloc.c
+
+test_xmalloc_SOURCES =													\
+		test-xmalloc.c
+
+test_xRealloc_SOURCES =													\
+		test-xRealloc.c
+
+test_xReallocSize_SOURCES =											\
+		test-xReallocSize.c
+
+test_xRealloc0Size_SOURCES =										\
+		test-xRealloc0Size.c
+
+test_xReallocLarge_SOURCES =										\
+		test-xReallocLarge.c
+
+test_xrealloc_SOURCES =													\
+		test-xRealloc.c
 
 test_Realloc_size_small_blocks_SOURCES =				\
    	test-Realloc-size-small-blocks.c
@@ -155,5 +184,8 @@ test_xAreAddressesOnSamePage_SOURCES =					\
 
 test_xPageIndexFault_SOURCES =									\
 		test-xPageIndexFault.c
+
+test_xGetSpecBin_SOURCES =											\
+		test-xGetSpecBin.c
 
 noinst_HEADERS =	

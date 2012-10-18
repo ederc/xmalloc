@@ -1,5 +1,5 @@
 /**
- * \file   test-Realloc-zero.c
+ * \file   test-xRealloc0.c
  * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for reallocations with zero setting for xmalloc.
