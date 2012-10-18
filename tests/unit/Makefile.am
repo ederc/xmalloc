@@ -59,6 +59,7 @@ UNIT_TESTS =																\
 				test-xReallocSize										\
 				test-xRealloc0Size									\
 				test-xReallocLarge									\
+				test-xRealloc0Large									\
 				test-spec-bins-small-blocks					\
 				test-spec-bins-large-blocks
 
@@ -115,6 +116,9 @@ test_xRealloc0Size_SOURCES =										\
 
 test_xReallocLarge_SOURCES =										\
 		test-xReallocLarge.c
+
+test_xRealloc0Large_SOURCES =										\
+		test-xRealloc0Large.c
 
 test_xrealloc_SOURCES =													\
 		test-xRealloc.c
