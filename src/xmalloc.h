@@ -607,7 +607,6 @@ xBin xGetStickyBinOfBin(xBin bin);
 #define xAllocAligned(S)        xMalloc(S)
 #define xInitInfo()             
 #define xInitGetBackTrace()
-#define xUpdateInfo()             
 #define xPrintStats(F)
 #define xPrintBinStats(F)
 #define xMarkMemoryAsStatic()

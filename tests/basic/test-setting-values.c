@@ -1,8 +1,8 @@
 /**
- * \file   test-t3.c
+ * \file   test-setting-values.c
  * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
- * \brief  Test file for xmalloc.
+ * \brief  Test file for xmalloc allocating memory and setting values..
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
@@ -24,8 +24,9 @@ int main() {
   }
   for (i = 0; i < __XMALLOC_TEST_BLOCKS; i++) {
     for (j = 0; j <= i * 4; j++) 
-      __XMALLOC_ASSERT((B[i][j] != (char)(i % 256)) && "wrong value in");
+      __XMALLOC_ASSERT((B[i][j] == (char)(i % 256)) && "wrong value in");
   }
+
   xPrintInfo();
   for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {
     xFree(B[i]);

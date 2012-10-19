@@ -34,7 +34,7 @@ BASIC_TESTS =  															\
 				test-realloc-large-blocks						\
 				test-Realloc-size-small-blocks			\
 				test-Realloc-size-large-blocks			\
-				test-t3															\
+				test-setting-values									\
 				test-t4															\
 				test-malloc_test
 
@@ -74,8 +74,8 @@ test_realloc_small_blocks_SOURCES =							\
 test_realloc_large_blocks_SOURCES =							\
  		test-realloc-large-blocks.c
 
-test_t3_SOURCES =																\
-        test-t3.c
+test_setting_values_SOURCES =										\
+        test-setting-values.c
 
 test_t4_SOURCES =																\
         test-t4.c

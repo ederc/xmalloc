@@ -33,6 +33,7 @@ extern xInfo info;
 extern unsigned long xSbrkInit;
 
 void xPrintInfo();
+void xUpdateInfo();
 
 
 #endif

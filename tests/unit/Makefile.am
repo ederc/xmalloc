@@ -21,6 +21,7 @@ test_malloc_test_LDFLAGS = -pthread
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
+				test-xPrintInfo											\
 				test-xGetSpecBin										\
 				test-xAreAddressesOnSamePage				\
 				test-xAllocFromNonEmptyPage					\
@@ -165,5 +166,8 @@ test_xGetSpecBin_SOURCES =											\
 
 test_xRegisterPagesInRegion_SOURCES =						\
 		test-xRegisterPagesInRegion.c
+
+test_xPrintInfo_SOURCES =												\
+		test-xPrintInfo.c
 
 noinst_HEADERS =	
