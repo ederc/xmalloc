@@ -43,6 +43,7 @@ UNIT_TESTS =																\
 				test-xMalloc0												\
 				test-xMalloc												\
 				test-xmalloc												\
+				test-xRegisterPagesInRegion					\
 				test-xDoRealloc											\
 				test-xRealloc0											\
 				test-xRealloc												\
@@ -161,5 +162,8 @@ test_xPageIndexFault_SOURCES =									\
 
 test_xGetSpecBin_SOURCES =											\
 		test-xGetSpecBin.c
+
+test_xRegisterPagesInRegion_SOURCES =						\
+		test-xRegisterPagesInRegion.c
 
 noinst_HEADERS =	

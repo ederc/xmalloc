@@ -124,7 +124,7 @@ void xUnregisterPagesFromRegion(void *startAddr, int numberPages) {
       xPageShifts[endIndex - xMinPageIndex] &=
           ~((((unsigned long) 1) << (shift + 1)) - 1);
   } else {
-    // startIndex < endIndex
+    // startIndex > endIndex
     endIndex  = xGetPageShiftOfAddr(endAddr);
     while (shift < endIndex) {
       xPageShifts[startIndex - xMinPageIndex] &= ~(((unsigned long) 1) << endIndex);
