@@ -190,7 +190,6 @@ void xUpdateInfo() {
 
 void xPrintInfo() {
   xUpdateInfo();
-  /*
   printf("                  Current:       Max:\n");
   printf("BytesSystem:     %8ldk  %8ldk\n", info.currentBytesSystem/1024, info.maxBytesSystem/1024);
   printf("BytesSbrk:       %8ldk  %8ldk\n", info.currentBytesSbrk/1024, info.maxBytesSbrk/1024);
@@ -204,7 +203,6 @@ void xPrintInfo() {
   printf("BytesMalloc:     %8ldk  %8ldk\n", info.usedBytesMalloc/1024, info.availableBytesMalloc/1024);
   printf("BytesValloc:     %8ldk  %8ldk\n", info.usedBytesFromValloc/1024, info.availableBytesFromValloc/1024);
   printf("Pages:           %8ld   %8ld\n", info.usedPages, info.availablePages);
-  */
 }
 // extern declaration in globals.h --- end
 /************************************************
