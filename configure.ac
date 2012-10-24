@@ -75,15 +75,15 @@ CFLAGS=$CFLAGS
 AC_PROG_CC
 if test "x$GCC" != "xyes" ; then
   AC_CACHE_CHECK([whether compiler is MSVC],
-                 [je_cv_msvc],
+                 [x_cv_msvc],
                  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
                                                      [
 #ifndef _MSC_VER
   int fail[-1];
 #endif
 ])],
-                               [je_cv_msvc=yes],
-                               [je_cv_msvc=no])])
+                               [x_cv_msvc=yes],
+                               [x_cv_msvc=no])])
 fi
 
 if test "x$CFLAGS" = "x" ; then
@@ -93,7 +93,7 @@ if test "x$CFLAGS" = "x" ; then
     X_CFLAGS_APPEND([-Wall])
     X_CFLAGS_APPEND([-pipe])
     X_CFLAGS_APPEND([-g3])
-  elif test "x$je_cv_msvc" = "xyes" ; then
+  elif test "x$x_cv_msvc" = "xyes" ; then
     CC="$CC -nologo"
     X_CFLAGS_APPEND([-Zi])
     X_CFLAGS_APPEND([-MT])
@@ -135,7 +135,7 @@ if test "x$no_CFLAGS" = "xyes" ; then
     if test "x$GCC" = "xyes" ; then
       X_CFLAGS_APPEND([-O3])
       X_CFLAGS_APPEND([-funroll-loops])
-    elif test "x$je_cv_msvc" = "xyes" ; then
+    elif test "x$x_cv_msvc" = "xyes" ; then
       X_CFLAGS_APPEND([-O2])
     else
       X_CFLAGS_APPEND([-O])
@@ -194,15 +194,15 @@ case "${host_cpu}" in
 	;;
   i686)
 	X_COMPILABLE([__asm__], [], [[__asm__ volatile("pause"); return 0;]],
-	              [je_cv_asm])
-	if test "x${je_cv_asm}" = "xyes" ; then
+	              [x_cv_asm])
+	if test "x${x_cv_asm}" = "xyes" ; then
 	    CPU_SPINWAIT='__asm__ volatile("pause")'
 	fi
 	;;
   x86_64)
 	X_COMPILABLE([__asm__ syntax], [],
-	              [[__asm__ volatile("pause"); return 0;]], [je_cv_asm])
-	if test "x${je_cv_asm}" = "xyes" ; then
+	              [[__asm__ volatile("pause"); return 0;]], [x_cv_asm])
+	if test "x${x_cv_asm}" = "xyes" ; then
 	    CPU_SPINWAIT='__asm__ volatile("pause")'
 	fi
 	;;
@@ -300,7 +300,7 @@ case "${host}" in
 	force_tls="0"
 	RPATH=""
 	so="dll"
-	if test "x$je_cv_msvc" = "xyes" ; then
+	if test "x$x_cv_msvc" = "xyes" ; then
 	  importlib="lib"
 	  DSO_LDFLAGS="-LD"
 	  EXTRA_LDFLAGS="-link -DEBUG"
@@ -348,8 +348,8 @@ fi
 X_COMPILABLE([__attribute__ syntax],
               [static __attribute__((unused)) void foo(void){}],
               [],
-              [je_cv_attribute])
-if test "x${je_cv_attribute}" = "xyes" ; then
+              [x_cv_attribute])
+if test "x${x_cv_attribute}" = "xyes" ; then
   AC_DEFINE([HAVE_ATTR], [ ],"check if __attribute__ syntax is supported")
   if test "x${GCC}" = "xyes" -a "x${abi}" = "xelf"; then
     X_CFLAGS_APPEND([-fvisibility=hidden])
@@ -492,6 +492,159 @@ if test "x${enable_tls}" = "x1" ; then
       xmalloc.")
 elif test "x${force_tls}" = "x1" ; then
   AC_MSG_ERROR([Failed to configure TLS, which is mandatory for correct function])
+fi
+
+dnl ============================================================================
+dnl Check for ffsl(3), and fail if not found.  This function exists on all
+dnl platforms that jemalloc currently has a chance of functioning on without
+dnl modification.
+X_COMPILABLE([a program using ffsl], [
+#include <strings.h>
+#include <string.h>
+], [
+	{
+		int rv = ffsl(0x08);
+	}
+], [x_cv_function_ffsl])
+if test "x${x_cv_function_ffsl}" != "xyes" ; then
+   AC_MSG_ERROR([Cannot build without ffsl(3)])
+fi
+
+dnl ============================================================================
+dnl Check for atomic(9) operations as provided on FreeBSD.
+
+X_COMPILABLE([atomic(9)], [
+#include <sys/types.h>
+#include <machine/atomic.h>
+#include <inttypes.h>
+], [
+	{
+		uint32_t x32 = 0;
+		volatile uint32_t *x32p = &x32;
+		atomic_fetchadd_32(x32p, 1);
+	}
+	{
+		unsigned long xlong = 0;
+		volatile unsigned long *xlongp = &xlong;
+		atomic_fetchadd_long(xlongp, 1);
+	}
+], [x_cv_atomic9])
+if test "x${x_cv_atomic9}" = "xyes" ; then
+  AC_DEFINE([ATOMIC9],[],"atomic(9) operations as provided on FreeBSD")
+fi
+
+dnl ============================================================================
+dnl Check for atomic(3) operations as provided on Darwin.
+
+X_COMPILABLE([Darwin OSAtomic*()], [
+#include <libkern/OSAtomic.h>
+#include <inttypes.h>
+], [
+	{
+		int32_t x32 = 0;
+		volatile int32_t *x32p = &x32;
+		OSAtomicAdd32(1, x32p);
+	}
+	{
+		int64_t x64 = 0;
+		volatile int64_t *x64p = &x64;
+		OSAtomicAdd64(1, x64p);
+	}
+], [x_cv_osatomic])
+if test "x${x_cv_osatomic}" = "xyes" ; then
+  AC_DEFINE([OSATOMIC], [ ], "atomic(3) operations as provided on Darwin / Mac
+      OS X")
+fi
+
+dnl ============================================================================
+dnl Check whether __sync_{add,sub}_and_fetch() are available despite
+dnl __GCC_HAVE_SYNC_COMPARE_AND_SWAP_n macros being undefined.
+
+AC_DEFUN([X_SYNC_COMPARE_AND_SWAP_CHECK],[
+  AC_CACHE_CHECK([whether to force $1-bit __sync_{add,sub}_and_fetch()],
+               [x_cv_sync_compare_and_swap_$2],
+               [AC_LINK_IFELSE([AC_LANG_PROGRAM([
+                                                 #include <stdint.h>
+                                                ],
+                                                [
+                                                 #ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_$2
+                                                 {
+                                                    uint$1_t x$1 = 0;
+                                                    __sync_add_and_fetch(&x$1, 42);
+                                                    __sync_sub_and_fetch(&x$1, 1);
+                                                 }
+                                                 #else
+                                                 #error __GCC_HAVE_SYNC_COMPARE_AND_SWAP_$2 is defined, no need to force
+                                                 #endif
+                                                ])],
+                               [x_cv_sync_compare_and_swap_$2=yes],
+                               [x_cv_sync_compare_and_swap_$2=no])])
+
+  if test "x${x_cv_sync_compare_and_swap_$2}" = "xyes" ; then
+    AC_DEFINE([FORCE_SYNC_COMPARE_AND_SWAP_$2], [ ],
+        "__sync_{addsub}_and_fetch() ")
+  fi
+])
+
+if test "x${x_cv_atomic9}" != "xyes" -a "x${x_cv_osatomic}" != "xyes" ; then
+  X_SYNC_COMPARE_AND_SWAP_CHECK(32, 4)
+  X_SYNC_COMPARE_AND_SWAP_CHECK(64, 8)
+fi
+
+dnl ============================================================================
+dnl Check for spinlock(3) operations as provided on Darwin.
+
+X_COMPILABLE([Darwin OSSpin*()], [
+#include <libkern/OSAtomic.h>
+#include <inttypes.h>
+], [
+	OSSpinLock lock = 0;
+	OSSpinLockLock(&lock);
+	OSSpinLockUnlock(&lock);
+], [x_cv_osspin])
+if test "x${x_cv_osspin}" = "xyes" ; then
+  AC_DEFINE([OSSPIN], [ ], "spinlock(3) operations as provided on Darwin / Mac
+      OS X")
+fi
+
+dnl ============================================================================
+dnl Darwin-related configuration.
+
+if test "x${abi}" = "xmacho" ; then
+  AC_DEFINE([IVSALLOC], [ ], "darwin related configuratioin")
+  AC_DEFINE([ZONE], [ ], "darwin related configuratioin")
+
+  dnl The szone version jumped from 3 to 6 between the OS X 10.5.x and 10.6
+  dnl releases.  malloc_zone_t and malloc_introspection_t have new fields in
+  dnl 10.6, which is the only source-level indication of the change.
+  AC_MSG_CHECKING([malloc zone version])
+  AC_DEFUN([X_ZONE_PROGRAM],
+    [AC_LANG_PROGRAM(
+      [#include <malloc/malloc.h>],
+      [static foo[[sizeof($1) $2 sizeof(void *) * $3 ? 1 : -1]]]
+    )])
+
+  AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_zone_t,==,14)],[ZONE_VERSION=3],[
+  AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_zone_t,==,15)],[ZONE_VERSION=5],[
+  AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_zone_t,==,16)],[
+    AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_introspection_t,==,9)],[ZONE_VERSION=6],[
+    AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_introspection_t,==,13)],[ZONE_VERSION=7],[ZONE_VERSION=]
+  )])],[
+  AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_zone_t,==,17)],[ZONE_VERSION=8],[
+  AC_COMPILE_IFELSE([X_ZONE_PROGRAM(malloc_zone_t,>,17)],[ZONE_VERSION=9],[ZONE_VERSION=]
+  )])])])])
+  if test "x${ZONE_VERSION}" = "x"; then
+    AC_MSG_RESULT([unsupported])
+    AC_MSG_ERROR([Unsupported malloc zone version])
+  fi
+  if test "${ZONE_VERSION}" = 9; then
+    ZONE_VERSION=8
+    AC_MSG_RESULT([> 8])
+  else
+    AC_MSG_RESULT([$ZONE_VERSION])
+  fi
+  AC_DEFINE_UNQUOTED(ZONE_VERSION, [$ZONE_VERSION],"szone version in darwin:
+      there was a jump from 3 to 6 between OS X 10.5.x and 10.6")
 fi
 
 # Support the junk/zero filling option by default.
