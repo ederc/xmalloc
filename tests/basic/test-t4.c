@@ -38,8 +38,7 @@ int main()
   for( i=0;i<__XMALLOC_TEST_BLOCKS;i++)
   {
     for(j=0;j<i/100+1;j++) 
-      if (B[i][j]!=(char)(i %256)) printf("i=%d, j=%d, expected %d, found %d\n",i,j,B[i][j],(i %256));
+      __XMALLOC_ASSERT(B[i][j]==(char)(i %256));
   }
-  xPrintInfo();
   return 0;
 }

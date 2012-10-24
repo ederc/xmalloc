@@ -27,10 +27,8 @@ int main() {
       __XMALLOC_ASSERT((B[i][j] == (char)(i % 256)) && "wrong value in");
   }
 
-  xPrintInfo();
   for (i = __XMALLOC_TEST_BLOCKS - 1; i > -1; i--) {
     xFree(B[i]);
   }
-  xPrintInfo();
   return 0;
 }
