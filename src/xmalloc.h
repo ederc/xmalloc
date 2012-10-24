@@ -287,6 +287,8 @@ static inline void xFree(void *addr) {
  *
  * \param addr address of memory to be deleted. 
  *
+ * \param size size of memory to be deleted.
+ *
  * \note It is assumed that \c addr != NULL.
  *
  */
@@ -320,6 +322,8 @@ static inline void xfree(void *addr) {
  * \brief Frees memory stored at address \c addr with a size check included.
  *
  * \param addr address of memory to be deleted.
+ *
+ * \param size size of memory to be deleted.
  *
  */
 static inline void xfreeSize(void *addr, size_t size) {

@@ -42,7 +42,7 @@ BENCHMARKS =
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
-bin_PROGRAMS = $(BASIC_TESTS)
+check_PROGRAMS = $(BASIC_TESTS)
 
 test_spec_bins_small_blocks_SOURCES =						\
    	test-spec-bins-small-blocks.c

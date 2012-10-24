@@ -14,7 +14,6 @@
 int main() {
   
   // preparation
-  xRegion region  = xAllocFromSystem(sizeof(xRegionType));
   void *p         = xVallocFromSystem(512 * __XMALLOC_SIZEOF_SYSTEM_PAGE);
   
   // registration

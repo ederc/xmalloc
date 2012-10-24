@@ -60,7 +60,7 @@ BENCHMARKS =
 
 EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
-bin_PROGRAMS = $(UNIT_TESTS)
+check_PROGRAMS = $(UNIT_TESTS)
 
 test_xMalloc0_SOURCES =													\
 		test-xMalloc0.c

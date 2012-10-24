@@ -13,11 +13,17 @@ SUBDIRS = unit basic data
 
 UNIT_DIR=unit
 BASIC_DIR=basic
+if ENABLE_DEBUG
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
+else
+LDADD = $(top_builddir)/src/.libs/libxmalloc.la
+endif
 
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  
 # Don't forget to add a test_mycomponent_SOURCES entry below.
-check:
+check: all-am runtests
+
+runtests:
 	./run-all-tests.sh
 
 # Once present, tests should remain present, being moved from one group to another.

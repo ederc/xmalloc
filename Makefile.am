@@ -8,7 +8,6 @@ AUTOMAKE_OPTIONS=color-tests
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
 SUBDIRS= . m4 src doc tests
-
 OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4
 
