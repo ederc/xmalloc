@@ -1,6 +1,6 @@
 /**
  * \file   page.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Page handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -176,7 +176,7 @@ void xPageIndexFault(unsigned long startIndex, unsigned long endIndex);
 void xRegisterPagesInRegion(void *startAddr, int numberPages);
 
 /**
- * \fn void xUnregisterPagesInRegion(void *startAddr, int numberPages)
+ * \fn void xUnregisterPagesFromRegion(void *startAddr, int numberPages)
  *
  * \brief Uses memory chunk of \c numberPages system pages and unregisters
  * them.

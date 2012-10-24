@@ -1,6 +1,6 @@
 /**
  * \file   bin.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   August 2012
  * \brief  Bin handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -46,9 +46,9 @@
  * have a free block now:
  * 1. Insert at the end ( default ).
  * 2. Insert after \c current_page
- *    => #define __XMALLOC_PAGE_AFTER_CURRENT
+ *    => define \c __XMALLOC_PAGE_AFTER_CURRENT
  * 3. Insert before \c current_page , i.e. let it be the new current page
- *    => #define __XMALLOC_PAGE_BEFORE_CURRENT
+ *    => define \c __XMALLOC_PAGE_BEFORE_CURRENT
  *
  * \param page \c xPage the freed memory should be given to
  *
@@ -102,39 +102,9 @@ static inline BOOLEAN xIsStickyBin(xBin bin) {
 /************************************************
  * LIST HANDLING FOR SPECIAL BINS
  ***********************************************/
-/**
- * \fn static inline xOffsetToNextSpecBin(xSpecBin specBin)
- *
- * \brief Returns the offset in the list of special bins w.r.t. to next
- *
- * \param specBin \c xSpecBin the offset is computed of.
- *
- */
-
-/*
-static inline xOffsetToNextSpecBin(xSpecBin specBin) {
-  return (NULL != specBin ? ((char *)&(specBin->next)) - ((char *)specBin) : 0);
-}
-*/
 
 /**
- * \fn static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin)
- *
- * \brief Returns the offset in the list of special bins w.r.t. to numberBlocks
- *
- * \param specBin \c xSpecBin the offset is computed of.
- *
- */
-
-/*
-static inline xOffsetToNumberBlocksSpecBin(xSpecBin specBin) {
-  return (NULL != specBin ?
-      ((char *)&(specBin->numberBlocks)) - ((char *)specBin) : 0);
-}
-*/
-
-/**
- * \fn static inline void* xFindInSortedList(xSpecBin xBaseSpecBin, long numberBlocks)
+ * \fn static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks)
  *
  * \brief Tries to find a special bin for the size class given by
  * \c numberBlocks . If there does not exist such a special bin, then
@@ -164,7 +134,8 @@ static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
 }
 
 /**
- * \fn static inline void* xFindInList(xSpecBin xBaseSpecBin, long numberBlocks)
+ * \fn static inline void* xFindInList(xSpecBin bin, long numberBlocks, xSpecBin
+ * sBin)
  *
  * \brief Tries to find a special bin for the size class given by
  * \c numberBlocks . If there does not exist such a special bin, then
@@ -175,6 +146,8 @@ static inline void* xFindInSortedList(xSpecBin bin, long numberBlocks) {
  *
  * \param numberBlocks \c long number of blocks in bin, i.e. size class
  * needed for special bin.
+ *
+ * \param sBin \c xSpecBin to be found in the list.
  *
  * \return address of found xSpecBin, NULL if none is found
  */
@@ -307,7 +280,7 @@ static inline void xTakeOutPageFromBin(xPage page, xBin bin) {
 }
 
 /**
- * \fn void xInsertPageToBin(xPage page, xBin* bin)
+ * \fn void xInsertPageToBin(xPage page, xBin bin)
  *
  * \brief Inserts the newly allocated \c xPage \c page to \c bin.
  *
@@ -378,7 +351,7 @@ xPage xAllocBigBlockPagesForBin(int numberNeeded);
  * ALLOCATING PAGES IN BINS
  ***********************************************/
 /**
- * \fn void xAllocFromFullPage(xBin* bin)
+ * \fn static inline void* xAllocFromFullPage(xBin bin)
  *
  * \brief Returns memory address from a newly allocated page.
  *
@@ -410,25 +383,7 @@ static inline void* xAllocFromFullPage(xBin bin) {
  * FREEING BINS
  ***********************************************/
 
-/**
- * \fn static inline void xFreeBin(void *addr)
- *
- * \brief Frees the memory of \c addr .
- *
- * \param addr memory address that should be freed.
- *
- */
-
-/**********************************************
- *
- * SHOULD BE FOUND IN XMALLOC AS xFreeBinAddr
- *
-static inline void xFreeBin(void *addr) {
-    register void *__addr = (void*) addr;
-    register xPage __page = (xPage) xGetPageOfAddr(__addr);
-    xFreeToPage(__page, __addr);
-}
-*/
+// see src/xmalloc.h
 
 /************************************************
  * ALLOCATING MEMORY FROM BINS
@@ -491,7 +446,7 @@ static inline unsigned long xGetStickyOfPage(xPage page) {
 }
 
 /**
- * \fn static inline xBin xSetTopBinAndStickyOfPage(xPage page)
+ * \fn static inline void xSetTopBinAndStickyOfPage(xPage page, xBin bin)
  *
  * \brief Set top bin and sticky bin of the page \c page .
  *
@@ -506,7 +461,7 @@ static inline void xSetTopBinAndStickyOfPage(xPage page, xBin bin) {
 }
 
 /**
- * \fn static inline xBin xSetTopBinOfPage(xPage page)
+ * \fn static inline void xSetTopBinOfPage(xPage page, xBin bin)
  *
  * \brief Set top bin of the page \c page .
  *
@@ -544,7 +499,7 @@ static inline xBin xGetTopBinOfPage(const xPage page) {
  *
  * \param page \c xPage
  *
- * \param Bin \c xBin sticky
+ * \param sBin \c xBin sticky
  *
  */
 static inline void xSetStickyOfPage(xPage page, xBin bin) {
@@ -574,13 +529,13 @@ static inline xBin xGetBinOfPage(const xPage page) {
 }
 
 /**
- * \fn static inline xBin xGetBinOfAddr(const void *addr)
+ * \fn static inline xBin xGetBinOfAddr(void *addr)
  *
  * \brief Get bin of address \c addr .
  *
- * \param void * Const \c addr .
+ * \param addr \c void* of which the bin should be found.
  *
- * \return  \c xBin of address \c addr
+ * \return \c xBin of address \c addr
  *
  */
 static inline xBin xGetBinOfAddr(void *addr) {

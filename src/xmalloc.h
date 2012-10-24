@@ -1,6 +1,6 @@
 /**
  * \file   xmalloc.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  General header file for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -469,12 +469,12 @@ static inline void* xrealloc0Size(void *oldPtr, size_t oldSize, size_t newSize) 
 }
 
 /**
- * \fn void* xDoRealloc(void *oldPtr, size_t newSize, int initZero)
+ * \fn void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero)
  *
  * \brief Reallocates memory to \c newSize chunk. For this it checks if \c
  * newSize is smaller than \c __XMALLOC_MAX_SMALL_BLOCK_SIZE . If this is true
  * it allocates the new memory from xmallocs \c xBin structures. Otherwise a
- * system reallocation is done via \fn xReallocLarge resp. \fn xRealloc0Large .
+ * system reallocation is done via \c xReallocLarge resp. \c xRealloc0Large .
  * If the corresponding flag \c initZero is set, then all new memory is
  * initialized to zero.
  *
@@ -498,7 +498,7 @@ void* xDoRealloc(void *oldPtr, size_t oldSize, size_t newSize, int initZero);
  *
  * \brief Reallocates memory to \c newSize chunk and initializes everything to
  * zero. Computes the size of the old memory chunk first, then calls
- * \fn xRealloc0Size .
+ * \c xRealloc0Size .
  *
  * \param oldPtr address of old memory chunk
  *
@@ -518,7 +518,7 @@ static inline void* xRealloc0(void *oldPtr, size_t newSize) {
  * \fn static inline void* xRealloc(void *oldPtr, size_t newSize)
  *
  * \brief Reallocates memory to \c newSize chunk. Computes the size of the old
- * memory chunk first, then calls \fn xReallocSize .
+ * memory chunk first, then calls \c xReallocSize .
  *
  * \param oldPtr address of old memory chunk
  *
@@ -538,7 +538,7 @@ static inline void* xRealloc(void *oldPtr, size_t newSize) {
  * \fn static inline void* xrealloc0(void *oldPtr, size_t newSize)
  *
  * \brief Reallocates memory to \c newSize chunk and initializes everything to
- * zero. Checks input data first, then calls \fn xRealloc0 .
+ * zero. Checks input data first, then calls \c xRealloc0 .
  *
  * \param oldPtr address of old memory chunk
  *
@@ -559,7 +559,7 @@ static inline void* xrealloc0(void *oldPtr, size_t newSize) {
  * \fn static inline void* xrealloc(void *oldPtr, size_t newSize)
  *
  * \brief Reallocates memory to \c newSize chunk. Checks input data first,
- * then calls \fn xRealloc .
+ * then calls \c xRealloc .
  *
  * \param oldPtr address of old memory chunk
  *

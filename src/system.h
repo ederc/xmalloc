@@ -1,6 +1,6 @@
 /**
  * \file   system.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   August 2012
  * \brief  System allocation calls for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

@@ -1,6 +1,6 @@
 /**
  * \file   test-xAllocFromNonEmptyPage.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test of allocation from non-empty page in xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

@@ -1,6 +1,6 @@
 /**
  * \file   test-malloc_test.c
- * \Author C. Lever and D. Boreham, Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author C. Lever and D. Boreham, Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   2000
  * \brief  Test file for xmalloc. This is a multi-threaded test system by 
  *         Lever and Boreham. It is first noted in their paper "malloc() 

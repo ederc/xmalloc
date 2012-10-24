@@ -1,6 +1,6 @@
 /**
  * \file   system.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   August 2012
  * \brief  Source file for system allocations in xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

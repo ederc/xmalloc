@@ -1,6 +1,6 @@
 /**
  * \file   test-xGetPageOfAddr.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test page for address for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

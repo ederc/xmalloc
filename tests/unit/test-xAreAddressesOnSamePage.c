@@ -1,6 +1,6 @@
 /**
  * \file   test-xAreAddressesOnSamePage.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for xAreAddressesOnSamPage in xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

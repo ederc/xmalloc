@@ -1,6 +1,6 @@
 /**
  * \file   globals.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  General source file for global stuff.
  *         This file is part of XMALLOC, licensed under the GNU General

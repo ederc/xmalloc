@@ -1,6 +1,6 @@
 /**
  * \file   data.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Basic data structures needed for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -108,8 +108,8 @@ struct xBinStruct {
   xBin    next;         /**< Next page in the free list of this size class */
   size_t  sizeInWords;  /**< Size class in word size */
   long    numberBlocks; /**< Maximum number of blocks per page w.r.t. the size 
-                             class: If > 0 => #blocks per page
-                                    If < 0 => #pages per block */
+                             class: If > 0 => \#blocks per page
+                                    If < 0 => \#pages per block */
   unsigned long sticky; /**< sticky tag of bin */
 };
 
@@ -122,8 +122,8 @@ struct xSpecBinStruct {
   xSpecBin  next;           /**< pointer to next bin */
   xBin      bin;            /**< pointer to bin itself */
   long      numberBlocks;   /**< Maximum number of blocks per page w.r.t.
-                              the size class: If > 0 => #blocks per page
-                                              If < 0 => #pages per block */
+                              the size class: If > 0 => \#blocks per page
+                                              If < 0 => \#pages per block */
   long      ref;            /** reference counter */
 };
 

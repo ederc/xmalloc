@@ -1,6 +1,6 @@
 /**
  * \file   test-xRealloc0Large.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test for size reallocations for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

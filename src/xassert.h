@@ -1,6 +1,6 @@
 /**
  * \file   xassert.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  special assert handling for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -22,7 +22,7 @@
  *
  * \param message \c const \c char \c * the error message
  *
- * \param possibly the file and the line in which the error happened
+ * \param ... possibly the file and the line in which the error happened
  *
  * \return \c integer error code
  *

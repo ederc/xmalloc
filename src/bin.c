@@ -1,8 +1,8 @@
 /**
- * @file   bin.c
- * @Author Christian Eder ( ederd@mathematik.uni-kl.de )
- * @date   July 2012
- * @brief  General source file for non-inline bin handling functions.
+ * \file   bin.c
+ * \author Christian Eder ( ederd@mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  General source file for non-inline bin handling functions.
  *         This file is part of XMALLOC, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */

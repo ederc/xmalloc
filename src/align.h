@@ -1,6 +1,6 @@
 /**
  * \file   align.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   August 2012
  * \brief  Memory alignment handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

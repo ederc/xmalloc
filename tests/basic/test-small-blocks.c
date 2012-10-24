@@ -1,6 +1,6 @@
 /**
  * \file   unit-test-small-blocks.c
- * \Author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
+ * \author Hans Schoenemann ( hannes@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Test file for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General

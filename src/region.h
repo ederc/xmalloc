@@ -1,6 +1,6 @@
 /**
  * \file   region.h
- * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   August 2012
  * \brief  Region handlers for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -139,7 +139,7 @@ static inline void xFreeRegion(xRegion region) {
  * FREEING OPERATIONS CONCERNING PAGES
  ***********************************************/
 /**
- * \fn void xFreePagesFromBin(xPage page, int quantity)
+ * \fn void xFreePagesFromRegion(xPage page, int quantity)
  *
  * \brief Frees \c quantity \c xPages from region starting at \c page .
  *

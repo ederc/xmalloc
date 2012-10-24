@@ -1,6 +1,6 @@
 /**
  * \file   globals.h
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   July 2012
  * \brief  Global variables needed for xmalloc.
  *         This file is part of XMALLOC, licensed under the GNU General
@@ -25,6 +25,12 @@ extern unsigned long *xPageShifts;
 extern struct xBinStruct xStaticBin[];
 
 extern xBin xStickyBins;
+
+/********************************************
+ * MULTI-THREADED STUFF
+ *******************************************/
+extern BOOLEAN xIsThreaded;
+
 
 /********************************************
  * STATISTICS / XINFO STUFF

@@ -1,6 +1,6 @@
 /**
  * \file   test-xAllocSmallBigBlockPagesForBin.c
- * \Author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( ederc@mathematik.uni-kl.de )
  * \date   October 2012
  * \brief  Unit test getting consecutive pages from a region.
  *         This file is part of XMALLOC, licensed under the GNU General
