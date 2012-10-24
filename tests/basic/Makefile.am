@@ -10,7 +10,11 @@ BENCHMARK_CXXFLAGS = -O2 -pthread
 
 SUBDIRS =
 
+if ENABLE_DEBUG
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
+else
+LDADD = $(top_builddir)/src/.libs/libxmalloc.la
+endif
 
 test_malloc_test_LDFLAGS = -pthread
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  
@@ -73,6 +77,12 @@ test_realloc_small_blocks_SOURCES =							\
 
 test_realloc_large_blocks_SOURCES =							\
  		test-realloc-large-blocks.c
+
+test_Realloc_size_small_blocks_SOURCES =				\
+		test-Realloc-size-small-blocks.c
+
+test_Realloc_size_large_blocks_SOURCES =				\
+		test-Realloc-size-large-blocks.c
 
 test_setting_values_SOURCES =										\
         test-setting-values.c

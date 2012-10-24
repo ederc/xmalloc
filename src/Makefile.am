@@ -34,9 +34,16 @@ SOURCES=		\
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
+libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -Wall -pthread -D__XMALLOC_NDEBUG -DNDEBUG $(INCLUDES)
+
+libxmalloc_la_SOURCES=	\
+	$(SOURCES)
+
+libxmalloc_la_LIBADD=
 if ENABLE_DEBUG
+AM_CPPFLAGS= -g3 -ggdb -Wall -pthread -D__XMALLOC_DEBUG -DDEBUG $(INCLUDES)
 lib_LTLIBRARIES=libxmalloc.la libxmalloc_debug.la
-libxmalloc_debug_la_CPPFLAGS= -g3 -ggdb -Wall -pthread -D__XMALLOC_DEBUG -DDEBUG -O0 -fomit-frame-pointer $(INCLUDES)
+libxmalloc_debug_la_CPPFLAGS=$(AM_CPPFLAGS)
 libxmalloc_debug_la_SOURCES=	\
 	$(SOURCES)
 libxmalloc_debug_la_LIBADD=
@@ -44,9 +51,3 @@ else
 lib_LTLIBRARIES=libxmalloc.la
 endif
 
-libxmalloc_la_CPPFLAGS= $(AM_CXXFLAGS) -g -Wall -pthread -D__XMALLOC_NDEBUG -DNDEBUG -O3 -fomit-frame-pointer $(INCLUDES)
-
-libxmalloc_la_SOURCES=	\
-	$(SOURCES)
-
-libxmalloc_la_LIBADD= 

@@ -3,6 +3,42 @@
 # This file is part of XMALLOC, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
+dnl X_CFLAGS_APPEND(cflag)
+AC_DEFUN([X_CFLAGS_APPEND],
+[
+AC_MSG_CHECKING([whether compiler supports $1])
+TCFLAGS="${CFLAGS}"
+if test "x${CFLAGS}" = "x" ; then
+  CFLAGS="$1"
+else
+  CFLAGS="${CFLAGS} $1"
+fi
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[[
+]], [[
+    return 0;
+]])],
+              AC_MSG_RESULT([yes]),
+              AC_MSG_RESULT([no])
+              [CFLAGS="${TCFLAGS}"]
+)
+])
+
+dnl X_COMPILABLE(label, hcode, mcode, rvar)
+dnl
+dnl Use AC_LINK_IFELSE() rather than AC_COMPILE_IFELSE() so that linker errors
+dnl cause failure.
+AC_DEFUN([X_COMPILABLE],
+[
+AC_CACHE_CHECK([whether $1 is compilable],
+               [$4],
+               [AC_LINK_IFELSE([AC_LANG_PROGRAM([$2],
+                                                [$3])],
+                               [$4=yes],
+                               [$4=no])])
+])
+
+
 AC_PREREQ(2.50)
 AC_INIT(xmalloc,0.0.1,ederc@mathematik.uni-kl.de)
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
@@ -32,6 +68,46 @@ AC_STDC_HEADERS
 #LT_INIT()
 LT_INIT([disable-shared])
 
+
+dnl If CFLAGS isn't defined, set CFLAGS to something reasonable.  Otherwise,
+dnl just prevent autoconf from molesting CFLAGS.
+CFLAGS=$CFLAGS
+AC_PROG_CC
+if test "x$GCC" != "xyes" ; then
+  AC_CACHE_CHECK([whether compiler is MSVC],
+                 [je_cv_msvc],
+                 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
+                                                     [
+#ifndef _MSC_VER
+  int fail[-1];
+#endif
+])],
+                               [je_cv_msvc=yes],
+                               [je_cv_msvc=no])])
+fi
+
+if test "x$CFLAGS" = "x" ; then
+  no_CFLAGS="yes"
+  if test "x$GCC" = "xyes" ; then
+    X_CFLAGS_APPEND([-std=gnu99])
+    X_CFLAGS_APPEND([-Wall])
+    X_CFLAGS_APPEND([-pipe])
+    X_CFLAGS_APPEND([-g3])
+  elif test "x$je_cv_msvc" = "xyes" ; then
+    CC="$CC -nologo"
+    X_CFLAGS_APPEND([-Zi])
+    X_CFLAGS_APPEND([-MT])
+    X_CFLAGS_APPEND([-W3])
+    CPPFLAGS="$CPPFLAGS -I${srcroot}/include/msvc_compat"
+  fi
+fi
+dnl Append EXTRA_CFLAGS to CFLAGS, if defined.
+if test "x$EXTRA_CFLAGS" != "x" ; then
+  X_CFLAGS_APPEND([$EXTRA_CFLAGS])
+fi
+AC_PROG_CPP
+
+
 # check for mmap, ...
 AC_FUNC_MMAP
 
@@ -49,6 +125,41 @@ AC_ARG_ENABLE([debug],
 
 
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
+
+dnl Only optimize if not debugging.
+if test "x$no_CFLAGS" = "xyes" ; then
+  dnl Make sure that an optimization flag was not specified in EXTRA_CFLAGS.
+  optimize="no"
+  echo "$EXTRA_CFLAGS" | grep "\-O" >/dev/null || optimize="yes"
+  if test "x${optimize}" = "xyes" ; then
+    if test "x$GCC" = "xyes" ; then
+      X_CFLAGS_APPEND([-O3])
+      X_CFLAGS_APPEND([-funroll-loops])
+    elif test "x$je_cv_msvc" = "xyes" ; then
+      X_CFLAGS_APPEND([-O2])
+    else
+      X_CFLAGS_APPEND([-O])
+    fi
+  fi
+fi
+
+dnl Do not silence irrelevant compiler warnings by default, since enabling this
+dnl option incurs a performance penalty.
+AC_ARG_ENABLE([cc-silence],
+  [AS_HELP_STRING([--enable-cc-silence],
+                  [Silence irrelevant compiler warnings])],
+[if test "x$enable_cc_silence" = "xno" ; then
+  enable_cc_silence="0"
+else
+  enable_cc_silence="1"
+fi
+],
+[enable_cc_silence="0"]
+)
+if test "x$enable_cc_silence" = "x1" ; then
+  AC_DEFINE([CC_SILENCE], [ ], "not silencing irrelevant compiler warnings by
+      default, since enabling this option incurs a performance penalty")
+fi
 
 # Do not enable allocation from DSS by default.
 AC_ARG_ENABLE([dss],
@@ -74,6 +185,314 @@ if test "x$enable_dss" = "x1" ; then
   AC_DEFINE([DSS], [1], [dss available])
 fi
 AC_SUBST([enable_dss])
+
+dnl ===========================================================================
+dnl CPU-specific settings.
+CPU_SPINWAIT=""
+case "${host_cpu}" in
+  i[[345]]86)
+	;;
+  i686)
+	X_COMPILABLE([__asm__], [], [[__asm__ volatile("pause"); return 0;]],
+	              [je_cv_asm])
+	if test "x${je_cv_asm}" = "xyes" ; then
+	    CPU_SPINWAIT='__asm__ volatile("pause")'
+	fi
+	;;
+  x86_64)
+	X_COMPILABLE([__asm__ syntax], [],
+	              [[__asm__ volatile("pause"); return 0;]], [je_cv_asm])
+	if test "x${je_cv_asm}" = "xyes" ; then
+	    CPU_SPINWAIT='__asm__ volatile("pause")'
+	fi
+	;;
+  *)
+	;;
+esac
+AC_DEFINE_UNQUOTED([CPU_SPINWAIT], [$CPU_SPINWAIT], "spinwait macro for xmalloc")
+
+LD_PRELOAD_VAR="LD_PRELOAD"
+so="so"
+importlib="${so}"
+o="$ac_objext"
+a="a"
+exe="$ac_exeext"
+libprefix="lib"
+DSO_LDFLAGS='-shared -Wl,-soname,$(@F)'
+RPATH='-Wl,-rpath,$(1)'
+SOREV="${so}.${rev}"
+PIC_CFLAGS='-fPIC -DPIC'
+CTARGET='-o $@'
+LDTARGET='-o $@'
+EXTRA_LDFLAGS=
+MKLIB='ar crus $@'
+CC_MM=1
+
+dnl Platform-specific settings.  abi and RPATH can probably be determined
+dnl programmatically, but doing so is error-prone, which makes it generally
+dnl not worth the trouble.
+dnl
+dnl Define cpp macros in CPPFLAGS, rather than doing AC_DEFINE(macro), since the
+dnl definitions need to be seen before any headers are included, which is a pain
+dnl to make happen otherwise.
+default_munmap="1"
+case "${host}" in
+  *-*-darwin*)
+	CFLAGS="$CFLAGS"
+	abi="macho"
+	AC_DEFINE([PURGE_MADVISE_FREE], [ ],"")
+	RPATH=""
+	LD_PRELOAD_VAR="DYLD_INSERT_LIBRARIES"
+	so="dylib"
+	importlib="${so}"
+	force_tls="0"
+	DSO_LDFLAGS='-shared -Wl,-dylib_install_name,$(@F)'
+	SOREV="${rev}.${so}"
+	;;
+  *-*-freebsd*)
+	CFLAGS="$CFLAGS"
+	abi="elf"
+	AC_DEFINE([PURGE_MADVISE_FREE], [ ],"")
+	force_lazy_lock="1"
+	;;
+  *-*-linux*)
+	CFLAGS="$CFLAGS"
+	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+	abi="elf"
+	AC_DEFINE([PURGE_MADVISE_DONTNEED], [ ],"")
+	AC_DEFINE([THREADED_INIT], [ ],"")
+	default_munmap="0"
+	;;
+  *-*-netbsd*)
+	AC_MSG_CHECKING([ABI])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[[#ifdef __ELF__
+/* ELF */
+#else
+#error aout
+#endif
+]])],
+                          [CFLAGS="$CFLAGS"; abi="elf"],
+                          [abi="aout"])
+	AC_MSG_RESULT([$abi])
+	AC_DEFINE([PURGE_MADVISE_FREE], [ ],"")
+	;;
+  *-*-solaris2*)
+	CFLAGS="$CFLAGS"
+	abi="elf"
+	RPATH='-Wl,-R,$(1)'
+	dnl Solaris needs this for sigwait().
+	CPPFLAGS="$CPPFLAGS -D_POSIX_PTHREAD_SEMANTICS"
+	LIBS="$LIBS -lposix4 -lsocket -lnsl"
+	;;
+  *-ibm-aix*)
+	if "$LG_SIZEOF_PTR" = "8"; then
+	  dnl 64bit AIX
+	  LD_PRELOAD_VAR="LDR_PRELOAD64"
+	else
+	  dnl 32bit AIX
+	  LD_PRELOAD_VAR="LDR_PRELOAD"
+	fi
+	abi="xcoff"
+	;;
+  *-*-mingw*)
+	abi="pecoff"
+	force_tls="0"
+	RPATH=""
+	so="dll"
+	if test "x$je_cv_msvc" = "xyes" ; then
+	  importlib="lib"
+	  DSO_LDFLAGS="-LD"
+	  EXTRA_LDFLAGS="-link -DEBUG"
+	  CTARGET='-Fo$@'
+	  LDTARGET='-Fe$@'
+	  MKLIB='lib -nologo -out:$@'
+	  CC_MM=
+        else
+	  importlib="${so}"
+	  DSO_LDFLAGS="-shared"
+	fi
+	a="lib"
+	libprefix=""
+	SOREV="${so}"
+	PIC_CFLAGS=""
+	;;
+  *)
+	AC_MSG_RESULT([Unsupported operating system: ${host}])
+	abi="elf"
+	;;
+esac
+AC_SUBST([abi])
+AC_SUBST([RPATH])
+AC_SUBST([LD_PRELOAD_VAR])
+AC_SUBST([so])
+AC_SUBST([importlib])
+AC_SUBST([o])
+AC_SUBST([a])
+AC_SUBST([exe])
+AC_SUBST([libprefix])
+AC_SUBST([DSO_LDFLAGS])
+AC_SUBST([EXTRA_LDFLAGS])
+AC_SUBST([SOREV])
+AC_SUBST([PIC_CFLAGS])
+AC_SUBST([CTARGET])
+AC_SUBST([LDTARGET])
+AC_SUBST([MKLIB])
+AC_SUBST([CC_MM])
+
+if test "x$abi" != "xpecoff"; then
+  dnl Heap profiling uses the log(3) function.
+  LIBS="$LIBS -lm"
+fi
+
+X_COMPILABLE([__attribute__ syntax],
+              [static __attribute__((unused)) void foo(void){}],
+              [],
+              [je_cv_attribute])
+if test "x${je_cv_attribute}" = "xyes" ; then
+  AC_DEFINE([HAVE_ATTR], [ ],"check if __attribute__ syntax is supported")
+  if test "x${GCC}" = "xyes" -a "x${abi}" = "xelf"; then
+    X_CFLAGS_APPEND([-fvisibility=hidden])
+  fi
+fi
+
+dnl Check for tls_model attribute support (clang 3.0 still lacks support).
+SAVED_CFLAGS="${CFLAGS}"
+X_CFLAGS_APPEND([-Werror])
+X_COMPILABLE([tls_model attribute], [],
+              [static __thread int
+               __attribute__((tls_model("initial-exec"))) foo;
+               foo = 0;],
+              [x_cv_tls_model])
+CFLAGS="${SAVED_CFLAGS}"
+if test "x${x_cv_tls_model}" = "xyes" ; then
+  AC_DEFINE([TLS_MODEL],
+            [__attribute__((tls_model("initial-exec")))], "model of tls
+            attribute support ( clang 3.0 still lacks support )")
+else
+  AC_DEFINE([TLS_MODEL], [ ], "model of tls attribute support ( clang 3.0 still
+  lacks support )")
+fi
+
+dnl Support optional additions to rpath.
+AC_ARG_WITH([rpath],
+  [AS_HELP_STRING([--with-rpath=<rpath>], [Colon-separated rpath (ELF systems only)])],
+if test "x$with_rpath" = "xno" ; then
+  RPATH_EXTRA=
+else
+  RPATH_EXTRA="`echo $with_rpath | tr \":\" \" \"`"
+fi,
+  RPATH_EXTRA=
+)
+AC_SUBST([RPATH_EXTRA])
+
+dnl ============================================================================
+dnl Configure pthreads.
+
+if test "x$abi" != "xpecoff" ; then
+  AC_CHECK_HEADERS([pthread.h], , [AC_MSG_ERROR([pthread.h is missing])])
+  dnl Some systems may embed pthreads functionality in libc; check for libpthread
+  dnl first, but try libc too before failing.
+  AC_CHECK_LIB([pthread], [pthread_create], [LIBS="$LIBS -lpthread"],
+               [AC_SEARCH_LIBS([pthread_create], , ,
+                               AC_MSG_ERROR([libpthread is missing]))])
+fi
+
+CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+
+dnl Check whether the BSD-specific _malloc_thread_cleanup() exists.  If so, use
+dnl it rather than pthreads TSD cleanup functions to support cleanup during
+dnl thread exit, in order to avoid pthreads library recursion during
+dnl bootstrapping.
+AC_CHECK_FUNC([_malloc_thread_cleanup],
+              [have__malloc_thread_cleanup="1"],
+              [have__malloc_thread_cleanup="0"]
+             )
+if test "x$have__malloc_thread_cleanup" = "x1" ; then
+  AC_DEFINE([THREAD_CLEANUP], [ ], "thread cleanup for xmalloc")
+  force_tls="1"
+fi
+
+dnl Check whether the BSD-specific _pthread_mutex_init_calloc_cb() exists.  If
+dnl so, mutex initialization causes allocation, and we need to implement this
+dnl callback function in order to prevent recursive allocation.
+AC_CHECK_FUNC([_pthread_mutex_init_calloc_cb],
+              [have__pthread_mutex_init_calloc_cb="1"],
+              [have__pthread_mutex_init_calloc_cb="0"]
+             )
+if test "x$have__pthread_mutex_init_calloc_cb" = "x1" ; then
+  AC_DEFINE([MUTEX_INIT_CB], [], "checks if
+      BSD-specific _pthread_mutex_init_calloc_cb() exists")
+fi
+
+# Disable lazy locking by default.
+AC_ARG_ENABLE([lazy_lock],
+  [AS_HELP_STRING([--enable-lazy-lock],
+  [Enable lazy locking (only lock when multi-threaded)])],
+[if test "x$enable_lazy_lock" = "xno" ; then
+  enable_lazy_lock="0"
+else
+  enable_lazy_lock="1"
+fi
+],
+[enable_lazy_lock="0"]
+)
+if test "x$enable_lazy_lock" = "x0" -a "x${force_lazy_lock}" = "x1" ; then
+  AC_MSG_RESULT([Forcing lazy-lock to avoid allocator/threading bootstrap issues])
+  enable_lazy_lock="1"
+fi
+if test "x$enable_lazy_lock" = "x1" ; then
+  if test "x$abi" != "xpecoff" ; then
+    AC_CHECK_HEADERS([dlfcn.h], , [AC_MSG_ERROR([dlfcn.h is missing])])
+    AC_CHECK_FUNC([dlsym], [],
+      [AC_CHECK_LIB([dl], [dlsym], [LIBS="$LIBS -ldl"],
+                    [AC_MSG_ERROR([libdl is missing])])
+      ])
+  fi
+  AC_DEFINE([LAZY_LOCK], [ ], "Macro for lazy locking: Lock only if
+      multi-threaded")
+fi
+AC_SUBST([enable_lazy_lock])
+
+AC_ARG_ENABLE([tls],
+  [AS_HELP_STRING([--disable-tls], [Disable thread-local storage (__thread keyword)])],
+if test "x$enable_tls" = "xno" ; then
+  enable_tls="0"
+else
+  enable_tls="1"
+fi
+,
+enable_tls="1"
+)
+if test "x${enable_tls}" = "x0" -a "x${force_tls}" = "x1" ; then
+  AC_MSG_RESULT([Forcing TLS to avoid allocator/threading bootstrap issues])
+  enable_tls="1"
+fi
+if test "x${enable_tls}" = "x1" -a "x${force_tls}" = "x0" ; then
+  AC_MSG_RESULT([Forcing no TLS to avoid allocator/threading bootstrap issues])
+  enable_tls="0"
+fi
+if test "x${enable_tls}" = "x1" ; then
+AC_MSG_CHECKING([for TLS])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[[
+    __thread int x;
+]], [[
+    x = 42;
+
+    return 0;
+]])],
+              AC_MSG_RESULT([yes]),
+              AC_MSG_RESULT([no])
+              enable_tls="0")
+fi
+AC_SUBST([enable_tls])
+if test "x${enable_tls}" = "x1" ; then
+  AC_DEFINE_UNQUOTED([TLS], [ ], "Macro for using thread-local storage in
+      xmalloc.")
+elif test "x${force_tls}" = "x1" ; then
+  AC_MSG_ERROR([Failed to configure TLS, which is mandatory for correct function])
+fi
 
 # Support the junk/zero filling option by default.
 AC_ARG_ENABLE([fill],
@@ -305,7 +724,9 @@ AM_CONDITIONAL(BUILD_REFS,[test x$DOXYGEN != x])
 
 # this is bogus so far as I can tell.  -bds
 AM_CXXFLAGS="${CXXFLAGS}"
+AM_CFLAGS="${CFLAGS}"
 AC_SUBST([AM_CXXFLAGS])
+AC_SUBST([AM_CFLAGS])
 
 
 AC_OUTPUT([
