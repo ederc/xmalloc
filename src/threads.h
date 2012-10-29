@@ -12,6 +12,14 @@
 
 #include "xassert.h"
 
+/**
+ * \fn static inline unsigned int xGetNumberCpus()
+ *
+ * \brief Returns the number of Cpus available on the system xmalloc is build on.
+ *
+ * \return number of cpus of type \c unsigned \c int .
+ *
+ */
 static inline unsigned int xGetNumberCpus() {
   long result;
 
@@ -34,3 +42,51 @@ static inline unsigned int xGetNumberCpus() {
   return (unsigned int) result;
 }
 #endif
+
+/*************************************************
+ * mutex locks & unlocks
+ ************************************************/
+/**
+ * \fn static inline void xMutexLock(xMutex_t *mutex)
+ *
+ * \brief Get the lock of the mutex.
+ *
+ * \param mutex \c xMutex_t* the lock should be got from
+ *
+ * \note If macro __XMALLOC_THREADED is not defined then this function is just
+ * empty: In a single-threaded application no locks have to be set.
+ *
+ */
+static inline void xMutexLock(xMutex_t *mutex) {
+#ifdef __XMALLOC_THREADED
+#ifdef _WIN32
+  EnterCriticalSection(&mutex->lock);
+#elif (defined(__XMALLOC_OSSPIN))
+  OSSpinLockLock(&mutex->lock);
+#else
+  pthread_mutex_lock(&mutex->lock);
+#endif
+}
+
+/**
+ * \fn static inline void xMutexUnlock(xMutex_t *mutex)
+ *
+ * \brief Unlocks the mutex.
+ *
+ * \param mutex \c xMutex_t* the lock should be released from
+ *
+ * \note If macro __XMALLOC_THREADED is not defined then this function is just
+ * empty: In a single-threaded application no locks have to be set, and thus,
+ * also none have to be released.
+ *
+ */
+static inline void xMutexUnlock(xMutex_t *mutex) {
+#ifdef __XMALLOC_THREADED
+#ifdef _WIN32
+  LeaveCriticalSection(&mutex->lock);
+#elif (defined(__XMALLOC_OSSPIN))
+  OSSpinLockUnlock(&mutex->lock);
+#else
+  pthread_mutex_unlock(&mutex->lock);
+#endif
+}

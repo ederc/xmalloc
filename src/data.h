@@ -61,6 +61,10 @@ typedef int BOOLEAN;
 
 //typedef enum{False = 0, True  = 1} boolean;
 
+struct xMutexStruct;
+typedef struct xMutexStruct   xMutex_t;
+typedef xMutex_t*             xMutex;
+
 struct xPageStruct;
 typedef struct xPageStruct    xPageType;
 typedef xPageType*            xPage;
@@ -80,6 +84,24 @@ typedef xBlockType*           xBlock;
 struct xRegionStruct;
 typedef struct xRegionStruct  xRegionType;
 typedef xRegionType*          xRegion;
+
+/**
+ * \struct xMutexStruct
+ *
+ * \brief Structure for enabling mutexes on different operating systems.
+ */
+struct xMutexStruct {
+#ifdef _WIN32
+  CRITICAL_SECTION lock;          /**< lock under Windows OS */
+#elif (defined(__XMALLOC_OSSPIN))
+  OSSpinLock lock;                /**< lock under Mac OS X / Darwin */
+#elif (defined(__XMALLOC_MUTEX_INIT_CB))
+  pthread_mutex_t lock;           /**< if BSD-specific _pthread_mutex_init_calloc_cb() exists */
+  xMutex_t        *postponedNext; /**< postponed next mutex lock */
+#else
+  pthread_mutex_t lock;           /**< usually pthread mutex lock */
+#endif
+};
 
 /**
  * \struct xPageStruct

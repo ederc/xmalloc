@@ -46,6 +46,7 @@ doc/index.html
 doc/apa.html
 doc/apb.html
 doc/*.html
+doc/jemalloc-doc.txt
 tests/unit/*
 !tests/unit/*.c
 tests/basic/*
