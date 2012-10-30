@@ -665,6 +665,7 @@ INPUT                  =  ../include/xmalloc-config.h \
                           ../src/globals.h            \
                           ../src/page.h               \
                           ../src/bin.h                \
+                          ../src/cache.h              \
                           ../src/xassert.h            \
                           ../src/threads.h            \
                           ../src/region.h             \

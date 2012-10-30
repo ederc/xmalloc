@@ -26,6 +26,8 @@ extern struct xBinStruct xStaticBin[];
 
 extern xBin xStickyBins;
 
+//extern size_t xCacheLineSize;
+
 /********************************************
  * MULTI-THREADED STUFF
  *******************************************/

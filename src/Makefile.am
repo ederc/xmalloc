@@ -12,6 +12,7 @@ SUBDIRS=
 BASIC_HDRS =	\
 	../include/xmalloc-config.h \
 	xassert.h		\
+	cache.h			\
 	threads.h		\
 	align.h			\
 	data.h 			\
@@ -24,6 +25,7 @@ BASIC_HDRS =	\
 
 SOURCES=		\
 	threads.c	\
+	cache.c		\
 	globals.c	\
 	page.c		\
 	bin.c			\
