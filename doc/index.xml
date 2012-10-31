@@ -17,6 +17,8 @@
       its <ulink url="https://github.com/ederc/xmalloc">GIT
       repository</ulink> to which anyone may obtain read-only access.
     </para>
+    <sect2>
+    <title>Basic installation</title>
     <para>
       See the file INSTALL in the xmalloc-distribution for detailed
       installation-instructions. The basic procedure is
@@ -26,6 +28,66 @@
         make
         make install</programlisting>
     </para>
+    </sect2>
+    <sect2>
+    <title>Optimizations during the build process</title>
+    <para>
+      Of course, an optimized memory management depends highly on compile-time
+      predefined macros. Moreover, a good performance clearly depends on the
+      operating system as well as the CPU. Thus it is inevitable that some of
+      those macros cannot be determined during compile-time. Instead of moving
+      away from fast macros and checking needed data via configuration scripts
+      at the beginning of the application we stuck with macros and define
+      sensitive default values. Of course any of these macros can be customized
+      by the user during the build process by handing the configure script the
+      corresponding data.
+    </para>
+    <sect3>
+      <title>Cache line size</title>
+      <para>
+        The cache line size of a CPU is very important for efficient allocations.
+        xmalloc tries to achieve a high cache locality without wasting too much
+        space. For this xmalloc depends on two macros called
+        <varname>__XMALLOC_SIZEOF_CACHELINE</varname> and
+        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname>. The coresponding values
+        are given in kB. For default the configure script of xmalloc sets them to
+        <programlisting>
+        __XMALLOC_SIZEOF_CACHELINE     = 64
+        __XMALLOC_LOG_SIZEOF_CACHELINE =  6</programlisting>
+      </para>
+      <para>
+        Those values are most common on current x86-64 CPUs. Of course, there exist other
+        architecture with different settings. It is quite hard to find out those values
+        cross-platform, even more in compile time. The user can customize those values by
+        passing the corresponding environmental values to the configure script, e.g.
+        <programlisting>
+        ./configure CPPFLAGS="-D__XMALLOC_SIZEOF_CACHELINE=32 -D__XMALLOC_LOG_SIZEOF_CACHELINE=5"</programlisting>
+        sets the cache line size to 32kB.
+      </para>
+      <note>
+      <orderedlist>
+      <listitem>
+      <para>
+        Whenever you change <varname>__XMALLOC_SIZEOF_CACHELINE</varname> you should also adjust
+        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname> correspondingly. Otherwise efficient
+        allocations cannot be garantied.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        There exists an internal checker for the cache line size in <filename>src/cache.h</filename>
+        called <function>xCacheLineSize()</function>. This function is not used to determine the
+        corresponding values for <varname>__XMALLOC_SIZEOF_CACHELINE</varname> respectively
+        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname>. It is a leftover from an earlier step
+        implementing xmalloc where the decision of how to handle these data was not made. We keep
+        this implementation until xmalloc gets kind of stable as there are possible design
+        changes in the future.
+      </para>
+      </listitem>
+      </orderedlist>
+      </note>
+    </sect3>
+    </sect2>
   </sect1>
   <sect1>
     <title>General ideas behind xmalloc</title>
