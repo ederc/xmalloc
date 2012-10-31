@@ -14,5 +14,12 @@
   <xsl:param name="chunk.section.depth" select="0"></xsl:param>
   <xsl:param name="callout.graphics" select="'1'"></xsl:param>
   <xsl:param name="callout.graphics.path"></xsl:param>
+  <xsl:param name="table.borders.with.css" select="1"></xsl:param>
+  <xsl:param name="table.cell.border.style" select="'dotted'"></xsl:param>
+  <xsl:param name="table.cell.border.thickness" select="'0.5pt'"></xsl:param>
+  <xsl:param name="table.cell.border.color" select="'white'"></xsl:param>
+  <xsl:param name="table.frame.border.style" select="'solid'"></xsl:param>
+  <xsl:param name="table.frame.border.thickness" select="'0.5pt'"></xsl:param>
+  <xsl:param name="table.frame.border.color" select="'white'"></xsl:param>
 </xsl:stylesheet>
 
