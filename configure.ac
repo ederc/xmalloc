@@ -665,6 +665,114 @@ fi
 AC_SUBST([enable_fill])
 
 
+dnl ===========================================================================
+dnl Check for MMX
+
+if test "x$MMX_CFLAGS" = "x" ; then
+   if test "x$SUNCC" = "xyes"; then
+      # Sun Studio doesn't have an -xarch=mmx flag, so we have to use sse
+      # but if we're building 64-bit, mmx & sse support is on by default and
+      # -xarch=sse throws an error instead
+      if test "$AMD64_ABI" = "no" ; then
+         MMX_CFLAGS="-xarch=sse"
+      fi
+   else
+      MMX_CFLAGS="-mmmx -Winline"
+   fi
+fi
+
+have_mmx_intrinsics=no
+AC_MSG_CHECKING(whether to use MMX intrinsics)
+xserver_save_CFLAGS=$CFLAGS
+CFLAGS="$MMX_CFLAGS $CFLAGS"
+AC_COMPILE_IFELSE([
+#if defined(__GNUC__) && (__GNUC__ < 3 || (__GNUC__ == 3 && __GNUC_MINOR__ < 4))
+error "Need GCC >= 3.4 for MMX intrinsics"
+#endif
+#include <mmintrin.h>
+int main () {
+    __m64 v = _mm_cvtsi32_si64 (1);
+    return _mm_cvtsi64_si32 (v);
+}], have_mmx_intrinsics=yes)
+CFLAGS=$xserver_save_CFLAGS
+
+AC_ARG_ENABLE(mmx,
+   [AC_HELP_STRING([--disable-mmx],
+                   [disable MMX fast paths])],
+   [enable_mmx=$enableval], [enable_mmx=auto])
+
+if test $enable_mmx = no ; then
+   have_mmx_intrinsics=disabled
+fi
+
+if test $have_mmx_intrinsics = yes ; then
+   AC_DEFINE(USE_MMX, 1, [use MMX compiler intrinsics])
+else
+   MMX_CFLAGS=
+fi
+
+AC_MSG_RESULT($have_mmx_intrinsics)
+if test $enable_mmx = yes && test $have_mmx_intrinsics = no ; then
+   AC_MSG_ERROR([MMX intrinsics not detected])
+fi
+
+AM_CONDITIONAL(USE_MMX, test $have_mmx_intrinsics = yes)
+
+dnl ===========================================================================
+dnl Check for SSE2
+
+if test "x$SSE2_CFLAGS" = "x" ; then
+   if test "x$SUNCC" = "xyes"; then
+      # SSE2 is enabled by default in the Sun Studio 64-bit environment
+      if test "$AMD64_ABI" = "no" ; then
+         SSE2_CFLAGS="-xarch=sse2"
+      fi
+   else
+      SSE2_CFLAGS="-mmmx -msse2 -Winline"
+   fi
+fi
+
+have_sse2_intrinsics=no
+AC_MSG_CHECKING(whether to use SSE2 intrinsics)
+xserver_save_CFLAGS=$CFLAGS
+CFLAGS="$SSE2_CFLAGS $CFLAGS"
+
+AC_COMPILE_IFELSE([
+#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 2))
+#   if !defined(__amd64__) && !defined(__x86_64__)
+#      error "Need GCC >= 4.2 for SSE2 intrinsics on x86"
+#   endif
+#endif
+#include <mmintrin.h>
+#include <xmmintrin.h>
+#include <emmintrin.h>
+int main () {
+    __m128i a = _mm_set1_epi32 (0), b = _mm_set1_epi32 (0), c;
+  c = _mm_xor_si128 (a, b);
+    return 0;
+}], have_sse2_intrinsics=yes)
+CFLAGS=$xserver_save_CFLAGS
+
+AC_ARG_ENABLE(sse2,
+   [AC_HELP_STRING([--disable-sse2],
+                   [disable SSE2 fast paths])],
+   [enable_sse2=$enableval], [enable_sse2=auto])
+
+if test $enable_sse2 = no ; then
+   have_sse2_intrinsics=disabled
+fi
+
+if test $have_sse2_intrinsics = yes ; then
+   AC_DEFINE(USE_SSE2, 1, [use SSE2 compiler intrinsics])
+fi
+
+AC_MSG_RESULT($have_sse2_intrinsics)
+if test $enable_sse2 = yes && test $have_sse2_intrinsics = no ; then
+   AC_MSG_ERROR([SSE2 intrinsics not detected])
+fi
+
+AM_CONDITIONAL(USE_SSE2, test $have_sse2_intrinsics = yes)
+
 # check assert setting
 AC_HEADER_ASSERT
 

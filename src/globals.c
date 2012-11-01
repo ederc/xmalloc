@@ -19,7 +19,7 @@
 xSpecBin xBaseSpecBin     = NULL;
 xBin __XMALLOC_LARGE_BIN  = (xBin) 1;
 
-struct xBinStruct xStaticBin[/*23*/] = {
+struct __attribute__ ((aligned(__XMALLOC_SIZEOF_CACHELINE))) xBinStruct xStaticBin[/*23*/] = {
 {__XMALLOC_ZERO_PAGE, NULL, NULL, 1,    506,  0}, /* 0*/
 {__XMALLOC_ZERO_PAGE, NULL, NULL, 2,    253,  0}, /* 1*/
 {__XMALLOC_ZERO_PAGE, NULL, NULL, 3,    168,  0}, /* 2*/
