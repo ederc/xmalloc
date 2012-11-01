@@ -685,7 +685,7 @@ have_mmx_intrinsics=no
 AC_MSG_CHECKING(whether to use MMX intrinsics)
 xserver_save_CFLAGS=$CFLAGS
 CFLAGS="$MMX_CFLAGS $CFLAGS"
-AC_COMPILE_IFELSE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #if defined(__GNUC__) && (__GNUC__ < 3 || (__GNUC__ == 3 && __GNUC_MINOR__ < 4))
 error "Need GCC >= 3.4 for MMX intrinsics"
 #endif
@@ -693,7 +693,7 @@ error "Need GCC >= 3.4 for MMX intrinsics"
 int main () {
     __m64 v = _mm_cvtsi32_si64 (1);
     return _mm_cvtsi64_si32 (v);
-}], have_mmx_intrinsics=yes)
+}])], have_mmx_intrinsics=yes)
 CFLAGS=$xserver_save_CFLAGS
 
 AC_ARG_ENABLE(mmx,
@@ -737,7 +737,7 @@ AC_MSG_CHECKING(whether to use SSE2 intrinsics)
 xserver_save_CFLAGS=$CFLAGS
 CFLAGS="$SSE2_CFLAGS $CFLAGS"
 
-AC_COMPILE_IFELSE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 2))
 #   if !defined(__amd64__) && !defined(__x86_64__)
 #      error "Need GCC >= 4.2 for SSE2 intrinsics on x86"
@@ -750,7 +750,7 @@ int main () {
     __m128i a = _mm_set1_epi32 (0), b = _mm_set1_epi32 (0), c;
   c = _mm_xor_si128 (a, b);
     return 0;
-}], have_sse2_intrinsics=yes)
+}])], have_sse2_intrinsics=yes)
 CFLAGS=$xserver_save_CFLAGS
 
 AC_ARG_ENABLE(sse2,
