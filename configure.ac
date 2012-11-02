@@ -24,6 +24,27 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 )
 ])
 
+dnl X_CDEBUGFLAGS_APPEND(cflag)
+AC_DEFUN([X_CDEBUGFLAGS_APPEND],
+[
+AC_MSG_CHECKING([whether compiler supports $1])
+TCDEBUGFLAGS="${CDEBUGFLAGS}"
+if test "x${CDEBUGFLAGS}" = "x" ; then
+  CDEBUGFLAGS="$1"
+else
+  CDEBUGFLAGS="${CDEBUGFLAGS} $1"
+fi
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[[
+]], [[
+    return 0;
+]])],
+              AC_MSG_RESULT([yes]),
+              AC_MSG_RESULT([no])
+              [CDEBUGFLAGS="${TCDEBUGFLAGS}"]
+)
+])
+
 dnl X_COMPILABLE(label, hcode, mcode, rvar)
 dnl
 dnl Use AC_LINK_IFELSE() rather than AC_COMPILE_IFELSE() so that linker errors
@@ -57,17 +78,36 @@ AM_OUTPUT_DEPENDENCY_COMMANDS
 # The sane thing is to define the flags differenly in tests, examples, interfaces, etc.  -bds
 #DEFAULT_CFLAGS="-O2 -Wall"
 
-CFLAGS=${CFLAGS:-$DEFAULT_CFLAGS}
-CXXFLAGS=${CXXFLAGS:-$DEFAULT_CFLAGS}
+#CFLAGS=${CFLAGS:-$DEFAULT_CFLAGS}
+#CXXFLAGS=${CXXFLAGS:-$DEFAULT_CFLAGS}
 
 # work around to fix the backward compatibility issue of automake 1.10 with 1.9 (pb with MKDIR_P)
 AC_SUBST([MKDIR_P])
-AC_PROG_CC
-AC_PROG_CXX
 AC_STDC_HEADERS
 #LT_INIT()
 LT_INIT([disable-shared])
+AC_PROG_CC
+#AC_PROG_CXX
 
+# check assert setting
+AC_HEADER_ASSERT
+
+# Machine characteristics
+
+AC_CHECK_SIZEOF(char, 8)
+AC_CHECK_SIZEOF(short, 16)
+AC_CHECK_SIZEOF(int, 32)
+AC_CHECK_SIZEOF(void*, 32)
+AC_CHECK_SIZEOF(long, 32)
+AC_CHECK_SIZEOF(long long, 64)
+AC_CHECK_SIZEOF(__int64, 64)
+AC_CHECK_SIZEOF(__uint128_t, 128)
+AC_CHECK_SIZEOF(__uint256_t, 256)
+
+# check endianness of the architecture
+AC_C_BIGENDIAN(
+  [AC_DEFINE(HAVE_BIG_ENDIAN, 1, [Define that architecture uses big endian storage])],
+  [AC_DEFINE(HAVE_LITTLE_ENDIAN, 1, [Define that architecture uses little endian storage])],[])
 
 dnl If CFLAGS isn't defined, set CFLAGS to something reasonable.  Otherwise,
 dnl just prevent autoconf from molesting CFLAGS.
@@ -92,7 +132,9 @@ if test "x$CFLAGS" = "x" ; then
     X_CFLAGS_APPEND([-std=gnu99])
     X_CFLAGS_APPEND([-Wall])
     X_CFLAGS_APPEND([-pipe])
-    X_CFLAGS_APPEND([-g3])
+    X_CDEBUGFLAGS_APPEND([-g3])
+    X_CDEBUGFLAGS_APPEND([-ggdb])
+    X_CDEBUGFLAGS_APPEND([-Wall])
   elif test "x$x_cv_msvc" = "xyes" ; then
     CC="$CC -nologo"
     X_CFLAGS_APPEND([-Zi])
@@ -127,21 +169,45 @@ AC_ARG_ENABLE([debug],
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = xyes)
 
 dnl Only optimize if not debugging.
-if test "x$no_CFLAGS" = "xyes" ; then
-  dnl Make sure that an optimization flag was not specified in EXTRA_CFLAGS.
-  optimize="no"
-  echo "$EXTRA_CFLAGS" | grep "\-O" >/dev/null || optimize="yes"
-  if test "x${optimize}" = "xyes" ; then
-    if test "x$GCC" = "xyes" ; then
-      X_CFLAGS_APPEND([-O3])
-      X_CFLAGS_APPEND([-funroll-loops])
-    elif test "x$x_cv_msvc" = "xyes" ; then
-      X_CFLAGS_APPEND([-O2])
-    else
-      X_CFLAGS_APPEND([-O])
-    fi
-  fi
+if test "x$GCC" = "xyes" ; then
+  X_CFLAGS_APPEND([-O3])
+  X_CFLAGS_APPEND([-funroll-loops])
+  X_CDEBUGFLAGS_APPEND([-O0])
+elif test "x$x_cv_msvc" = "xyes" ; then
+  X_CFLAGS_APPEND([-O2])
+  X_CDEBUGFLAGS_APPEND([-O0])
+else
+  X_CFLAGS_APPEND([-O])
+  X_CDEBUGFLAGS_APPEND([-O0])
 fi
+# SSE2 support
+AC_ARG_ENABLE([sse2],
+        AS_HELP_STRING([--disable-sse2], [don't use SSE2 instruction set.]),
+	, [if test "$m4ri_wrapword" = "yes"; then enable_sse2="no"; else enable_sse2="yes"; fi])
+
+AS_IF([test "x$enable_sse2" != "xno"], [
+   if test "$m4ri_wrapword" = "yes"; then
+      AC_MSG_ERROR([SSE2 cannot be supported when wrapping word in a C++ class.])
+   fi
+   case $host_cpu in i[[3456]]86*|x86_64*)
+          AX_CPU_VENDOR()
+          if test "x$ax_cv_cpu_vendor" = "xIntel"; then
+             AX_EXT() # SSE2 is slower on the Opteron
+          fi
+   esac
+])
+if test x"$ax_cv_have_sse2_ext" = x"yes"; then
+  M4RI_HAVE_SSE2=1
+else
+  M4RI_HAVE_SSE2=0
+fi
+AC_SUBST(M4RI_HAVE_SSE2)
+
+
+AC_ARG_WITH(papi,
+    AS_HELP_STRING([--with-papi@<:@=PATH@:>@], [The PAPI install prefix, if configure can't find it.]),
+    [m4ri_config_papi=$withval])
+
 
 dnl Do not silence irrelevant compiler warnings by default, since enabling this
 dnl option incurs a performance penalty.
@@ -665,133 +731,29 @@ fi
 AC_SUBST([enable_fill])
 
 
-dnl ===========================================================================
-dnl Check for MMX
+AC_ARG_ENABLE([cachetune],
+     AS_HELP_STRING([--enable-cachetune],[calculate cache size from timing information.]))
 
-if test "x$MMX_CFLAGS" = "x" ; then
-   if test "x$SUNCC" = "xyes"; then
-      # Sun Studio doesn't have an -xarch=mmx flag, so we have to use sse
-      # but if we're building 64-bit, mmx & sse support is on by default and
-      # -xarch=sse throws an error instead
-      if test "$AMD64_ABI" = "no" ; then
-         X_CFLAGS_APPEND([-xarch=sse])
-      fi
-   else
-      X_CFLAGS_APPEND([-mmmx])
-   fi
-fi
+AC_ARG_WITH(cachesize,
+  AS_HELP_STRING([--with-cachesize@<:@=VALUE@:>@],
+    [Manual cache sizes, separated by a colon.
+    Overrides cache tuning.]),[xmalloc_config_cachesize=$withval])
 
-have_mmx_intrinsics=no
-AC_MSG_CHECKING(whether to use MMX intrinsics)
-xserver_save_CFLAGS=$CFLAGS
-CFLAGS="$MMX_CFLAGS $CFLAGS"
-AC_COMPILE_IFELSE([
-#if defined(__GNUC__) && (__GNUC__ < 3 || (__GNUC__ == 3 && __GNUC_MINOR__ < 4))
-error "Need GCC >= 3.4 for MMX intrinsics"
-#endif
-#include <mmintrin.h>
-int main () {
-    __m64 v = _mm_cvtsi32_si64 (1);
-    return _mm_cvtsi64_si32 (v);
-}], have_mmx_intrinsics=yes)
-CFLAGS=$xserver_save_CFLAGS
-
-AC_ARG_ENABLE(mmx,
-   [AC_HELP_STRING([--disable-mmx],
-                   [disable MMX fast paths])],
-   [enable_mmx=$enableval], [enable_mmx=auto])
-
-if test $enable_mmx = no ; then
-   have_mmx_intrinsics=disabled
-fi
-
-if test $have_mmx_intrinsics = yes ; then
-   AC_DEFINE(USE_MMX, 1, [use MMX compiler intrinsics])
+# L1 and L2 Cache Size
+if test -z $xmalloc_config_cachesize; then
+   AX_CACHE_SIZE()
+   AS_IF([test "x$enable_cachetune" = "xyes"], [AX_CACHE_SIZE_TUNE()])
 else
-   MMX_CFLAGS=
+  AS_IF([test "x$enable_cachetune" = "xyes"], [AC_MSG_WARN(Ignoring cache tuning since --with-cachesize was given.)])
+
+  ax_l1_size=`echo $xmalloc_config_cachesize | $SED 's/\:.*//g'`
+  ax_l2_size=`echo $xmalloc_config_cachesize | $SED 's/.*\://g'`
+
+  CPU_L1_CACHE=${ax_l1_size}
+  CPU_L2_CACHE=${ax_l2_size}
+  AC_SUBST(CPU_L1_CACHE)
+  AC_SUBST(CPU_L2_CACHE)
 fi
-
-AC_MSG_RESULT($have_mmx_intrinsics)
-if test $enable_mmx = yes && test $have_mmx_intrinsics = no ; then
-   AC_MSG_ERROR([MMX intrinsics not detected])
-fi
-
-AM_CONDITIONAL(USE_MMX, test $have_mmx_intrinsics = yes)
-
-dnl ===========================================================================
-dnl Check for SSE2
-
-if test "x$SSE2_CFLAGS" = "x" ; then
-   if test "x$SUNCC" = "xyes"; then
-      # SSE2 is enabled by default in the Sun Studio 64-bit environment
-      if test "$AMD64_ABI" = "no" ; then
-        X_CFLAGS_APPEND([-xarch=sse2])
-      fi
-   else
-      X_CFLAGS_APPEND([-msse2])
-   fi
-fi
-
-have_sse2_intrinsics=no
-AC_MSG_CHECKING(whether to use SSE2 intrinsics)
-xserver_save_CFLAGS=$CFLAGS
-CFLAGS="$SSE2_CFLAGS $CFLAGS"
-
-AC_COMPILE_IFELSE([
-#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 2))
-#   if !defined(__amd64__) && !defined(__x86_64__)
-#      error "Need GCC >= 4.2 for SSE2 intrinsics on x86"
-#   endif
-#endif
-#include <mmintrin.h>
-#include <xmmintrin.h>
-#include <emmintrin.h>
-int main () {
-    __m128i a = _mm_set1_epi32 (0), b = _mm_set1_epi32 (0), c;
-  c = _mm_xor_si128 (a, b);
-    return 0;
-}], have_sse2_intrinsics=yes)
-CFLAGS=$xserver_save_CFLAGS
-
-AC_ARG_ENABLE(sse2,
-   [AC_HELP_STRING([--disable-sse2],
-                   [disable SSE2 fast paths])],
-   [enable_sse2=$enableval], [enable_sse2=auto])
-
-if test $enable_sse2 = no ; then
-   have_sse2_intrinsics=disabled
-fi
-
-if test $have_sse2_intrinsics = yes ; then
-   AC_DEFINE(USE_SSE2, 1, [use SSE2 compiler intrinsics])
-fi
-
-AC_MSG_RESULT($have_sse2_intrinsics)
-if test $enable_sse2 = yes && test $have_sse2_intrinsics = no ; then
-   AC_MSG_ERROR([SSE2 intrinsics not detected])
-fi
-
-AM_CONDITIONAL(USE_SSE2, test $have_sse2_intrinsics = yes)
-
-# check assert setting
-AC_HEADER_ASSERT
-
-# Machine characteristics
-
-AC_CHECK_SIZEOF(char, 8)
-AC_CHECK_SIZEOF(short, 16)
-AC_CHECK_SIZEOF(int, 32)
-AC_CHECK_SIZEOF(void*, 32)
-AC_CHECK_SIZEOF(long, 32)
-AC_CHECK_SIZEOF(long long, 64)
-AC_CHECK_SIZEOF(__int64, 64)
-AC_CHECK_SIZEOF(__uint128_t, 128)
-AC_CHECK_SIZEOF(__uint256_t, 256)
-
-# check endianness of the architecture
-AC_C_BIGENDIAN(
-  [AC_DEFINE(HAVE_BIG_ENDIAN, 1, [Define that architecture uses big endian storage])],
-  [AC_DEFINE(HAVE_LITTLE_ENDIAN, 1, [Define that architecture uses little endian storage])],[])
 
 # Create some useful data types of fixed, known lengths
 
@@ -989,10 +951,12 @@ AM_CONDITIONAL(BUILD_DOCS,[test x$XMLTO != x])
 AM_CONDITIONAL(BUILD_REFS,[test x$DOXYGEN != x])
 
 # this is bogus so far as I can tell.  -bds
-AM_CXXFLAGS="${CXXFLAGS}"
-AM_CFLAGS="${CFLAGS}"
+AM_CXXFLAGS=
+AM_CFLAGS="${CFLAGS} ${SIMD_CFLAGS} ${OPENMP_CFLAGS}"
+AM_CDEBUGFLAGS="${CDEBUGFLAGS} ${DEBUG_FLAGS} ${SIMD_CFLAGS} ${OPENMP_CFLAGS}"
 AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_CFLAGS])
+AC_SUBST([AM_CDEBUGFLAGS])
 
 
 AC_OUTPUT([
