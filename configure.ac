@@ -740,7 +740,8 @@ AC_ARG_WITH(cachesize,
 
 AC_ARG_WITH(cachelinesize,
   AS_HELP_STRING([--with-cachelinesize@<:@=VALUE@:>@],
-    [Manual cache line size.]),[xmalloc_config_cachelinesize=$withval])
+    [Manual cache line size: Use the following format: "cache line size in
+    kB":"log of 2 of cache line size".]),[xmalloc_config_cachelinesize=$withval])
 
 # L1 and L2 Cache Size
 if test -z $xmalloc_config_cachesize; then
@@ -759,9 +760,11 @@ fi
 if test -z $xmalloc_config_cachelinesize; then
   AX_CACHE_LINE_SIZE()
 else
-  ax_cache_line_size=`echo $xmalloc_config_cachelinesize`
+  ax_cache_line_size=`echo $xmalloc_config_cachelinesize | $SED 's/\:.*//g'`
+  ax_cache_line_log_size=`echo $xmalloc_config_cachelinesize | $SED 's/.*\://g'`
 
   XMALLOC_CPU_CACHE_LINE=${ax_cache_line_size}
+  XMALLOC_LOG_CPU_CACHE_LINE=${ax_cache_line_log_size}
 fi
   
 # Create some useful data types of fixed, known lengths
