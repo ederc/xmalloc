@@ -24,7 +24,6 @@ endif
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
 UNIT_TESTS =																\
-				test-xCacheLineSize									\
 				test-xPrintInfo											\
 				test-xGetSpecBin										\
 				test-xAreAddressesOnSamePage				\
@@ -167,8 +166,5 @@ test_xRegisterPagesInRegion_SOURCES =						\
 
 test_xPrintInfo_SOURCES =												\
 		test-xPrintInfo.c
-
-test_xCacheLineSize_SOURCES =										\
-		test-xCacheLineSize.c
 
 noinst_HEADERS =	
