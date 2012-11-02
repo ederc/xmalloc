@@ -10,7 +10,7 @@
 #
 #   Find L1 and L2 caches size by reading the corresponding file on UNIX or
 #   by requesting cpuid. The results are available in the substituted variables
-#   M4RI_CPU_L1_CACHE and M4RI_CPU_L2_CACHE.
+#   XMALLOC_CPU_L1_CACHE and XMALLOC_CPU_L2_CACHE.
 #
 #   This macro depends on AX_GCC_X86_CPUID, AC_PROG_SED, and AX_CPU_VENDOR.
 #
@@ -117,8 +117,8 @@ AC_DEFUN([AX_CACHE_SIZE],
     ax_l2_size=$(($ax_l2_size*1024))
     AC_MSG_RESULT( $ax_l2_size Bytes)
 
-    M4RI_CPU_L1_CACHE=${ax_l1_size}
-    M4RI_CPU_L2_CACHE=${ax_l2_size}
-    AC_SUBST(M4RI_CPU_L1_CACHE)
-    AC_SUBST(M4RI_CPU_L2_CACHE)
+    XMALLOC_CPU_L1_CACHE=${ax_l1_size}
+    XMALLOC_CPU_L2_CACHE=${ax_l2_size}
+    AC_SUBST(XMALLOC_CPU_L1_CACHE)
+    AC_SUBST(XMALLOC_CPU_L2_CACHE)
 ])

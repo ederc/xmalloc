@@ -183,10 +183,10 @@ fi
 # SSE2 support
 AC_ARG_ENABLE([sse2],
         AS_HELP_STRING([--disable-sse2], [don't use SSE2 instruction set.]),
-	, [if test "$m4ri_wrapword" = "yes"; then enable_sse2="no"; else enable_sse2="yes"; fi])
+	, [if test "$x_wrapword" = "yes"; then enable_sse2="no"; else enable_sse2="yes"; fi])
 
 AS_IF([test "x$enable_sse2" != "xno"], [
-   if test "$m4ri_wrapword" = "yes"; then
+   if test "$x_wrapword" = "yes"; then
       AC_MSG_ERROR([SSE2 cannot be supported when wrapping word in a C++ class.])
    fi
    case $host_cpu in i[[3456]]86*|x86_64*)
@@ -197,16 +197,16 @@ AS_IF([test "x$enable_sse2" != "xno"], [
    esac
 ])
 if test x"$ax_cv_have_sse2_ext" = x"yes"; then
-  M4RI_HAVE_SSE2=1
+  XMALLOC_HAVE_SSE2=1
 else
-  M4RI_HAVE_SSE2=0
+  XMALLOC_HAVE_SSE2=0
 fi
-AC_SUBST(M4RI_HAVE_SSE2)
+AC_SUBST(XMALLOC_HAVE_SSE2)
 
 
 AC_ARG_WITH(papi,
     AS_HELP_STRING([--with-papi@<:@=PATH@:>@], [The PAPI install prefix, if configure can't find it.]),
-    [m4ri_config_papi=$withval])
+    [x_config_papi=$withval])
 
 
 dnl Do not silence irrelevant compiler warnings by default, since enabling this
@@ -730,7 +730,6 @@ if test "x$enable_fill" = "x1" ; then
 fi
 AC_SUBST([enable_fill])
 
-
 AC_ARG_ENABLE([cachetune],
      AS_HELP_STRING([--enable-cachetune],[calculate cache size from timing information.]))
 
@@ -738,6 +737,10 @@ AC_ARG_WITH(cachesize,
   AS_HELP_STRING([--with-cachesize@<:@=VALUE@:>@],
     [Manual cache sizes, separated by a colon.
     Overrides cache tuning.]),[xmalloc_config_cachesize=$withval])
+
+AC_ARG_WITH(cachelinesize,
+  AS_HELP_STRING([--with-cachelinesize@<:@=VALUE@:>@],
+    [Manual cache line size.]),[xmalloc_config_cachelinesize=$withval])
 
 # L1 and L2 Cache Size
 if test -z $xmalloc_config_cachesize; then
@@ -749,12 +752,18 @@ else
   ax_l1_size=`echo $xmalloc_config_cachesize | $SED 's/\:.*//g'`
   ax_l2_size=`echo $xmalloc_config_cachesize | $SED 's/.*\://g'`
 
-  CPU_L1_CACHE=${ax_l1_size}
-  CPU_L2_CACHE=${ax_l2_size}
-  AC_SUBST(CPU_L1_CACHE)
-  AC_SUBST(CPU_L2_CACHE)
+  XMALLOC_CPU_L1_CACHE=${ax_l1_size}
+  XMALLOC_CPU_L2_CACHE=${ax_l2_size}
 fi
 
+if test -z $xmalloc_config_cachelinesize; then
+  AX_CACHE_LINE_SIZE()
+else
+  ax_cache_line_size=`echo $xmalloc_config_cachelinesize`
+
+  XMALLOC_CPU_CACHE_LINE=${ax_cache_line_size}
+fi
+  
 # Create some useful data types of fixed, known lengths
 
 XMALLOC_SIZEOF_SYSTEM_PAGE=4096;
@@ -766,9 +775,6 @@ XMALLOC_SIZEOF_ALIGNMENT=8;
 XMALLOC_SIZEOF_ALIGNMENT_MINUS_ONE=7;
 XMALLOC_LOG_SIZEOF_ALIGNMENT=3;
 XMALLOC_SIZEOF_STRICT_ALIGNMENT=8;
-
-XMALLOC_SIZEOF_CACHELINE=64;    # adjust this if needed!
-XMALLOC_LOG_SIZEOF_CACHELINE=6; # adjust this if needed!
 
 # for xmalloc's specialized assert functionality
 XMALLOC_STRINGIFICATION_OF_X="#x";
@@ -855,8 +861,11 @@ case $THIRTY_TWO_BYTES in
 esac
 
 
-AC_DEFINE_UNQUOTED(SIZEOF_CACHELINE, $XMALLOC_SIZEOF_CACHELINE, cache line size in kB)
-AC_DEFINE_UNQUOTED(LOG_SIZEOF_CACHELINE, $XMALLOC_LOG_SIZEOF_CACHELINE, log cache line size in kB)
+AC_DEFINE_UNQUOTED(CPU_L1_CACHE, $XMALLOC_CPU_L1_CACHE, L1 cache size)
+AC_DEFINE_UNQUOTED(CPU_L2_CACHE, $XMALLOC_CPU_L2_CACHE, L2 cache size)
+AC_DEFINE_UNQUOTED(CPU_CACHE_LINE, $XMALLOC_CPU_CACHE_LINE, cache line size in
+    bytes ( default 64 byte ))
+AC_DEFINE_UNQUOTED(LOG_CPU_CACHE_LINE, $XMALLOC_LOG_CPU_CACHE_LINE , log cache line size)
 AC_DEFINE_UNQUOTED(PAGES_PER_REGION, $XMALLOC_PAGES_PER_REGION, Depending on
     SIZEOF_LONG)
 AC_DEFINE_UNQUOTED(MAX_SMALL_BLOCK_SIZE, $XMALLOC_MAX_SMALL_BLOCK_SIZE, Depending on

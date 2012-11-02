@@ -5,8 +5,8 @@
 # DESCRIPTION
 #
 #   Find L1 and L2 caches size by running some timing experiments.
-#   The results are available in the defines __M4RI_CPU_L1_CACHE and
-#   __M4RI_CPU_L2_CACHE.
+#   The results are available in the defines __XMALLOC_CPU_L1_CACHE and
+#   __XMALLOC_CPU_L2_CACHE.
 #
 #   This macro depends on AC_PROG_SED, AC_PROG_CC.
 #
@@ -183,8 +183,8 @@ size_t cache_size(const size_t *candidates, const size_t n, size_t trials) {
   ax_l2_size=`echo $ax_cv_cache_sizes | $SED 's/.*\://g'`
   AC_MSG_RESULT( $ax_l2_size Bytes)
 
-  M4RI_CPU_L1_CACHE=${ax_l1_size}
-  M4RI_CPU_L2_CACHE=${ax_l2_size}
-  AC_SUBST(M4RI_CPU_L1_CACHE)
-  AC_SUBST(M4RI_CPU_L2_CACHE)
+  XMALLOC_CPU_L1_CACHE=${ax_l1_size}
+  XMALLOC_CPU_L2_CACHE=${ax_l2_size}
+  AC_SUBST(XMALLOC_CPU_L1_CACHE)
+  AC_SUBST(XMALLOC_CPU_L2_CACHE)
 ])
