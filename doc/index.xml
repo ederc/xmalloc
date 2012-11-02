@@ -43,17 +43,46 @@
       corresponding data.
     </para>
     <sect3>
-      <title>Cache line size</title>
+      <title>Cache size</title>
       <para>
-        The cache line size of a CPU is very important for efficient allocations.
-        xmalloc tries to achieve a high cache locality without wasting too much
-        space. For this xmalloc depends on two macros called
-        <varname>__XMALLOC_SIZEOF_CACHELINE</varname> and
-        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname>. The coresponding values
-        are given in kB. For default the configure script of xmalloc sets them to
+        The cache size of a CPU is very important for efficient allocations.
+        xmalloc tries to use your CPU's cache as efficient as possible. For this it does
+        not only try to determine the corresponding sizes ( in bytes ) for the L1
+        and the L2 cache via checking platform-dependent mechanisms. In xmalloc the user
+        has two other options on tuning the cache usage resp. on setting the values of
+        <varname>__XMALLOC_CPU_L1_CACHE</varname> and
+        <varname>__XMALLOC_LOG_CPU_L2_CACHE</varname>.
+      </para>
+      <para>
+      <orderedlist>
+      <listitem>
+      <para>
+        The user can hand over a flag for the configure script in which the corresponding values for
+        L1 and L2 cache are defined:
         <programlisting>
-        __XMALLOC_SIZEOF_CACHELINE     = 64
-        __XMALLOC_LOG_SIZEOF_CACHELINE =  6</programlisting>
+        ./configure --with-cachesize="32000:64000"</programlisting>
+        This results in
+        <programlisting>
+        __XMALLOC_CPU_L1_CACHE=32000
+        __XMALLOC_CPU_L2_CACHE=64000</programlisting>
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Moreover, the user can trigger an internal tuner for the cache size to run
+        during the configure process by calling
+        <programlisting>
+        ./configure --enable-cachetune</programlisting>
+        The internal checker can be found in
+        <filename>m4/ax_cache_size_tune.m4</filename>.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachesize</varname> flag, those values are used and no
+        internal test is run.
+      </para>
+      </listitem>
+      </orderedlist>
       </para>
       <para>
         Those values are most common on current x86-64 CPUs. Of course, there exist other
@@ -61,27 +90,78 @@
         cross-platform, even more in compile time. The user can customize those values by
         passing the corresponding environmental values to the configure script, e.g.
         <programlisting>
-        ./configure CPPFLAGS="-D__XMALLOC_SIZEOF_CACHELINE=32 -D__XMALLOC_LOG_SIZEOF_CACHELINE=5"</programlisting>
-        sets the cache line size to 32kB.
+        ./configure --with-cachelinesize="32:5"</programlisting>
+        sets the cache line size to 32kB and <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>
+        to 5.
       </para>
       <note>
       <orderedlist>
       <listitem>
       <para>
-        Whenever you change <varname>__XMALLOC_SIZEOF_CACHELINE</varname> you should also adjust
-        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname> correspondingly. Otherwise efficient
+        Whenever you change <varname>__XMALLOC_CPU_CACHE_LINE</varname> you should also adjust
+        <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname> correspondingly. Otherwise efficient
         allocations cannot be garantied.
       </para>
       </listitem>
       <listitem>
       <para>
-        There exists an internal checker for the cache line size in <filename>src/cache.h</filename>
-        called <function>xCacheLineSize()</function>. This function is not used to determine the
-        corresponding values for <varname>__XMALLOC_SIZEOF_CACHELINE</varname> respectively
-        <varname>__XMALLOC_LOG_SIZEOF_CACHELINE</varname>. It is a leftover from an earlier step
-        implementing xmalloc where the decision of how to handle these data was not made. We keep
-        this implementation until xmalloc gets kind of stable as there are possible design
-        changes in the future.
+        There exists an internal checker for the cache line size in
+        <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
+        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        to the above mentioned default values 64 respectively 6.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachelinesize</varname> flag, those values are used and no
+        internal test is run.
+      </para>
+      </listitem>
+      </orderedlist>
+      </note>
+    </sect3>
+    <sect3>
+      <title>Cache line size</title>
+      <para>
+        The cache line size of a CPU is very important for efficient allocations.
+        xmalloc tries to achieve a high cache locality without wasting too much
+        space. For this xmalloc depends on two macros called
+        <varname>__XMALLOC_CPU_CACHE_LINE</varname> and
+        <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>. The coresponding values
+        are given in kB. For default the configure script of xmalloc sets them to
+        <programlisting>
+        __XMALLOC_CPU_CACHE_LINE     = 64
+        __XMALLOC_LOG_CPU_CACHE_LINE =  6</programlisting>
+      </para>
+      <para>
+        Those values are most common on current x86-64 CPUs. Of course, there exist other
+        architecture with different settings. It is quite hard to find out those values
+        cross-platform, even more in compile time. The user can customize those values by
+        passing the corresponding environmental values to the configure script, e.g.
+        <programlisting>
+        ./configure --with-cachelinesize="32:5"</programlisting>
+        sets the cache line size to 32kB and <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>
+        to 5.
+      </para>
+      <note>
+      <orderedlist>
+      <listitem>
+      <para>
+        Whenever you change <varname>__XMALLOC_CPU_CACHE_LINE</varname> you should also adjust
+        <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname> correspondingly. Otherwise efficient
+        allocations cannot be garantied.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        There exists an internal checker for the cache line size in
+        <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
+        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        to the above mentioned default values 64 respectively 6.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachelinesize</varname> flag, those values are used and no
+        internal test is run.
       </para>
       </listitem>
       </orderedlist>
