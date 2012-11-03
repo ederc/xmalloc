@@ -4,14 +4,14 @@
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
-DOC_TARGETS =
+DOC_TARGETS = doc
 endif
 
 if BUILD_REFS
 REFDOC_TARGETS = html/index.html
 endif
 
-all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS) doc
+all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
 
 docdir = $(datadir)/doc/xmalloc-$(VERSION)
 doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
@@ -22,6 +22,8 @@ refdoc_DATA = $(REFDOC_TARGETS)
 doc: $(srcdir)/config.xsl $(srcdir)/index.xml
 	$(XMLTO) xhtml -m $(srcdir)/config.xsl $(srcdir)/index.xml
 #sed -e s/index.html/index.html/g index.html >index.html
+
+doxy: $(DOXYGEN)
 
 html/index.html:
 	$(DOXYGEN)
@@ -43,8 +45,8 @@ install-data-local:
 uninstall-hook:
 	rm -rf $(DESTDIR)$(refdocdir)
 
-#clean-local:
-#	rm -rf $(builddir)/html $(builddir)/latex
+clean-local:
+	rm -rf $(builddir)/html $(builddir)/latex
 
 distclean-local:
 	rm -rf $(builddir)/html $(builddir)/latex

@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS=color-tests
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
-SUBDIRS= . m4 src doc tests
+SUBDIRS= . m4 src tests doc
 OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4
 
@@ -33,6 +33,7 @@ DISTCLEANFILES= 									\
 	include/xmalloc-config.h*				\
 	include/stamp-h1a         			\
 	doc/index.html									\
+	doc/html/*											\
 	*~
 
 doc:
