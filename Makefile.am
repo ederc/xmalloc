@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS=color-tests
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
-SUBDIRS= . m4 src tests doc
+SUBDIRS= . m4 src doc tests
 OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4
 
@@ -35,9 +35,6 @@ DISTCLEANFILES= 									\
 	doc/index.html									\
 	doc/html/*											\
 	*~
-
-doc:
-	(cd doc; make)
 
 ctags:
 	ctags -R *

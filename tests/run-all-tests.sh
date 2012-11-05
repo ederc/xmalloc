@@ -61,9 +61,9 @@ printf "%3d of %3d basic tests failed\n" "$countfailedbasic" "$countallbasic"
 echo "-------------------------------------------"
 printf "%3d of %3d tests failed\n" "$countfailed" "$countall"
 echo "==========================================="
-echo "Please report to ederc@mathematik.uni-kl.de"
-echo "==========================================="
 if test $countfailed -gt 0
 then
+  echo "Please report to ederc@mathematik.uni-kl.de"
+  echo "==========================================="
   exit 1
 fi
