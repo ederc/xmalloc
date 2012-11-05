@@ -19,7 +19,7 @@
 #include "xmalloc-config.h"
 #include "align.h"
 
-/*
+/**
  * \fn void* xAllocFromSystem(size_t size)
  *
  * \brief Allocates memory chunk of size \c size from the system.
@@ -31,7 +31,7 @@
  */
 void* xAllocFromSystem(size_t size);
 
-/*
+/**
  * \fn void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize)
  *
  * \brief Reallocates memory chunk of size \c oldSize at \c addr to a memory
@@ -48,7 +48,7 @@ void* xAllocFromSystem(size_t size);
  */
 void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize);
 
-/*
+/**
  * \fn void* xVallocFromSystem(size_t size)
  *
  * \brief Allocates memory chunk of size \c size from the system. This memory
@@ -62,7 +62,7 @@ void* xReallocSizeFromSystem(void *addr, size_t oldSize, size_t newSize);
  */
 void* xVallocFromSystem(size_t size);
 
-/*
+/**
  * \fn void* xVallocMmap(size_t size)
  *
  * \brief Allocates memory chunk of size \c size from the system. This memory
@@ -75,7 +75,7 @@ void* xVallocFromSystem(size_t size);
  */
 void* xVallocMmap(size_t size);
 
-/*
+/**
  * \fn void* xVallocMmap(size_t size)
  *
  * \brief Allocates memory chunk of size \c size from the system. This memory
@@ -91,7 +91,7 @@ void* xVallocMmap(size_t size);
  */
 void* xVallocNoMmap(size_t size);
 
-/*
+/**
  * \fn void* xFreeToSystem(void *page, size_t size)
  *
  * \brief Frees memory at \c addr to system.
@@ -103,7 +103,7 @@ void* xVallocNoMmap(size_t size);
  */
 void xVfreeToSystem(void *addr, size_t size);
 
-/*
+/**
  * \fn void* xFreeToSystem(void *page, size_t size)
  *
  * \brief Frees memory at \c addr to system.
@@ -119,7 +119,7 @@ void xFreeSizeToSystem(void *addr, size_t size);
 /************************************************
  * MEMORY SETTING AND COPYING BUSINESS
  ***********************************************/
-/*
+/**
  * \fn void xMemsetInWords(void *addr, int value, size_t size)
  *
  * \brief Sets memory in word size chunks.
