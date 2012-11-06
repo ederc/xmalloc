@@ -1337,6 +1337,111 @@
     what the purpose of function <function>tcache_get(true)</function> is.
   </para>
   </sect4>
+  <sect4>
+  <title>Assigning arenas to threads</title>
+  <para>
+    jemalloc handles ( in the multi processor case ) 4 times as many arenas
+    as there are processors on the machine.
+  </para>
+  <para>
+    A thread can be assigned to 1 arena at most. Once this decision has been made
+    all other allocations for this thread are handled by the one given arena.
+  </para>
+  <note>
+  <para>
+    Note that there is no 1-to-1 correspondence between arenas and threads:
+    Several different threads can be assigned to the same arena.
+  </para>
+  </note>
+  <para>
+    Thus the question to be answered boils down to: How is a thread initially
+    assigned to an arena in jemalloc? This functionality is handled by
+    <function>choose_arena(arena_t *)</function> which is called in the
+    parameter list of <function>arena_malloc_small</function> in <filename>
+    include/jemalloc/internal/arena.h</filename>. There the real decision
+    is postponed to two other functions depending on the state of jemalloc:
+    <orderedlist>
+    <listitem>
+    <para>
+      <function>arenas_tsd_get()</function>: This function is tested first,
+      if its return value <varname>ret</varname> is &ne; <varname>NULL</varname>,
+      then the corresponding thread was already assigned to an arena and
+      <varname>ret</varname> holds the address of this arena.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <function>choose_arena_hard()</function>: This function is called only if
+      <function>*arenas_tsd_get() == NULL</function>. Thus the condition for
+      <function>choose_arena_hard()</function> is a not already assigned thread.
+      The definition of the function can be found in <filename>src/jemalloc.c
+      </filename>.
+    </para>
+    <para>
+      Looping over all arenas the first one with the lowest number of threads
+      assigned to it is chosen. If an arena not intialized already is found during
+      the looping the corresponding arena index is stored in a variable called
+      <varname>first_null</varname>. ( Note that I am not sure if this is really
+      a good name, since it seems that looping through the list of arenas
+      <varname>first_null</varname> will get the value of the unitialized arena
+      with highest index! ). At the end of the loop two situations are possible:
+      <orderedlist>
+      <listitem>
+      <para>
+        If the chosen arena has 0 threads assigned to it or if <varname>first_null</varname> is
+        the number of all arenas then <function>choose_arena_hard()</function> returns the
+        address of the chosen arena.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Otherwise the chosen arena has at least 1 thread already assigned to it ( i.e. all
+        initialized arenas have at least 1 thread assigned to themselves ) and there exists
+        an arena which is not initialized ( since <varname>first_null</varname> is not equal
+        to the number of arenas jemalloc considers for this CPU setting ). In this situation
+        jemalloc initializes the arena stored at <varname>first_null</varname> and assigns
+        the thread to it.
+      </para>
+      </listitem>
+      </orderedlist>
+    </para>
+    </listitem>
+    </orderedlist>
+  </para>
+  <note>
+  <para>
+    The following facts are important:
+    <orderedlist>
+    <listitem>
+    <para>
+      The 2 situations deciding to which arena a thread should be assigned to are the only
+      ones that can occur: If all arenas have already threads assigned to them, but
+      <varname>first_full</varname> is the number of overall arenas there is no other
+      possibility than to choose the arena with least threads assigned to it. This is
+      exactly the one chosen inside the loop. On the other hand, if there exist uninitialized
+      arenas, but we find an initialized arena with 0 threads assigned to it, it is clear that
+      we take the already initialized arena and save the operations needed to initialize
+      another one.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      In any of the above cases, jemalloc sets the lock on the arenas in order to increment
+      the <varname>nthreads</varname> parameter of the <varname>arena</varname> structure.
+    </para>
+    </listitem>
+    </orderedlist>
+  </para>
+  </note>
+  </sect4>
+  <sect4>
+  <title>Allocating memory inside the chosen arena</title>
+  <para>
+    Once a suitable arena for the thread is found, the corresponding <varname>bin</varname>s
+    in the arena are searched through for the fitting size class holder. There the lock is
+    set and a usual, sequential memory allocation takes place. Afterwards, the lock is unset.
+  </para>
+  </sect4>
   </sect3>
   </sect2>
   </sect1>
