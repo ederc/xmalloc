@@ -4,7 +4,7 @@
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
-DOC_TARGETS = doc
+DOC_TARGETS =
 endif
 
 if BUILD_REFS
