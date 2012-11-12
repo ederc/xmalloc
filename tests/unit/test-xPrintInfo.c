@@ -16,7 +16,7 @@ char *B[__XMALLOC_TEST_BLOCKS];
 
 int main() {
   
-  void *p = xMalloc0(64);
+  B[0] = xMalloc0(64);
   
   xUpdateInfo();
   __XMALLOC_ASSERT(info.currentBytesFromMalloc/1024 == 2048); 
@@ -29,7 +29,7 @@ int main() {
   __XMALLOC_ASSERT(info.usedPages == 1); 
   __XMALLOC_ASSERT(info.availablePages == 511); 
 
-  int i, j;
+  int i;
   for (i = 0; i < __XMALLOC_TEST_BLOCKS; i++)
     B[i]  = (char *)xMalloc0((i * 4) + 1);
 
