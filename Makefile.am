@@ -33,6 +33,9 @@ DISTCLEANFILES= 									\
 	include/xmalloc-config.h*				\
 	include/stamp-h1a         			\
 	doc/index.html									\
+	doc/apa.html										\
+	doc/apb.html										\
+	doc/apc.html										\
 	doc/html/*											\
 	*~
 

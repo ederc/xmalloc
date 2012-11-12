@@ -11,7 +11,7 @@ if BUILD_REFS
 REFDOC_TARGETS = html/index.html
 endif
 
-all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
+all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS) doc
 
 docdir = $(datadir)/doc/xmalloc-$(VERSION)
 doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
@@ -65,7 +65,9 @@ EXTRA_DIST = \
 
 CLEANFILES = 	\
 	index.html*	\
-	apa.html*
+	apa.html*		\
+	apb.html*		\
+	apc.html*		
 
 DISTCLEANFILES = 	\
 	index.html*
