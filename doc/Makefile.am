@@ -4,17 +4,23 @@
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
-DOC_TARGETS =
+DOC_TARGETS = doc
 endif
 
 if BUILD_REFS
 REFDOC_TARGETS = html/index.html
 endif
 
-all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS) doc
+DOC_HTML = 							\
+	$(srcdir)/index.html	\
+	$(srcdir)/apa.html		\
+	$(srcdir)/apb.html		\
+	$(srcdir)/apc.html
+
+all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
 
 docdir = $(datadir)/doc/xmalloc-$(VERSION)
-doc_DATA = $(DOC_TARGETS) caution.png note.png docbook.css
+doc_DATA = caution.png note.png docbook.css
 
 refdocdir = $(datadir)/doc/xmalloc-$(VERSION)/reference
 refdoc_DATA = $(REFDOC_TARGETS)
@@ -35,15 +41,11 @@ install-data-local:
 	else \
 		cp -R $(srcdir)/html/* $(DESTDIR)$(refdocdir); \
 	fi
-	mkdir -p $(distdir)/html
-	if test -x $(builddir)/html; then \
-		cp -R $(builddir)/html/* $(distdir)/html; \
-	else \
-		cp -R $(srcdir)/html/* $(distdir)/html; \
-	fi
+		cp $(DOC_HTML) $(DESTDIR)$(docdir)
 
 uninstall-hook:
 	rm -rf $(DESTDIR)$(refdocdir)
+	rm -rf $(DESTDIR)$(docdir)
 
 clean-local:
 	rm -rf $(builddir)/html $(builddir)/latex

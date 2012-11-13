@@ -37,6 +37,7 @@ DISTCLEANFILES= 									\
 	doc/apb.html										\
 	doc/apc.html										\
 	doc/html/*											\
+	doc/latex/*											\
 	*~
 
 ctags:
