@@ -23,10 +23,10 @@
       See the file INSTALL in the xmalloc-distribution for detailed
       installation-instructions. The basic procedure is
       <programlisting>
-        ./autogen.sh
-        ./configure
-        make
-        make install</programlisting>
+./autogen.sh
+./configure
+make
+make install</programlisting>
     </para>
     </sect2>
     <sect2>
@@ -60,11 +60,11 @@
         The user can hand over a flag for the configure script in which the corresponding values for
         L1 and L2 cache are defined:
         <programlisting>
-        ./configure --with-cachesize="32000:64000"</programlisting>
+./configure --with-cachesize="32000:64000"</programlisting>
         This results in
         <programlisting>
-        __XMALLOC_CPU_L1_CACHE=32000
-        __XMALLOC_CPU_L2_CACHE=64000</programlisting>
+__XMALLOC_CPU_L1_CACHE=32000
+__XMALLOC_CPU_L2_CACHE=64000</programlisting>
       </para>
       </listitem>
       <listitem>
@@ -72,7 +72,7 @@
         Moreover, the user can trigger an internal tuner for the cache size to run
         during the configure process by calling
         <programlisting>
-        ./configure --enable-cachetune</programlisting>
+./configure --enable-cachetune</programlisting>
         The internal checker can be found in
         <filename>m4/ax_cache_size_tune.m4</filename>.
       </para>
@@ -90,11 +90,12 @@
         cross-platform, even more in compile time. The user can customize those values by
         passing the corresponding environmental values to the configure script, e.g.
         <programlisting>
-        ./configure --with-cachelinesize="32:5"</programlisting>
+./configure --with-cachelinesize="32:5"</programlisting>
         sets the cache line size to 32kB and <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>
         to 5.
       </para>
-      <note>
+      <para>
+      <emphasis>Note:</emphasis>
       <orderedlist>
       <listitem>
       <para>
@@ -117,7 +118,7 @@
       </para>
       </listitem>
       </orderedlist>
-      </note>
+      </para>
     </sect3>
     <sect3>
       <title>Cache line size</title>
@@ -129,8 +130,8 @@
         <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>. The coresponding values
         are given in kB. For default the configure script of xmalloc sets them to
         <programlisting>
-        __XMALLOC_CPU_CACHE_LINE     = 64
-        __XMALLOC_LOG_CPU_CACHE_LINE =  6</programlisting>
+__XMALLOC_CPU_CACHE_LINE     = 64
+__XMALLOC_LOG_CPU_CACHE_LINE =  6</programlisting>
       </para>
       <para>
         Those values are most common on current x86-64 CPUs. Of course, there exist other
@@ -138,11 +139,12 @@
         cross-platform, even more in compile time. The user can customize those values by
         passing the corresponding environmental values to the configure script, e.g.
         <programlisting>
-        ./configure --with-cachelinesize="32:5"</programlisting>
+./configure --with-cachelinesize="32:5"</programlisting>
         sets the cache line size to 32kB and <varname>__XMALLOC_LOG_CPU_CACHE_LINE</varname>
         to 5.
       </para>
-      <note>
+      <para>
+      <emphasis>Note:</emphasis>
       <orderedlist>
       <listitem>
       <para>
@@ -165,7 +167,7 @@
       </para>
       </listitem>
       </orderedlist>
-      </note>
+      </para>
     </sect3>
     </sect2>
   </sect1>
@@ -297,19 +299,22 @@
       Here is a simplified graph of the interconnections in the <filename>
       src/</filename> folder:
       <programlisting>
-                            data.h
-                              |
-                              |
-                system.h  globals.h  align.h
-                        \     |     /
-                         \    |    /
-                           region.h
-                            /    \
-                           /      \
-                        bin.h --- page.h
-                           \      /
-                            \    /
-                           xmalloc.h</programlisting>
+          threads.h
+              |
+              |
+            data.h
+              |
+              |
+system.h  globals.h  align.h
+        \     |     /
+         \    |    /
+           region.h
+            /    \
+           /      \
+        bin.h --- page.h
+           \      /
+            \    /
+           xmalloc.h</programlisting>
     </para>
     </listitem>
     <listitem>
@@ -340,15 +345,14 @@
       subprocesses going on, but it should provide the reader with an overall feeling
       for the ideas behind xmalloc.
     </para>
-  <note>
     <para>
+    <emphasis>Note:</emphasis>
       Memory of size > 1024 kB is handled by the operating system's memory manager. Of course
       at some point, e.g. when freeing the memory again, xmalloc needs to decide whether
       the memory was allocated by xmalloc itself or by the system-wide malloc. We do not
       consider these distinctions, but focus on memory chunks &le; 1024 kB. There xmalloc's
       main functionality lies in.
     </para>
-  </note>
   <sect2>
     <title>Memory allocation</title>
     <para>
@@ -396,13 +400,13 @@
       Each memory of an <type>xPage</type> has a given block size due to the <type>xBin</type>
       it is allocated to. Each such block can be thought of as described in the following:
       <programlisting>
-      tmp = page-&gt;current // special situation where tmp points at the current free entry in the xPage
-                          // but one can think of tmp to point at any memory block in the xPage
-               ----------------------------------          ----------------------------------
-      tmp-----&gt;|  *  |  real data of the block  |   /-----&gt;|  *  |  real data of the block  |
-               ---|------------------------------  /       ---|------------------------------
-                  |                               /           |
-               next element----------------------/         next element</programlisting>
+tmp = page-&gt;current // special situation where tmp points at the current free entry in the xPage
+                    // but one can think of tmp to point at any memory block in the xPage
+         ----------------------------------          ----------------------------------
+tmp-----&gt;|  *  |  real data of the block  |   /-----&gt;|  *  |  real data of the block  |
+         ---|------------------------------  /       ---|------------------------------
+            |                               /           |
+         next element----------------------/         next element</programlisting>
       This initialization is done in function <function>xAllocNewPageForBin()</function> in
       file <filename>src/bin.c</filename>
     </para>
@@ -412,13 +416,13 @@
       the <type>xPage</type> as presented in the picture above. If we want to get the address of
       the next memory block in this page we just need to dereference <varname>tmp</varname>:
       <programlisting>
-      *(void **)tmp = next element in xPage</programlisting>
+*(void **)tmp = next element in xPage</programlisting>
     </para>
     <para>
       In order to simplify using xmalloc there is an easier way of getting the next
       <type>xPage</type>, namely
       <programlisting>
-      __XMALLOC_NEXT(tmp) </programlisting>
+__XMALLOC_NEXT(tmp) </programlisting>
     </para>
     </sect3>
     <sect3>
@@ -499,31 +503,31 @@
       Of course, such a check depends on the architecture and system one is
       working on. Let us assume that we work on a 32-bit machine with
       <programlisting>
-        sizeof(long)        = 8
-        sizeof(system_page) = 4096</programlisting>
+sizeof(long)        = 8
+sizeof(system_page) = 4096</programlisting>
       From this we get
       <programlisting>
-        sizeof(bit_long)            = 32
-        sizeof(log_long)            = 3
-        sizeof(log_bit_long)        = 5
-        sizeof(log_bit_system_page) = 12</programlisting>
+sizeof(bit_long)            = 32
+sizeof(log_long)            = 3
+sizeof(log_bit_long)        = 5
+sizeof(log_bit_system_page) = 12</programlisting>
       For xmalloc a memory address reads like described in the following:
       <programlisting>
-        |    15 bits    |     5 bits    |   12 bits    |
-        ----------------------------------------------------------
-        | index of addr | shift of addr | page offset  | page base</programlisting>
+|    15 bits    |     5 bits    |   12 bits    |
+----------------------------------------------------------
+| index of addr | shift of addr | page offset  | page base</programlisting>
     </para>
     <para>
     Thus, in xmalloc we define the size of the index part of a memory
     address via
     <programlisting>
-      sizeof(index_part) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)</programlisting>
+sizeof(index_part) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)</programlisting>
     </para>
     <para>
     With this we are ready to compute of any given memory address its index and its shift:
     <programlisting>
-     xGetPageIndexOfAddr(addr) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)
-     xGetPageShiftOfAddr(addr) = ((unsigned long) addr &amp; sizeof(index_part) - 1) &gt;&gt; sizeof(log_bit_system_page)</programlisting>
+xGetPageIndexOfAddr(addr) = (unsigned long) sizeof(system_page) &lt;&lt; sizeof(log_bit_long)
+xGetPageShiftOfAddr(addr) = ((unsigned long) addr &amp; sizeof(index_part) - 1) &gt;&gt; sizeof(log_bit_system_page)</programlisting>
     </para>
   </sect2>
   <sect2>
@@ -542,8 +546,8 @@
       <varname>xMinPageIndex</varname> and <varname>xMaxPageIndex</varname>,
       initially defined in <filename>include/globals.h</filename> by
       <programlisting>
-        xMinPageIndex = ULLONG_MAX   // max. unsigned long value
-        xMinPageIndex = 0</programlisting>
+xMinPageIndex = ULLONG_MAX   // max. unsigned long value
+xMinPageIndex = 0</programlisting>
     </para>
     <para>
       Those values are set before even the first <type>xRegion</type> is allocated.
@@ -575,19 +579,18 @@
       correctly, for any index <varname>inbetweenIndex</varname> inbetween we can set all
       bits in the shift part:
       <programlisting>
-        xPageShifts[xGetPageIndexOfAddr(startAddr)-xMinPageIndex] |= ~(((unsigned long 1) &lt;&lt; xGetPageShiftOfAddr(startAddr)) - 1)
-        xPageShifts[inbetweenIndex-xMinPageIndex]                 |= ULLONG_MAX
-        xPageShifts[xGetPageIndexOfAddr(endAddr)-xMinPageIndex]   |= (((unsigned long 1) &lt;&lt; (xGetPageShiftOfAddr(endAddr)+1)) - 1)</programlisting>
+xPageShifts[xGetPageIndexOfAddr(startAddr)-xMinPageIndex] |= ~(((unsigned long 1) &lt;&lt; xGetPageShiftOfAddr(startAddr)) - 1)
+xPageShifts[inbetweenIndex-xMinPageIndex]                 |= ULLONG_MAX
+xPageShifts[xGetPageIndexOfAddr(endAddr)-xMinPageIndex]   |= (((unsigned long 1) &lt;&lt; (xGetPageShiftOfAddr(endAddr)+1)) - 1)</programlisting>
     </para>
-    <note>
-      <para>
+    <para>
+    <emphasis>Note:</emphasis>
         It is important to set the corresponding <varname>xPageShifts</varname> entries by |= instead of =.
         If for the given page index another <type>xRegion</type> was already
         allocated then there are already bits set in the corresponding entry of
         <varname>xPageShifts</varname>. Thus we would corrupt data by overriding
         this values.
       </para>
-    </note>
     <para>
     With this information, any memory address between <varname>startAddr</varname>
     and <varname>endAddr</varname> can be detected to be allocated by xmalloc, as
@@ -603,9 +606,9 @@
       like to know if it is allocated by xmalloc we can check this via the
       function <function>xIsPageAddr(addr)</function>. There 3 tests are done:
       <programlisting>
-        xGetPageIndexOfAddr(addr) &ge; xMinPageIndex &amp;&amp;
-        xGetPageIndexOfAddr(addr) &le; xMaxPageIndex &amp;&amp;
-        ((xPageShifts[xGetPageIndexOfAddr(addr) - xMinPageIndex] &amp; ((unsigned long) 1 &lt;&lt; xGetPageShiftOfAddr(addr))) != 0)
+xGetPageIndexOfAddr(addr) &ge; xMinPageIndex &amp;&amp;
+xGetPageIndexOfAddr(addr) &le; xMaxPageIndex &amp;&amp;
+((xPageShifts[xGetPageIndexOfAddr(addr) - xMinPageIndex] &amp; ((unsigned long) 1 &lt;&lt; xGetPageShiftOfAddr(addr))) != 0)
       </programlisting>
       The first 2 comparisons check whether the page index of <varname>addr</varname> lies inbetween the
       boundaries of xmalloc's allocated memory chunks. If those hold, then we need to check even more if
@@ -620,7 +623,7 @@
       and a shift part enables xmalloc to track memory addresses without too
       much memory overhead. Note that
       <programlisting>
-        sizeof(xPageShifts) &le; 2^15 * sizeof(unsigned long)</programlisting>
+sizeof(xPageShifts) &le; 2^15 * sizeof(unsigned long)</programlisting>
       Without using a shift part, this size needs to be ( in the given example )
       32 times greater. This can have a tremendous effect on the memory consumption.
     </para>
@@ -655,15 +658,14 @@
       omalloc's specialized implementation for SINGULAR, thus we stick with the above explanation
       of its usefulness
     </para>
-    <note>
     <para>
+    <emphasis>Note:</emphasis>
       Only for <type>xSpecBin</type>s the size class of the memory blocks stored can exceed
       the constant <varname>__XMALLOC_MAX_SMALL_BLOCK_SIZE</varname>. For memory chunks not
       fitting in the small block size it does not make sense to handle them by xmalloc, in
       general. Monomials are special: They are used a lot of times in SINGULAR and should be
       kept in the <type>xSpecBin</type> structure for a faster freeing.
     </para>
-    </note>
   </sect2>
   <sect2>
     <title>The idea behind sticky xBins ( a feature which is still omalloc-only )</title>
@@ -746,18 +748,18 @@
   <para>
   This is an example documentation of <filename>src/page.h</filename>:
   <programlisting>
-    /**
-    * \file   page.h
-    * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
-    * \date   July 2012
-    * \brief  Page handlers for xmalloc.
-    *         This file is part of XMALLOC, licensed under the GNU General
-    *         Public License version 3. See COPYING for more information.
-    * \note   There are some page based functions implemented in the bin.*
-    *         files since they depend internally on the strong page &lt;-&gt; bin
-    *         connection. Those files are mentioned ( and commented out! )
-    *         at the end of this file
-    */</programlisting>
+/**
+ * \file   page.h
+ * \Author Christian Eder ( ederc\mathematik.uni-kl.de )
+ * \date   July 2012
+ * \brief  Page handlers for xmalloc.
+ *         This file is part of XMALLOC, licensed under the GNU General
+ *         Public License version 3. See COPYING for more information.
+ * \note   There are some page based functions implemented in the bin.*
+ *         files since they depend internally on the strong page &lt;-&gt; bin
+ *         connection. Those files are mentioned ( and commented out! )
+ *         at the end of this file
+ */</programlisting>
   </para>
   <para>
   Moreover, if the file incorporates some oddity, please give a note explaining this
@@ -794,17 +796,17 @@
   <para>
   This is an example documentation of <function>xIsAddrOnPage</function> in <filename>src/page.h</filename>:
   <programlisting>
-   /**
-    * \fn static inline BOOLEAN xIsAddrOnPage(void *addr, xPage page)
-    *
-    * \brief Checks if \c addr is on \c page .
-    *
-    * \param addr memory address to be checked
-    *
-    * \param page \c xPage to be checked
-    *
-    * \return true if \c addr is on \c page , false else
-    */</programlisting>
+/**
+ * \fn static inline BOOLEAN xIsAddrOnPage(void *addr, xPage page)
+ *
+ * \brief Checks if \c addr is on \c page .
+ *
+ * \param addr memory address to be checked
+ *
+ * \param page \c xPage to be checked
+ *
+ * \return true if \c addr is on \c page , false else
+ */</programlisting>
   </para>
   <para>
   Moreover, if your function incorporates some oddity, please give a note explaining this
@@ -835,20 +837,20 @@
   This is an example defintion and documentation of <varname>xPageStruct</varname>
   in <filename>src/data.h</filename>:
   <programlisting>
-    /**
-    * \struct xPageStruct
-    *
-    * \brief Structure of the internal xmalloc page including a header for better
-    * handling in the allocator.
-    */
-    struct xPageStruct {
-      long     numberUsedBlocks; /**&lt; number of used blocks in this page */
-      void*    current;          /**&lt; pointer to free list this page is in */
-      xPage    prev;             /**&lt; previous page in the free list */
-      xPage    next;             /**&lt; next page in the free list */
-      void*    bin;              /**&lt; bin of this page */
-      xRegion  region;           /**&lt; region this page comes from */
-    };</programlisting>
+/**
+ * \struct xPageStruct
+ *
+ * \brief Structure of the internal xmalloc page including a header for better
+ * handling in the allocator.
+ */
+struct xPageStruct {
+  long     numberUsedBlocks; /**&lt; number of used blocks in this page */
+  void*    current;          /**&lt; pointer to free list this page is in */
+  xPage    prev;             /**&lt; previous page in the free list */
+  xPage    next;             /**&lt; next page in the free list */
+  void*    bin;              /**&lt; bin of this page */
+  xRegion  region;           /**&lt; region this page comes from */
+};</programlisting>
   </para>
   <para>
   Moreover, if your function incorporates some oddity, please give a note explaining this
@@ -876,9 +878,9 @@
   This is an example documentation of <varname>xAssert</varname>
   in <filename>src/xassert.h</filename>:
   <programlisting>
-    /**
-    * \brief xmalloc-specific assert
-    */</programlisting>
+/**
+ * \brief xmalloc-specific assert
+ */</programlisting>
   </para>
   <para>
   Moreover, if your function incorporates some oddity, please give a note explaining this
@@ -909,8 +911,8 @@
         functionality. This functionality should be commented out in the following
         way:
         <programlisting>
-        // OMALLOC FUNCTIONALITY MISSING
-        // functionalityStillMissing = 2;</programlisting>
+// OMALLOC FUNCTIONALITY MISSING
+// functionalityStillMissing = 2;</programlisting>
       </para>
     </sect3>
   </sect2>
@@ -928,11 +930,11 @@
   to include a test for any new functionality in xmalloc. The test suite is dedicated
   to be structured into subdirectories which keep specialized tests:
   <programlisting>
-                           tests/
-                          /    \
-                         /      \
-                        /        \
-                      unit/     basic/</programlisting>
+     tests/
+    /    \
+   /      \
+  /        \
+unit/     basic/</programlisting>
   In <filename>unit/</filename> we keep all unit tests. <filename>basic/</filename> is the
   place where to put bigger and more general tests that do not only test some special unit,
   but are still basic.
@@ -942,19 +944,18 @@
   <filename>tests/</filename> directory with which one can run either the tests in the above
   mentioned subdirectories separately or all tests at once:
   <programlisting>
-  ./run-unit-tests.sh
-  ./run-basic-tests.sh
-  ./run-all-tests.sh</programlisting>
+./run-unit-tests.sh
+./run-basic-tests.sh
+./run-all-tests.sh</programlisting>
   </para>
-  <note>
   <para>
+    <emphasis>Note:</emphasis>
   For those shell scripts to work correctly please note that there is a naming
   convention for all tests in any of the above mentioned subdirectories.
   The name of each test file must meet the following template:<filename>test-*.c</filename>.
   For example, in <filename>unit/</filename> a unit test for checking reallocations with
   small memory block sizes should be named <filename>test-realloc-small-blocks.c</filename>.
   </para>
-  </note>
   </sect2>
   <sect2>
   <title>Using assert() in the test suite</title>
@@ -964,7 +965,7 @@
   fails we have overriden it. The default assert functionality to be used in xmalloc
   is called by
   <programlisting>
-  __XMALLOC_ASSERT(expression);</programlisting>
+__XMALLOC_ASSERT(expression);</programlisting>
   This returns not only where the assumption that <varname>expression</varname> is
   correct failed, but also expression as a string itself. This makes debugging a lot
   easier.
@@ -1128,6 +1129,43 @@
        with.
        </para>
     </sect1>
+    <sect1>
+      <title>pthread mechanisms for thread-specific data</title>
+    <para>
+      The <filename>pthreads.h</filename> library consists of a lot of useful threading
+      mechanisms for realizing thread-specific data. The main features to be used in
+      a memory manager boil down to the 3 following steps:
+      <orderedlist>
+       <listitem>
+       <para>
+        ( <function>pthread_key_create(pthread_key_t *key, void 
+        (*destructor)(void*))</function> ) 
+        Create a thread-specific data key that is visible to all threads in the process.
+        The values are bound to the key, are handled on a per-thread basis, and persist for
+        for the lifetime of the calling thread. 
+       </para>
+       </listitem>
+       <listitem>
+       <para>
+       ( <function>pthread_getspecific(pthread_key_t key)</function> )
+       After we have created such a thread-specific data key in the first step, we need to
+       access is in order to fill it with information. 
+       </para>
+       </listitem>
+       <listitem>
+       <para>
+       ( <function>pthread_setspecific(pthread_key_t key, const void *value)</function> )
+       Once we have fetched the thread-specific data, we can set it to some other value.
+       </para>
+       </listitem>
+      </orderedlist>
+    </para>
+    <para>
+       After the initialization of the thread-specific key value all operations on this
+       data is thread-local and different threads cannot interfer each other. Thus no
+       locking has to take place.
+    </para>
+    </sect1>
   </appendix>
   <appendix>
     <title>What are possible ideas for making xmalloc thread-safe?</title>
@@ -1211,13 +1249,12 @@
     All corresponding <function>je_*</function> functions check if the function
     <function>malloc_init()</function> was already called.
   </para>
-  <note>
   <para>
+    <emphasis>Note:</emphasis>
     The configuration setup explained in Section <link linkend="jemallocconf" endterm="jemallocconf.title" />
     The corresponding functions are called only once. When it is set, it won't be
     called again in upcoming allocation steps.
   </para>
-  </note>
   <sect2 id="jemallocconf">
   <title id="jemallocconf.title">Setting configuration variables in jemalloc</title>
   <para>
@@ -1334,7 +1371,8 @@
   <title>Usage of <function>tcache_get(bool create)</function></title>
   <para>
     In order to understand the above ramification in <function>arena_malloc()</function>
-    what the purpose of function <function>tcache_get(true)</function> is.
+    what the purpose of function <function>tcache_get(true)</function> is. For this we refer
+    to Section <link linkend="jemalloctls" endterm="jemalloctls.title" />.
   </para>
   </sect4>
   <sect4>
@@ -1347,12 +1385,11 @@
     A thread can be assigned to 1 arena at most. Once this decision has been made
     all other allocations for this thread are handled by the one given arena.
   </para>
-  <note>
   <para>
-    Note that there is no 1-to-1 correspondence between arenas and threads:
+    <emphasis>Note:</emphasis>
+    There is no 1-to-1 correspondence between arenas and threads:
     Several different threads can be assigned to the same arena.
   </para>
-  </note>
   <para>
     Thus the question to be answered boils down to: How is a thread initially
     assigned to an arena in jemalloc? This functionality is handled by
@@ -1408,8 +1445,8 @@
     </listitem>
     </orderedlist>
   </para>
-  <note>
   <para>
+    <emphasis>Note:</emphasis>
     The following facts are important:
     <orderedlist>
     <listitem>
@@ -1432,7 +1469,6 @@
     </listitem>
     </orderedlist>
   </para>
-  </note>
   </sect4>
   <sect4>
   <title>Allocating memory inside the chosen arena</title>
@@ -1444,6 +1480,27 @@
   </sect4>
   </sect3>
   </sect2>
+  </sect1>
+  <sect1 id="jemalloctls">
+  <title id="jemalloctls.title">Handling of thread-specific data in jemalloc</title>
+  <para>
+    Thread-specific data is of great importance for jemalloc's performance. The functionality is
+    found in <filename>include/jemalloc/internal/tsd.h</filename>. The getter and setter functions
+    are implemented via macros on a more abstract level. In spite of implementing such a functionality
+    for each used case, for example <function>tcache_get_tsd()</function> or
+    <function>arena_tsd_get()</function>, only 1 single <function>a_name##_tsd_get()</function>
+    is defined.
+  </para>
+  <para>
+    Using this abstraction, any thread-local storage can be realized:
+    <programlisting>
+extern __thread a_type a_name##_tls;</programlisting>
+  </para>
+  <para>
+    Thus the only variety implementing thread-local storage or thread-specific data handling boils
+    down to distinguish between different underlying operating systems respectively the corresponding
+    tls availability:
+  </para>
   </sect1>
   </appendix>
 </article>

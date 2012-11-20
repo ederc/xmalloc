@@ -2,6 +2,9 @@ body {
          font-family: luxi sans,sans-serif;
          color: #eee;
          background-color: #333;
+         margin: 0px auto;
+         max-width: 700px;
+         text-align: justify;
 }
 
 .screen {
@@ -24,18 +27,19 @@ body {
         font-size: 1em;
         display: block;
         padding: 10px;
-        border: 1px solid #333;
+        border: 0px solid #333;
         background-color: #467446;
         color: #eee;   
         overflow: auto;
-        border-radius: 2.5px;
-        -moz-border-radius: 2.5px;
-        margin: 0.5em 2em;
+        border-radius: 1.5px;
+        -moz-border-radius: 1.5px;
+        margin: 0.1em 0.1em;
 }
 
 .caution, .warning {
+        text-align: justify;
         padding-top: 10px;
-        padding-left: 10px;
+        padding-left: 5px;
         background-color: #921e1e;
         border: 1px solid #333;
         overflow: auto;
@@ -45,7 +49,16 @@ body {
 }
 
 .caution {
-      //font-size: 1.2em;
+      text-align: justify;
+}
+
+.warning {
+      text-align: justify;
+}
+
+.note {
+    display: block;
+    text-align: justify;
 }
 
 .toc a {
