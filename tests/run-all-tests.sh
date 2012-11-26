@@ -22,9 +22,9 @@ do
   $f
   if test $? -eq 0 
   then
-    echo "PASS: $fname"
+    echo "\033[0;32m PASS\033[m: $fname"
   else
-    echo "FAIL: $fname"
+    echo "\033[0;31mFAIL\033[m: $fname"
     countfailedunit=`expr $countfailedunit + 1`
     countfailed=`expr $countfailed + 1`
   fi
@@ -48,9 +48,9 @@ do
   $f
   if test $? -eq 0 
   then
-    echo "PASS: $fname"
+    echo "\033[0;32m PASS\033[m: $fname"
   else
-    echo "FAIL: $fname"
+    echo "\033[0;31mFAIL\033[m: $fname"
     countfailedbasic=`expr $countfailedbasic + 1`
     countfailed=`expr $countfailed + 1`
   fi
