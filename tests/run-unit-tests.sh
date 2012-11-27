@@ -17,11 +17,16 @@ do
   $f
   if test $? -eq 0 
   then
-    echo "\033[0;32m PASS\033[m: $fname"
+    tput setaf 2
+    echo -n "PASS: "
+    tput sgr0
   else
-    echo "\033[0;31mFAIL\033[m: $fname"
+    tput setaf 3
+    echo -n "FAIL: "
+    tput sgr0
     countfailed=`expr $countfailed + 1`
   fi
+  echo "$fname"
 done
 echo "-------------------------------------------"
 printf "%3d of %3d tests failed\n" "$countfailed" "$countall"

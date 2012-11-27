@@ -22,12 +22,17 @@ do
   $f
   if test $? -eq 0 
   then
-    echo "\033[0;32m PASS\033[m: $fname"
+    tput setaf 2
+    echo -n "PASS: "
+    tput sgr0
   else
-    echo "\033[0;31mFAIL\033[m: $fname"
+    tput setaf 3
+    echo -n "FAIL: "
+    tput sgr0
     countfailedunit=`expr $countfailedunit + 1`
     countfailed=`expr $countfailed + 1`
   fi
+  echo "$fname"
 done
 # Absolute path to this script, e.g. /home/user/bin/foo.csh
 SCRIPT=`readlink -f $0`
@@ -48,12 +53,17 @@ do
   $f
   if test $? -eq 0 
   then
-    echo "\033[0;32m PASS\033[m: $fname"
+    tput setaf 2
+    echo -n "PASS: "
+    tput sgr0
   else
-    echo "\033[0;31mFAIL\033[m: $fname"
+    tput setaf 3
+    echo -n "FAIL: "
+    tput sgr0
     countfailedbasic=`expr $countfailedbasic + 1`
     countfailed=`expr $countfailed + 1`
   fi
+  echo "$fname"
 done
 echo "-------------------------------------------"
 printf "%3d of %3d unit  tests failed\n" "$countfailedunit" "$countallunit"
